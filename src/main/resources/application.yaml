@@ -8,6 +8,6 @@ spring.config.activate.on-profile: local
 wiremock.port: 8081
 
 altinn:
-  uri: http://localhost:8081/altinn
+  uri: "http://localhost:${wiremock.port}/altinn"
   brukernavn: brukernavn
   passord: passord
