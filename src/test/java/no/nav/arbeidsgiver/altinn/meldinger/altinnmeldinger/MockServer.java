@@ -16,6 +16,9 @@ public class MockServer {
     public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLEN = false;
     private final WireMockServer server;
 
+    private final String altinnResponse200 = lesFilSomString("altinn_response_200.xml");
+    private final String altinnResponse500 = lesFilSomString("altinn_response_500.xml");
+
     public MockServer(
             @Value("${wiremock.port}") Integer port
     ) {
@@ -25,8 +28,8 @@ public class MockServer {
                         .notifier(new ConsoleNotifier(AKTIVER_VERBOSE_LOGGING_I_KONSOLEN))
         );
 
-        server.stubFor(WireMock.post("/ekstern/altinn/BehandleAltinnMelding/v1").willReturn(
-                WireMock.ok().withBody(lesFilSomString("altinn_response_200.xml")))
+        server.stubFor(WireMock.post("/altinn").willReturn(
+                WireMock.ok().withBody(altinnResponse200))
         );
         server.start();
     }
