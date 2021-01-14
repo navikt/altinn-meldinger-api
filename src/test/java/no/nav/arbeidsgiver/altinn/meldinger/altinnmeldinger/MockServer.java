@@ -13,7 +13,7 @@ import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesF
 @Profile("local")
 @Component
 public class MockServer {
-    public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLEN = false;
+    public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN = false;
     private final WireMockServer server;
 
     private final String altinnResponse200 = lesFilSomString("altinn_response_200.xml");
@@ -25,7 +25,7 @@ public class MockServer {
         this.server = new WireMockServer(
                 WireMockConfiguration.wireMockConfig()
                         .port(port)
-                        .notifier(new ConsoleNotifier(AKTIVER_VERBOSE_LOGGING_I_KONSOLEN))
+                        .notifier(new ConsoleNotifier(AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN))
         );
 
         server.stubFor(WireMock.post("/altinn").willReturn(
