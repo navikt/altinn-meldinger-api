@@ -1,0 +1,8 @@
+server.servlet.context-path: /altinn-meldinger
+
+spring.profiles.active: local
+
+---
+
+spring.config.activate.on-profile: local
+wiremock.port: 8081
