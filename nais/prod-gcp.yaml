@@ -1,0 +1,22 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+    name: altinn-meldinger
+    namespace: arbeidsgiver
+    labels:
+        team: arbeidsgiver
+spec:
+    image: {{ version }}
+    team: arbeidsgiver
+    port: 8080
+    ingresses:
+        - https://arbeidsgiver.nav.no/altinn-meldinger
+    liveness:
+        path: /altinn-meldinger/internal/healthcheck
+        initialDelay: 20
+    readiness:
+        path: /altinn-meldinger/internal/healthcheck
+        initialDelay: 20
+    env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod-gcp

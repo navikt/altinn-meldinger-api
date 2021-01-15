@@ -11,3 +11,24 @@ altinn:
   uri: "http://localhost:${wiremock.port}/altinn"
   brukernavn: brukernavn
   passord: passord
+
+
+---
+
+spring.config.activate.on-profile: dev-gcp
+
+altinn:
+  uri: "http://localhost:8081/altinn"
+  brukernavn: brukernavn
+  passord: passord
+
+
+---
+
+spring.config.activate.on-profile: prod-gcp
+
+altinn:
+  uri: "http://localhost:8081/altinn"
+  brukernavn: brukernavn
+  passord: passord
+
