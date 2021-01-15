@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-    name: altinn-meldinger
+    name: altinn-meldinger-api
     namespace: arbeidsgiver
     labels:
         team: arbeidsgiver
@@ -10,12 +10,12 @@ spec:
     team: arbeidsgiver
     port: 8080
     ingresses:
-        - https://arbeidsgiver.nav.no/altinn-meldinger
+        - https://arbeidsgiver.nav.no/altinn-meldinger-api
     liveness:
-        path: /altinn-meldinger/internal/healthcheck
+        path: /altinn-meldinger-api/internal/healthcheck
         initialDelay: 20
     readiness:
-        path: /altinn-meldinger/internal/healthcheck
+        path: /altinn-meldinger-api/internal/healthcheck
         initialDelay: 20
     env:
         - name: SPRING_PROFILES_ACTIVE

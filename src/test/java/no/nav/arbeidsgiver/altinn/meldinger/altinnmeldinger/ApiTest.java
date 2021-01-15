@@ -24,7 +24,7 @@ public class ApiTest {
     public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger/melding"))
+                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
                         .POST(HttpRequest.BodyPublishers.ofString("Dette er en melding som skal til Altinn"))
                         .build(),
                 ofString()

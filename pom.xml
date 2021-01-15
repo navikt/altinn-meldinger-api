@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.nav.arbeidsgiver.altinn.meldinger</groupId>
-	<artifactId>altinn-meldinger</artifactId>
+	<artifactId>altinn-meldinger-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>altinn-meldinger</name>
+	<name>altinn-meldinger-api</name>
 	<description>Tjeneste for å sende Altinn-meldinger til arbeidsgivere.</description>
 
 	<properties>

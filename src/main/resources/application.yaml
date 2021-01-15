@@ -1,4 +1,4 @@
-server.servlet.context-path: /altinn-meldinger
+server.servlet.context-path: /altinn-meldinger-api
 
 spring.profiles.active: local
 
