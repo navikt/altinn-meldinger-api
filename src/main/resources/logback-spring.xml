@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-    <springProfile name="preprod, prod">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+<configuration scan="true">
+    <springProfile name="dev-gcp,prod-gcp">
+        <appender name="consoleJsonAppender" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
         </appender>
+        <root level="INFO">
+            <appender-ref ref="consoleJsonAppender"/>
+        </root>
     </springProfile>
-    <logger name="no.nav" level="INFO" />
-    <logger name="no.nav.security" level="WARN" />
-    <root level="WARN">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+    <springProfile name="local">
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+        <logger name="org.springframework.web" level="DEBUG"/>
+    </springProfile>
 </configuration>
