@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.m2/repository
-          key: ${{ runndev-sbs.yamler.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
