@@ -1,5 +1,9 @@
 server.servlet.context-path: /altinn-meldinger-api
 
+management.endpoints.web:
+  exposure.include: info, health, metrics, prometheus
+  base-path: /internal/actuator
+
 spring.profiles.active: local
 
 ---
