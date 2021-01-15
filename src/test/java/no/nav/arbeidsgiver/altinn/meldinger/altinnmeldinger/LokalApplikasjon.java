@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Profile;
 @SpringBootApplication
 public class LokalApplikasjon {
     public static void main(String[] args) {
-        SpringApplication.run(AltinnMeldingerApplikasjon.class, args);
+        SpringApplication.run(LokalApplikasjon.class, args);
     }
 }
