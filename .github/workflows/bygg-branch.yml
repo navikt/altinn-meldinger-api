@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - '*'
-      - '!master'
+      - '!main'
 
 env:
   GITHUB_REPOSITORY: ${{ github.repository }}
@@ -41,27 +41,27 @@ jobs:
       - name: Bygg og test med Maven
         run: mvn package -B -Dsurefire.useFile=false
 
-      - name: Sjekk om branch er oppdatert mot master
-        id: sjekk-mot-master
+      - name: Sjekk om branch er oppdatert mot main
+        id: sjekk-mot-main
         run: |
-          git fetch origin master
-          echo ::set-output name=oppdatert::$(git merge-base --is-ancestor origin/master $GITHUB_SHA && echo ja || echo nei)
+          git fetch origin main
+          echo ::set-output name=oppdatert::$(git merge-base --is-ancestor origin/main $GITHUB_SHA && echo ja || echo nei)
 
       - name: Sett variable
-        if: steps.sjekk-mot-master.outputs.oppdatert == 'ja'
+        if: steps.sjekk-mot-main.outputs.oppdatert == 'ja'
         id: variable
         run: |
           echo ::set-output name=branch::"$(echo ${GITHUB_REF#refs/heads/})"
 
       - name: Bygg, tag og push Docker-image
-        if: steps.sjekk-mot-master.outputs.oppdatert == 'ja'
+        if: steps.sjekk-mot-main.outputs.oppdatert == 'ja'
         run: |
           docker build --tag $IMAGE_BASE:$GITHUB_SHA .
           echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u $GITHUB_REPOSITORY --password-stdin
           docker push $IMAGE_BASE
 
       - name: Lukk gamle deployment-issues
-        if: steps.sjekk-mot-master.outputs.oppdatert == 'ja'
+        if: steps.sjekk-mot-main.outputs.oppdatert == 'ja'
         uses: actions/github-script@0.5.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -83,7 +83,7 @@ jobs:
             });
 
       - name: Ny deployment-issue
-        if: steps.sjekk-mot-master.outputs.oppdatert == 'ja'
+        if: steps.sjekk-mot-main.outputs.oppdatert == 'ja'
         uses: actions/github-script@0.5.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

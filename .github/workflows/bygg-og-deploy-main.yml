@@ -1,9 +1,9 @@
-name: Bygg og deploy master
+name: Bygg og deploy main
 
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
