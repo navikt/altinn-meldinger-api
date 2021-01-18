@@ -6,10 +6,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class AltinnWSConfig {
+    private final static String SEND_ALTINN_MELDING_API_PATH = "/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc";
+
     @Bean
     public ICorrespondenceAgencyExternalBasic iCorrespondenceAgencyExternalBasic(
             AltinnConfig altinnConfig
     ) {
-        return WsClient.createPort(altinnConfig.getUri(), ICorrespondenceAgencyExternalBasic.class);
+        return WsClient.createPort(
+                altinnConfig.getUri() + SEND_ALTINN_MELDING_API_PATH,
+                ICorrespondenceAgencyExternalBasic.class
+        );
     }
 }

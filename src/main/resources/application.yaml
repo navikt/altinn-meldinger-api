@@ -22,9 +22,7 @@ altinn:
 spring.config.activate.on-profile: dev-gcp
 
 altinn:
-  uri: "http://localhost:8081/altinn"
-  brukernavn: brukernavn
-  passord: passord
+  uri: https://tt02.altinn.no
 
 
 ---
@@ -32,7 +30,5 @@ altinn:
 spring.config.activate.on-profile: prod-gcp
 
 altinn:
-  uri: "http://localhost:8081/altinn"
-  brukernavn: brukernavn
-  passord: passord
+  uri: https://altinn.no
 
