@@ -12,6 +12,14 @@ Appen benytter Altinns tjenesteeierapi, dokumentert her: https://altinn.github.i
     2. Kjør container `docker run -d -p 8080:8080 altinn-meldinger-api`
     3. For å stoppe, kjør `docker stop <id>` med id-en fra forrige kommando
 
+# Secrets
+Appen benytter seg av Kubernetes secrets. For å lage en secret, kjør
+```
+kubectl create secret generic altinn-meldinger-api-secrets \
+--from-literal=ALTINN_BRUKERNAVN=********* \
+--from-literal=ALTINN_PASSORD=*********
+```
+
 # Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan rettes mot:

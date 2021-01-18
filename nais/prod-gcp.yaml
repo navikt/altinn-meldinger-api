@@ -23,3 +23,5 @@ spec:
     env:
         - name: SPRING_PROFILES_ACTIVE
           value: prod-gcp
+    envFrom:
+        - secret: altinn-meldinger-api-secrets
