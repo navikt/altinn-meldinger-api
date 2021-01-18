@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesFilSomString;
+import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnWSConfig.SEND_ALTINN_MELDING_API_PATH;
 
 @Profile("local")
 @Component
@@ -28,7 +29,7 @@ public class MockServer {
                         .notifier(new ConsoleNotifier(AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN))
         );
 
-        server.stubFor(WireMock.post("/altinn").willReturn(
+        server.stubFor(WireMock.post("/altinn" + SEND_ALTINN_MELDING_API_PATH).willReturn(
                 WireMock.ok().withBody(altinnResponse200))
         );
         server.start();
