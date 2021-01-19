@@ -25,7 +25,10 @@ public class ApiTest {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
-                        .POST(HttpRequest.BodyPublishers.ofString("Dette er en melding som skal til Altinn"))
+                        .POST(HttpRequest.BodyPublishers.ofString(
+                                "{\"melding\": \"Dette er en melding som skal til Altinn\", \"bedriftsnr\": \"999999999\"}"
+                        ))
+                        .header("Content-Type", "application/json")
                         .build(),
                 ofString()
         );

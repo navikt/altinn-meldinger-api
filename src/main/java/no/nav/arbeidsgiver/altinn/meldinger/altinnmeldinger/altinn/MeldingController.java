@@ -18,10 +18,9 @@ public class MeldingController {
 
     @PostMapping("/melding")
     public ResponseEntity<HttpStatus> sendAltinnMelding(
-            @RequestParam String bedriftsnr,
-            @RequestParam String melding
+            @RequestBody AltinnMelding altinnMelding
     ) {
-        altinnClient.sendAltinnMelding(melding, bedriftsnr);
+        altinnClient.sendAltinnMelding(altinnMelding.getMelding(), altinnMelding.getBedriftsnr());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
