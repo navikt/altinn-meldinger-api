@@ -25,3 +25,7 @@ spec:
           value: prod-gcp
     envFrom:
         - secret: altinn-meldinger-api-secrets
+    accessPolicy:
+        outbound:
+            external:
+                - host: altinn.no

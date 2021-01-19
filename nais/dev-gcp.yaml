@@ -25,3 +25,7 @@ spec:
           value: dev-gcp
     envFrom:
         - secret: altinn-meldinger-api-secrets
+    accessPolicy:
+        outbound:
+            external:
+                - host: tt02.altinn.no
