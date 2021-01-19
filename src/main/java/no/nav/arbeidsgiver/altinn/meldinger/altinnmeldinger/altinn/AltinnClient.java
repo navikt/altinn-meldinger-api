@@ -33,9 +33,9 @@ public class AltinnClient {
         this.altinnConfig = altinnConfig;
     }
 
-    public void sendAltinnMelding(String melding) {
+    public void sendAltinnMelding(String melding, String bedriftsnr) {
         sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(
-                melding, "Dette er en test-tittel", "999999999"
+                melding, "Dette er en test-tittel", bedriftsnr
         ));
     }
 
