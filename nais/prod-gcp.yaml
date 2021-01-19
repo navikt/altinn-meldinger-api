@@ -10,7 +10,7 @@ spec:
     team: arbeidsgiver
     port: 8080
     ingresses:
-        - https://arbeidsgiver.nav.no/altinn-meldinger-api
+        - https://arbeidsgiver.intern.nav.no/altinn-meldinger-api
     liveness:
         path: /altinn-meldinger-api/internal/healthcheck
         initialDelay: 20

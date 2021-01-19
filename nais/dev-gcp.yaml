@@ -6,13 +6,11 @@ metadata:
     labels:
         team: arbeidsgiver
 spec:
-    image: {{ version }}
+    image: docker.pkg.github.com/navikt/altinn-meldinger-api/altinn-meldinger-api:955de4147d446c8cabf3ff3a2bc256d31b8de0e6
     team: arbeidsgiver
     port: 8080
     ingresses:
-        - https://arbeidsgiver.dev.nav.no/altinn-meldinger-api
-        - https://arbeidsgiver.dev-gcp.nav.no/altinn-meldinger-api
-        - https://arbeidsgiver-gcp.dev.nav.no/altinn-meldinger-api
+        - https://arbeidsgiver.dev.intern.nav.no/altinn-meldinger-api
     liveness:
         path: /altinn-meldinger-api/internal/healthcheck
         initialDelay: 20
