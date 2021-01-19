@@ -1,5 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnMelding;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -22,12 +24,17 @@ public class ApiTest {
 
     @Test
     public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AltinnMelding altinnMelding = new AltinnMelding(
+                "999999999",
+                "Dette er en melding som skal til Altinn",
+                "Tittel!"
+        );
+
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
-                        .POST(HttpRequest.BodyPublishers.ofString(
-                                "{\"melding\": \"Dette er en melding som skal til Altinn\", \"bedriftsnr\": \"999999999\"}"
-                        ))
+                        .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .header("Content-Type", "application/json")
                         .build(),
                 ofString()

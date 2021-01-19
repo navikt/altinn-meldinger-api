@@ -33,10 +33,8 @@ public class AltinnClient {
         this.altinnConfig = altinnConfig;
     }
 
-    public void sendAltinnMelding(String melding, String bedriftsnr) {
-        sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(
-                melding, "Dette er en test-tittel", bedriftsnr
-        ));
+    public void sendAltinnMelding(AltinnMelding altinnMelding) {
+        sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
     }
 
     private void sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
@@ -53,7 +51,7 @@ public class AltinnClient {
         }
     }
 
-    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(String melding, String meldingstittel, String bedriftsnr) {
+    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(AltinnMelding altinnMelding) {
         return new InsertCorrespondenceBasicV2()
                 .withSystemUserName(altinnConfig.getBrukernavn())
                 .withSystemPassword(altinnConfig.getPassord())
@@ -66,11 +64,11 @@ public class AltinnClient {
                         .withAllowSystemDeleteDateTime(fromLocalDate(LocalDateTime.now().plusYears(10))) // TODO Kan reduseres?
                         .withAllowForwarding(false)
                         .withMessageSender(MSG_SENDER)
-                        .withReportee(bedriftsnr)
+                        .withReportee(altinnMelding.getBedriftsnr())
                         .withContent(new ExternalContentV2()
                                 .withLanguageCode(LANGUAGE_CODE)
-                                .withMessageTitle(meldingstittel)
-                                .withMessageBody(melding)
+                                .withMessageTitle(altinnMelding.getTittel())
+                                .withMessageBody(altinnMelding.getMelding())
                         ));
     }
 

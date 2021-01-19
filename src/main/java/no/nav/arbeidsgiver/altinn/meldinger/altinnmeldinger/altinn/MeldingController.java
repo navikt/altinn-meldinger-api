@@ -21,7 +21,7 @@ public class MeldingController {
     public ResponseEntity<HttpStatus> sendAltinnMelding(
             @RequestBody AltinnMelding altinnMelding
     ) {
-        altinnClient.sendAltinnMelding(altinnMelding.getMelding(), altinnMelding.getBedriftsnr());
+        altinnClient.sendAltinnMelding(altinnMelding);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
