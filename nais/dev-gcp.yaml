@@ -11,6 +11,8 @@ spec:
     port: 8080
     ingresses:
         - https://arbeidsgiver.dev.nav.no/altinn-meldinger-api
+        - https://arbeidsgiver.dev-gcp.nav.no/altinn-meldinger-api
+        - https://arbeidsgiver-gcp.dev.nav.no/altinn-meldinger-api
     liveness:
         path: /altinn-meldinger-api/internal/healthcheck
         initialDelay: 20
