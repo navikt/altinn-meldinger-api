@@ -31,5 +31,5 @@ altinn:
 spring.config.activate.on-profile: prod-gcp
 
 altinn:
-  uri: https://altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
+  uri: https://www.altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
 

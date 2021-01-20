@@ -14,11 +14,15 @@ public class Testsending {
             AltinnClient altinnClient
     ) {
         LOGGER.info("Starter sending av Altinn-melding til " + bedriftsnr);
-        altinnClient.sendAltinnMelding(new AltinnMelding(
-                bedriftsnr,
-                "Body på testmelding",
-                "Dette er en testmelding"
-        ));
+        try {
+            altinnClient.sendAltinnMelding(new AltinnMelding(
+                    bedriftsnr,
+                    "Body på testmelding",
+                    "Dette er en testmelding"
+            ));
+        } catch (Exception e) {
+            LOGGER.error("error", e);
+        }
         LOGGER.info("Altinn-melding sendt til " + bedriftsnr);
     }
 }
