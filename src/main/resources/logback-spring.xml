@@ -3,7 +3,7 @@
         <appender name="consoleJsonAppender" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
         </appender>
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="consoleJsonAppender"/>
         </root>
     </springProfile>
