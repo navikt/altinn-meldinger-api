@@ -10,6 +10,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class AltinnClient {
@@ -17,13 +18,8 @@ public class AltinnClient {
     private final ICorrespondenceAgencyExternalBasic iCorrespondenceAgencyExternalBasic;
     private final AltinnConfig altinnConfig;
 
-    // TODO ALLE disse må verifiseres!
-    private static final String SYSTEM_USERCODE = "NAV_PERMREF";
-    private static final String EXT_REF = "ESR_NAV";
-    private static final String SERVICE_CODE = "5562";
-    private static final String SERVICE_EDITION = "1";
-    private static final String LANGUAGE_CODE = "1044";
-    private static final String MSG_SENDER = "NAV";
+    private static final String EXTERNAL_SHIPMENT_REFERENCE_PREFIX = "ESR_NAV";
+    private static final String SPRÅKKODE_NORSK_BOKMÅL = "1044";
 
     public AltinnClient(
             ICorrespondenceAgencyExternalBasic iCorrespondenceAgencyExternalBasic,
@@ -52,21 +48,26 @@ public class AltinnClient {
     }
 
     private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(AltinnMelding altinnMelding) {
+        LocalDateTime allowSystemDeleteDateTime = Optional.ofNullable(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr())
+                .map(antallÅr -> LocalDateTime.now().plusYears(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr()))
+                .orElse(altinnMelding.getTillatAutomatiskSlettingFraDato());
+        XMLGregorianCalendar allowSystemDeleteDateTimeXML = Optional.ofNullable(allowSystemDeleteDateTime)
+                .map(this::fromLocalDate).orElse(null);
+
         return new InsertCorrespondenceBasicV2()
                 .withSystemUserName(altinnConfig.getBrukernavn())
                 .withSystemPassword(altinnConfig.getPassord())
-                .withSystemUserCode(SYSTEM_USERCODE)
+                .withSystemUserCode(altinnMelding.getSystemUsercode())
                 .withExternalShipmentReference(genererExtShipmentRef())
                 .withCorrespondence(new InsertCorrespondenceV2()
-                        .withServiceCode(SERVICE_CODE)
-                        .withServiceEdition(SERVICE_EDITION)
+                        .withServiceCode(altinnMelding.getServiceCode())
+                        .withServiceEdition(altinnMelding.getServiceEdition())
                         .withVisibleDateTime(fromLocalDate(LocalDateTime.now()))
-                        .withAllowSystemDeleteDateTime(fromLocalDate(LocalDateTime.now().plusYears(10))) // TODO Kan reduseres?
+                        .withAllowSystemDeleteDateTime(allowSystemDeleteDateTimeXML)
                         .withAllowForwarding(false)
-                        .withMessageSender(MSG_SENDER)
-                        .withReportee(altinnMelding.getBedriftsnr())
+                        .withReportee(altinnMelding.getOrgnr())
                         .withContent(new ExternalContentV2()
-                                .withLanguageCode(LANGUAGE_CODE)
+                                .withLanguageCode(SPRÅKKODE_NORSK_BOKMÅL)
                                 .withMessageTitle(altinnMelding.getTittel())
                                 .withMessageBody(altinnMelding.getMelding())
                         ));
@@ -81,6 +82,6 @@ public class AltinnClient {
     }
 
     private String genererExtShipmentRef() {
-        return EXT_REF + Math.random() * 1000000000;
+        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + Math.random() * 1000000000;
     }
 }

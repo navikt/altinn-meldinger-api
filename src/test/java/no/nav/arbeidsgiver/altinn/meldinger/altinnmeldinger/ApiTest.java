@@ -28,7 +28,12 @@ public class ApiTest {
         AltinnMelding altinnMelding = new AltinnMelding(
                 "999999999",
                 "Dette er en melding som skal til Altinn",
-                "Tittel!"
+                "Tittel!",
+                "NAV_AGP2",
+                "5562",
+                "1",
+                null,
+                10
         );
 
         HttpResponse<String> response = newBuilder().build().send(
