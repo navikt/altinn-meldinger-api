@@ -25,6 +25,7 @@ spec:
           value: dev-gcp
     envFrom:
         - secret: altinn-meldinger-api-secrets
+        - secret: altinn-meldinger-api-testsending
     accessPolicy:
         outbound:
             external:

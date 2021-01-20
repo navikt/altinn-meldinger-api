@@ -2,8 +2,6 @@
 
 Appen eksponerer et API for å opprette meldinger i arbeidsgivers Altinn-innboks.
 
-Appen benytter Altinns tjenesteeierapi, dokumentert her: https://altinn.github.io/docs/api/tjenesteeiere/soap/endepunkt-liste/#correspondence
-
 # Komme i gang
  - Kjøre appen lokalt: Kjør `LokalApplikasjon`
  - Se API-et i OpenAPI/Swagger: `http://localhost:8080/altinn-meldinger-api/swagger-ui.html`
@@ -19,6 +17,13 @@ kubectl create secret generic altinn-meldinger-api-secrets \
 --from-literal=ALTINN_BRUKERNAVN=********* \
 --from-literal=ALTINN_PASSORD=*********
 ```
+
+# Dokumentasjon
+
+Appen benytter Altinns tjenesteeierapi.
+ - Overordnet dokumentasjon: https://altinn.github.io/docs/api/tjenesteeiere/
+ - Dokumentasjon av meldingstjenesten: https://altinn.github.io/docs/api/tjenesteeiere/soap/grensesnitt/meldingstjeneste/
+ - Endepunkteter: https://altinn.github.io/docs/api/tjenesteeiere/soap/endepunkt-liste/#correspondence
 
 # Henvendelser
 
