@@ -11,6 +11,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class AltinnClient {
@@ -18,7 +19,7 @@ public class AltinnClient {
     private final ICorrespondenceAgencyExternalBasic iCorrespondenceAgencyExternalBasic;
     private final AltinnConfig altinnConfig;
 
-    private static final String EXTERNAL_SHIPMENT_REFERENCE_PREFIX = "ESR_NAV";
+    private static final String EXTERNAL_SHIPMENT_REFERENCE_PREFIX = "NAV_ALTINN_MELDINGER_";
     private static final String SPRÅKKODE_NORSK_BOKMÅL = "1044";
 
     public AltinnClient(
@@ -82,6 +83,6 @@ public class AltinnClient {
     }
 
     private String genererExtShipmentRef() {
-        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + Math.random() * 1000000000;
+        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + UUID.randomUUID();
     }
 }
