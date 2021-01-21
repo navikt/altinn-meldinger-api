@@ -11,22 +11,17 @@ import java.time.LocalDateTime;
 @Entity
 public class MeldingLogg {
 
-    private LocalDateTime opprettet;
-
     @Id
     private String id;
-
+    private LocalDateTime opprettet;
     private String orgnr;
     private String melding;
     private String tittel;
-
     private String systemUsercode;
     private String serviceCode;
     private String serviceEdition;
-
     private LocalDateTime tillatAutomatiskSlettingFraDato;
     private Integer tillatAutomatiskSlettingEtterAntallÅr;
-
     @Enumerated(EnumType.STRING)
     private MeldingStatus status;
 
