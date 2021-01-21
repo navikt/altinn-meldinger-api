@@ -1,9 +1,12 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
+import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptExternal;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.ExternalContentV2;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.InsertCorrespondenceV2;
 import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondenceAgencyExternalBasic;
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -22,6 +25,8 @@ public class AltinnClient {
     private static final String EXTERNAL_SHIPMENT_REFERENCE_PREFIX = "NAV_ALTINN_MELDINGER_";
     private static final String SPRÅKKODE_NORSK_BOKMÅL = "1044";
 
+    private static final Logger log = LoggerFactory.getLogger(AltinnClient.class);
+
     public AltinnClient(
             ICorrespondenceAgencyExternalBasic iCorrespondenceAgencyExternalBasic,
             AltinnConfig altinnConfig
@@ -36,14 +41,20 @@ public class AltinnClient {
 
     private void sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
         try {
-            iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
+            ReceiptExternal receiptExternal = iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
                     insertCorrespondenceBasicV2.getSystemUserName(),
                     insertCorrespondenceBasicV2.getSystemPassword(),
                     insertCorrespondenceBasicV2.getSystemUserCode(),
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
                     insertCorrespondenceBasicV2.getCorrespondence()
             );
+            log.info("Response fra Altinn for melding med ExternalShipmentReference {}: {}",
+                    insertCorrespondenceBasicV2.getExternalShipmentReference(),
+                    receiptExternal);
         } catch (Exception fault) {
+            log.error("Feil mot Altinn for melding med ExternalShipmentReference {} ",
+                    insertCorrespondenceBasicV2.getExternalShipmentReference(),
+                    fault);
             throw new RuntimeException(fault);
         }
     }
