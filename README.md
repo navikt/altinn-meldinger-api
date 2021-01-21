@@ -4,7 +4,8 @@ Appen eksponerer et API for å opprette meldinger i arbeidsgivers Altinn-innboks
 
 # Komme i gang
  - Kjøre appen lokalt: Kjør `LokalApplikasjon`
- - Se API-et i OpenAPI/Swagger: `http://localhost:8080/altinn-meldinger-api/swagger-ui.html`
+ - Se API-et i OpenAPI/Swagger: http://localhost:8080/altinn-meldinger-api/swagger-ui.html
+ - Åpne konsollen til H2-databasen lokalt: Gå til http://localhost:8080/altinn-meldinger-api/h2 og fyll inn det som står under `spring.datasource` i `application.yaml`
  - Kjøre appen med Docker:
     1. Bygg image `docker build -t altinn-meldinger-api .`
     2. Kjør container `docker run -d -p 8080:8080 altinn-meldinger-api`
