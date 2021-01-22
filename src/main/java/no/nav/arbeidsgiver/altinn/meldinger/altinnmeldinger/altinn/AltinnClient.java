@@ -5,8 +5,8 @@ import no.altinn.schemas.services.serviceengine.correspondence._2010._10.Externa
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.InsertCorrespondenceV2;
 import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondenceAgencyExternalBasic;
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -50,9 +50,10 @@ public class AltinnClient {
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
                     insertCorrespondenceBasicV2.getCorrespondence()
             );
+            ReflectionToStringBuilder.setDefaultStyle(new MultilineRecursiveToStringStyle());
             log.info("Response fra Altinn for melding med ExternalShipmentReference {}: {}",
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
-                    ToStringBuilder.reflectionToString(receiptExternal, ToStringStyle.SIMPLE_STYLE));
+                    ReflectionToStringBuilder.toStringExclude(receiptExternal, "lastChanged"));
         } catch (Exception fault) {
             log.error("Feil mot Altinn for melding med ExternalShipmentReference {} ",
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
