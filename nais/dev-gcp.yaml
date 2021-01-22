@@ -22,7 +22,7 @@ spec:
         path: /altinn-meldinger-api/internal/actuator/prometheus
     gcp:
         sqlInstances:
-            - type: POSTGRES_13
+            - type: POSTGRES_12
               databases:
                   - name: altinn-meldinger-db
                     envVarPrefix: DATABASE
