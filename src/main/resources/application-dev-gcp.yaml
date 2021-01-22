@@ -6,7 +6,7 @@ spring:
       web-allow-others: true
     path: /h2
   datasource:
-    url: ${DATABASE_URL}
+    url: "jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_USERNAME}"
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
