@@ -98,7 +98,7 @@ jobs:
   deploy-prod:
     name: Deploy til prod
     runs-on: ubuntu-20.04
-    needs: deploy-dev
+    needs: bygg
     steps:
       - name: Finn REPOSITORY_NAME
         run: echo "REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}')" >> $GITHUB_ENV
