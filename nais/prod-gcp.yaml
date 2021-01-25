@@ -13,10 +13,10 @@ spec:
         - https://arbeidsgiver.intern.nav.no/altinn-meldinger-api
     liveness:
         path: /altinn-meldinger-api/internal/healthcheck
-        initialDelay: 60
+        initialDelay: 120
     readiness:
         path: /altinn-meldinger-api/internal/healthcheck
-        initialDelay: 60
+        initialDelay: 120
     prometheus:
         enabled: true
         path: /altinn-meldinger-api/internal/actuator/prometheus
