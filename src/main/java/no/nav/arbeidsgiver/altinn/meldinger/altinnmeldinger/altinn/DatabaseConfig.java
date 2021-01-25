@@ -31,6 +31,7 @@ public class DatabaseConfig {
 
     @Bean
     public DataSource dataSource() {
+        log.info("Setup DataSource ... " + url);
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
         config.setUsername(username);
@@ -42,6 +43,7 @@ public class DatabaseConfig {
 
     @Bean
     public FlywayMigrationStrategy flywayMigrationStrategy() {
+        log.info("Setup Flyway ... ");
         return flyway -> Flyway.configure()
                 .dataSource(dataSource())
                 .load()
