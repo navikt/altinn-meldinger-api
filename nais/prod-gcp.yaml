@@ -13,13 +13,20 @@ spec:
         - https://arbeidsgiver.intern.nav.no/altinn-meldinger-api
     liveness:
         path: /altinn-meldinger-api/internal/healthcheck
-        initialDelay: 40
+        initialDelay: 120
     readiness:
         path: /altinn-meldinger-api/internal/healthcheck
-        initialDelay: 40
+        initialDelay: 120
     prometheus:
         enabled: true
         path: /altinn-meldinger-api/internal/actuator/prometheus
+    gcp:
+        sqlInstances:
+            - name: altinn-meldinger-api
+              type: POSTGRES_12
+              databases:
+                  - name: altinn-meldinger-db
+                    envVarPrefix: DATABASE
     env:
         - name: SPRING_PROFILES_ACTIVE
           value: prod-gcp
