@@ -3,8 +3,6 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
@@ -13,10 +11,9 @@ import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 
-@Profile("dev-gcp")
+@Profile({"dev-gcp", "prod-gcp"})
 @Configuration
 public class DatabaseConfig {
-    private final static Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
     private final String url;
     private final String username;
     private final String password;
@@ -33,7 +30,6 @@ public class DatabaseConfig {
 
     @Bean
     public DataSource dataSource() {
-        log.info("Setup DataSource ... " + url);
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
         config.setUsername(username);
@@ -41,14 +37,12 @@ public class DatabaseConfig {
         config.setMaximumPoolSize(2);
         config.setMinimumIdle(1);
         config.setInitializationFailTimeout(60000);
-        config.setDriverClassName("org.postgresql.Driver");
 
         return new HikariDataSource(config);
     }
 
     @Bean
     public FlywayMigrationStrategy flywayMigrationStrategy() {
-        log.info("Setup Flyway ... ");
         return flyway -> Flyway.configure()
                 .dataSource(dataSource())
                 .load()

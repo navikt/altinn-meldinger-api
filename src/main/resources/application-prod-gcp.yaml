@@ -1,7 +1,7 @@
 spring:
   config.activate.on-profile: prod-gcp
   datasource:
-    url: ${DATABASE_URL}
+    url: "jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DATABASE}"
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
