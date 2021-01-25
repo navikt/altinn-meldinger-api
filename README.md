@@ -20,11 +20,13 @@ kubectl create secret generic altinn-meldinger-api-secrets \
 ```
 
 # Dokumentasjon
-
-Appen benytter Altinns tjenesteeierapi.
+Appen benytter Altinns tjenesteeier-api.
  - Overordnet dokumentasjon: https://altinn.github.io/docs/api/tjenesteeiere/
  - Dokumentasjon av meldingstjenesten: https://altinn.github.io/docs/api/tjenesteeiere/soap/grensesnitt/meldingstjeneste/
  - Endepunkteter: https://altinn.github.io/docs/api/tjenesteeiere/soap/endepunkt-liste/#correspondence
+
+# Andre relevante lenker
+Appen kjører i Google Cloud Platform (GCP). GCP-prosjekter administreres her: https://console.cloud.google.com/
 
 # Henvendelser
 
