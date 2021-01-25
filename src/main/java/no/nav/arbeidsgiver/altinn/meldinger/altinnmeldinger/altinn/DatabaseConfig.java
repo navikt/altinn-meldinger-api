@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 
+@Profile("dev-gcp")
 @Configuration
 public class DatabaseConfig {
     private final static Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
@@ -39,6 +41,7 @@ public class DatabaseConfig {
         config.setMaximumPoolSize(2);
         config.setMinimumIdle(1);
         config.setInitializationFailTimeout(60000);
+        config.setDriverClassName("org.postgresql.Driver");
 
         return new HikariDataSource(config);
     }
