@@ -39,7 +39,6 @@ public class DatabaseConfig {
         config.setMaximumPoolSize(2);
         config.setMinimumIdle(1);
         config.setInitializationFailTimeout(60000);
-        config.setDriverClassName("org.postgresql.Driver");
 
         return new HikariDataSource(config);
     }
