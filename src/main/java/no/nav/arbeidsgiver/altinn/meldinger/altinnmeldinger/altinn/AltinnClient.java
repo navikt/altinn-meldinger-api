@@ -1,10 +1,13 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptExternal;
+import no.altinn.schemas.services.serviceengine.correspondence._2010._10.AttachmentsV2;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.ExternalContentV2;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.InsertCorrespondenceV2;
 import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondenceAgencyExternalBasic;
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
+import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
+import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentV2;
 import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
@@ -15,8 +18,11 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class AltinnClient {
@@ -85,7 +91,23 @@ public class AltinnClient {
                                 .withLanguageCode(SPRÅKKODE_NORSK_BOKMÅL)
                                 .withMessageTitle(altinnMelding.getTittel())
                                 .withMessageBody(altinnMelding.getMelding())
+                                .withAttachments(createAttachments(altinnMelding))
                         ));
+    }
+
+    private AttachmentsV2 createAttachments(AltinnMelding altinnMelding) {
+        List<PdfVedlegg> vedlegg = altinnMelding.getVedlegg();
+        return vedlegg == null || vedlegg.isEmpty() ? null
+                : new AttachmentsV2()
+                    .withBinaryAttachments(new BinaryAttachmentExternalBEV2List()
+                            .withBinaryAttachmentV2(vedlegg.stream().map(AltinnClient::tilBinaryAttachment).collect(Collectors.toList())));
+    }
+
+    private static BinaryAttachmentV2 tilBinaryAttachment(PdfVedlegg vedlegg) {
+        return new BinaryAttachmentV2()
+                .withData(Base64.getDecoder().decode(vedlegg.getFilinnhold()))
+                .withFileName(vedlegg.getFilnavn())
+                .withName(vedlegg.getVedleggnavn());
     }
 
     private XMLGregorianCalendar fromLocalDate(LocalDateTime localDateTime) {
