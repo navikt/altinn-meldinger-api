@@ -26,6 +26,7 @@ public class MeldingController {
         MeldingLogg meldingLogg = MeldingLogg.from(altinnMelding);
         try {
             altinnClient.sendAltinnMelding(altinnMelding);
+
             meldingLogg.setStatus(MeldingStatus.OK);
         } catch (Exception e) {
             meldingLogg.setStatus(MeldingStatus.FEIL);
