@@ -2,6 +2,8 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.*;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,8 +33,8 @@ public class ApiTest {
     @Test
     public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        List<PdfVedlegg> vedlegg = List.of(new PdfVedlegg(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"));
-        AltinnMelding altinnMelding = new AltinnMelding(
+        List<PdfVedleggDTO> vedlegg = List.of(new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"));
+        AltinnMeldingDTO altinnMelding = new AltinnMeldingDTO(
                 "999999999",
                 "Dette er en melding som skal til Altinn",
                 "Tittel!",
@@ -55,7 +57,7 @@ public class ApiTest {
         assertThat(response.statusCode()).isEqualTo(201);
         List<MeldingLogg> meldingsLoggRader = meldingLoggRepository.findAll();
         assertThat(meldingsLoggRader.size()).isEqualTo(1);
-        assertThat(meldingsLoggRader.get(0).getStatus()).isEqualTo(MeldingStatus.OK);
+        assertThat(meldingsLoggRader.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
     }
 
 }

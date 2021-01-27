@@ -1,5 +1,9 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnClient;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLoggRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +25,15 @@ public class MeldingController {
 
     @PostMapping("/melding")
     public ResponseEntity<HttpStatus> sendAltinnMelding(
-            @RequestBody AltinnMelding altinnMelding
+            @RequestBody AltinnMeldingDTO altinnMeldingDTO
     ) {
-        MeldingLogg meldingLogg = MeldingLogg.from(altinnMelding);
+        MeldingLogg meldingLogg = altinnMeldingDTO.toMeldingLogg();
         try {
-            altinnClient.sendAltinnMelding(altinnMelding);
-            meldingLogg.setStatus(MeldingStatus.OK);
-        } catch (Exception e) {
-            meldingLogg.setStatus(MeldingStatus.FEIL);
-        }
+                altinnClient.sendAltinnMelding(meldingLogg);
+                meldingLogg.setStatus(AltinnStatus.OK);
+            } catch (Exception e) {
+                meldingLogg.setStatus(AltinnStatus.FEIL);
+            }
         meldingLoggRepository.save(meldingLogg);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

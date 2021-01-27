@@ -2,16 +2,11 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Ulider;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
 public class MeldingLogg {
 
-    @Id
     private String id;
     private LocalDateTime opprettet;
     private String orgnr;
@@ -22,12 +17,14 @@ public class MeldingLogg {
     private String serviceEdition;
     private LocalDateTime tillatAutomatiskSlettingFraDato;
     private Integer tillatAutomatiskSlettingEtterAntallÅr;
-    @Enumerated(EnumType.STRING)
-    private MeldingStatus status;
+    private List<PdfVedlegg> vedlegg;
+    private AltinnStatus altinnStatus;
 
-    private MeldingLogg(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr) {
+    public MeldingLogg(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedlegg> vedlegg) {
+        this.vedlegg = vedlegg;
         this.opprettet = LocalDateTime.now();
         this.id = Ulider.nextULID();
+        this.altinnStatus = AltinnStatus.IKKE_SENDT;
         this.orgnr = orgnr;
         this.melding = melding;
         this.tittel = tittel;
@@ -36,26 +33,13 @@ public class MeldingLogg {
         this.serviceEdition = serviceEdition;
         this.tillatAutomatiskSlettingFraDato = tillatAutomatiskSlettingFraDato;
         this.tillatAutomatiskSlettingEtterAntallÅr = tillatAutomatiskSlettingEtterAntallÅr;
-    }
-
-    public static MeldingLogg from(AltinnMelding altinnMelding) {
-        return new MeldingLogg(
-                altinnMelding.getOrgnr(),
-                altinnMelding.getMelding(),
-                altinnMelding.getTittel(),
-                altinnMelding.getSystemUsercode(),
-                altinnMelding.getServiceCode(),
-                altinnMelding.getServiceEdition(),
-                altinnMelding.getTillatAutomatiskSlettingFraDato(),
-                altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr()
-        );
+        this.vedlegg = vedlegg;
     }
 
     protected MeldingLogg() {
-
     };
 
-    public MeldingLogg(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, MeldingStatus status) {
+    public MeldingLogg(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus) {
         this.opprettet = opprettet;
         this.id = id;
         this.orgnr = orgnr;
@@ -66,14 +50,58 @@ public class MeldingLogg {
         this.serviceEdition = serviceEdition;
         this.tillatAutomatiskSlettingFraDato = tillatAutomatiskSlettingFraDato;
         this.tillatAutomatiskSlettingEtterAntallÅr = tillatAutomatiskSlettingEtterAntallÅr;
-        this.status = status;
+        this.altinnStatus = altinnStatus;
     }
 
-    public void setStatus(MeldingStatus status) {
-        this.status = status;
+    public void setStatus(AltinnStatus altinnStatus) {
+        this.altinnStatus = altinnStatus;
     }
 
-    public MeldingStatus getStatus() {
-        return status;
+    public AltinnStatus getAltinnStatus() {
+        return altinnStatus;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public LocalDateTime getOpprettet() {
+        return opprettet;
+    }
+
+    public String getOrgnr() {
+        return orgnr;
+    }
+
+    public String getMelding() {
+        return melding;
+    }
+
+    public String getTittel() {
+        return tittel;
+    }
+
+    public String getSystemUsercode() {
+        return systemUsercode;
+    }
+
+    public String getServiceCode() {
+        return serviceCode;
+    }
+
+    public String getServiceEdition() {
+        return serviceEdition;
+    }
+
+    public LocalDateTime getTillatAutomatiskSlettingFraDato() {
+        return tillatAutomatiskSlettingFraDato;
+    }
+
+    public Integer getTillatAutomatiskSlettingEtterAntallÅr() {
+        return tillatAutomatiskSlettingEtterAntallÅr;
+    }
+
+    public List<PdfVedlegg> getVedlegg() {
+        return vedlegg;
     }
 }

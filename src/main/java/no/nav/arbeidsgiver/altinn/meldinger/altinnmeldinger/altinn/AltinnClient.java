@@ -43,7 +43,7 @@ public class AltinnClient {
         this.altinnConfig = altinnConfig;
     }
 
-    public void sendAltinnMelding(AltinnMelding altinnMelding) {
+    public void sendAltinnMelding(MeldingLogg altinnMelding) {
         sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
     }
 
@@ -68,7 +68,7 @@ public class AltinnClient {
         }
     }
 
-    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(AltinnMelding altinnMelding) {
+    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(MeldingLogg altinnMelding) {
         LocalDateTime allowSystemDeleteDateTime = Optional.ofNullable(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr())
                 .map(antallÅr -> LocalDateTime.now().plusYears(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr()))
                 .orElse(altinnMelding.getTillatAutomatiskSlettingFraDato());
@@ -95,7 +95,7 @@ public class AltinnClient {
                         ));
     }
 
-    private AttachmentsV2 createAttachments(AltinnMelding altinnMelding) {
+    private AttachmentsV2 createAttachments(MeldingLogg altinnMelding) {
         List<PdfVedlegg> vedlegg = altinnMelding.getVedlegg();
         return vedlegg == null || vedlegg.isEmpty() ? null
                 : new AttachmentsV2()
