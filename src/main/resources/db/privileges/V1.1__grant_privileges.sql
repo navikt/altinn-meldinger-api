@@ -1,1 +1,1 @@
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO cloudsqliamuser;
+alter default privileges in schema public grant all on tables to cloudsqliamuser;
