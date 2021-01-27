@@ -18,8 +18,8 @@ import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"wiremock.port=8082"})
+@SpringBootTest(classes = LokalApplikasjon.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(properties = {"wiremock.port=8083"})
 public class ApiTest {
 
     @LocalServerPort
