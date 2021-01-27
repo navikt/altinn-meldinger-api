@@ -7,3 +7,12 @@ spring:
 
 altinn:
   uri: https://tt02.altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
+
+
+no.nav.security.jwt.client.registration.altinnMeldingApi:
+  token-endpoint-url: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
+  grant-type: client_credentials
+  authentication:
+    client-id: cc1ade99-e83a-4986-9550-8391fb99a8af
+    client-auth-method: client_secret_basic
+
