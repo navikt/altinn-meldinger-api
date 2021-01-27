@@ -7,7 +7,6 @@ import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,13 +25,11 @@ public class DatabaseConfig {
     public DatabaseConfig(
             @Value("${spring.datasource.url}") String url,
             @Value("${spring.datasource.username}") String username,
-            @Value("${spring.datasource.password}") String password,
-            @Value("${spring.flyway.locations}") String locations
+            @Value("${spring.datasource.password}") String password
     ) {
         this.url = url;
         this.username = username;
         this.password = password;
-        log.info("spring.flyway.locations " + locations);
     }
 
     @Bean
@@ -46,13 +43,5 @@ public class DatabaseConfig {
         config.setInitializationFailTimeout(60000);
 
         return new HikariDataSource(config);
-    }
-
-    @Bean
-    public FlywayMigrationStrategy flywayMigrationStrategy() {
-        return flyway -> Flyway.configure()
-                .dataSource(dataSource())
-                .load()
-                .migrate();
     }
 }
