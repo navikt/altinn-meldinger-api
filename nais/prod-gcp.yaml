@@ -37,3 +37,8 @@ spec:
             external:
                 - host: www.altinn.no
                 - host: altinn.no
+    azure:
+        application:
+            enabled: true
+            tenant: nav.no
+    webproxy: false
