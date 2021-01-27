@@ -10,7 +10,7 @@ spring:
     password:
     driver-class-name: org.h2.Driver
   flyway:
-    locations: classpath:/db/migration, classpath:/db/privileges
+    locations: classpath:/db/migration
 
 wiremock.port: 8081
 
