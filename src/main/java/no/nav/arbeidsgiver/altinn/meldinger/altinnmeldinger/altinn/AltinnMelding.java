@@ -1,6 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class AltinnMelding {
 
@@ -15,9 +16,9 @@ public class AltinnMelding {
 
     private final LocalDateTime tillatAutomatiskSlettingFraDato;
     private final Integer tillatAutomatiskSlettingEtterAntallÅr;
+    private final List<PdfVedlegg> vedlegg;
 
-
-    public AltinnMelding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr) {
+    public AltinnMelding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedlegg> vedlegg) {
         this.orgnr = orgnr;
         this.melding = melding;
         this.tittel = tittel;
@@ -26,6 +27,7 @@ public class AltinnMelding {
         this.serviceEdition = serviceEdition;
         this.tillatAutomatiskSlettingFraDato = tillatAutomatiskSlettingFraDato;
         this.tillatAutomatiskSlettingEtterAntallÅr = tillatAutomatiskSlettingEtterAntallÅr;
+        this.vedlegg = vedlegg;
     }
 
     public String getOrgnr() {
@@ -59,4 +61,8 @@ public class AltinnMelding {
     public Integer getTillatAutomatiskSlettingEtterAntallÅr() {
         return tillatAutomatiskSlettingEtterAntallÅr;
     }
+
+    public List<PdfVedlegg> getVedlegg() { return vedlegg; }
+
+
 }
