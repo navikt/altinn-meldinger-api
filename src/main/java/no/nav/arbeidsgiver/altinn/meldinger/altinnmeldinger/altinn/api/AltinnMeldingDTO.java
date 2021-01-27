@@ -1,9 +1,11 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
+
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLogg;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class AltinnMelding {
+public class AltinnMeldingDTO {
 
     private final String orgnr;
     private final String melding;
@@ -16,9 +18,9 @@ public class AltinnMelding {
 
     private final LocalDateTime tillatAutomatiskSlettingFraDato;
     private final Integer tillatAutomatiskSlettingEtterAntallÅr;
-    private final List<PdfVedlegg> vedlegg;
+    private final List<PdfVedleggDTO> vedlegg;
 
-    public AltinnMelding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedlegg> vedlegg) {
+    public AltinnMeldingDTO(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedleggDTO> vedlegg) {
         this.orgnr = orgnr;
         this.melding = melding;
         this.tittel = tittel;
@@ -62,7 +64,9 @@ public class AltinnMelding {
         return tillatAutomatiskSlettingEtterAntallÅr;
     }
 
-    public List<PdfVedlegg> getVedlegg() { return vedlegg; }
+    public List<PdfVedleggDTO> getVedlegg() { return vedlegg; }
 
-
+    public MeldingLogg toMeldingLogg() {
+        return new MeldingLogg(orgnr, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, PdfVedleggDTO.tilVedleggListe(vedlegg));
+    }
 }
