@@ -9,11 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Arrays;
 
 @Component
 public class DokArkivClient {
@@ -28,15 +31,15 @@ public class DokArkivClient {
 
     static final String QUERY_PARAM = "forsoekFerdigstill=true";
     private URI uri;
-    //private final HttpHeaders headers = new HttpHeaders();
+    private HttpHeaders headers = new HttpHeaders();
 
     public DokArkivClient(DokArkivConfig dokArkivConfig) {
-        uri = UriComponentsBuilder.fromUri(dokArkivConfig.getUri())
+        uri = UriComponentsBuilder.fromUriString(dokArkivConfig.getUri())
                 .query(QUERY_PARAM)
                 .build()
                 .toUri();
-//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-//        headers.setContentType((MediaType.APPLICATION_JSON));
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setContentType((MediaType.APPLICATION_JSON));
     }
 
     public void journalførMelding(MeldingLogg meldingLogg) {
@@ -46,7 +49,7 @@ public class DokArkivClient {
     private String sendJournalpost(final Journalpost journalpost) {
         debugLogJournalpost(journalpost);
         try {
-            return restempateDokArkivOauth2.postForObject(uri, new HttpEntity<>(journalpost), JournalpostResponse.class).getJournalpostId();
+            return restempateDokArkivOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
         } catch (Exception e) {
             log.error("Kall til Joark feilet", e);
             throw new RuntimeException("Kall til Joark feilet: " + e);
@@ -54,13 +57,13 @@ public class DokArkivClient {
     }
 
     private void debugLogJournalpost(Journalpost journalpost) {
-        //  if (log.isDebugEnabled()) {
-        try {
-            log.info("JSON REQ: {}", new ObjectMapper().writeValueAsString(journalpost));
-        } catch (JsonProcessingException e) {
-            log.warn("PRINT FEILET");
+        if (log.isDebugEnabled()) {
+            try {
+                log.debug("JSON REQ: {}", new ObjectMapper().writeValueAsString(journalpost));
+            } catch (JsonProcessingException e) {
+                log.warn("JSON PRINT FEILET");
+            }
         }
-//        }
     }
 }
 

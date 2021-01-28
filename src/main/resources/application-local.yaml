@@ -20,5 +20,5 @@ altinn:
   passord: passord
 
 dokarkiv:
-  uri: "http://localhost:${wiremock.port}/"
+  uri: "http://localhost:${wiremock.port}/dokarkiv"
 

@@ -16,21 +16,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.util.Optional;
 
 @Configuration
 @Profile({"dev-gcp", "prod-gcp"})
 @EnableOAuth2Client(cacheEnabled = true)
 public class DokArkivConfig {
-    private final URI uri;
+    private final String uri;
 
     @Autowired
-    public DokArkivConfig(@Value("${dokarkiv.uri}") URI uri) {
+    public DokArkivConfig(@Value("${dokarkiv.uri}") String uri) {
         this.uri = uri;
     }
 
-    public URI getUri() {
+    public String getUri() {
         return uri;
     }
 

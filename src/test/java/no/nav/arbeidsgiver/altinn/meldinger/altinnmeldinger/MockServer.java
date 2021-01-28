@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnConfig;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -22,9 +23,10 @@ public class MockServer {
 
     private final String altinnResponse200 = lesFilSomString("altinn_response_200.xml");
     private final String altinnResponse500 = lesFilSomString("altinn_response_500.xml");
+    private final String dokarkivResponse200 = lesFilSomString("dokarkiv_response_200.json");
 
     public MockServer(
-            AltinnConfig altinnConfig,
+            AltinnConfig altinnConfig, DokArkivConfig dokArkivConfig,
             @Value("${wiremock.port}") Integer port
     ) throws Exception {
         this.server = new WireMockServer(
@@ -34,10 +36,12 @@ public class MockServer {
         );
 
         String altinnPath = new URL(altinnConfig.getUri()).getPath();
+        String dokarkivPath = new URL(dokArkivConfig.getUri()).getPath() + "?forsoekFerdigstill=true";
 
         server.stubFor(WireMock.post(altinnPath).willReturn(
                 WireMock.ok().withBody(altinnResponse200))
         );
+        server.stubFor(WireMock.post(dokarkivPath).willReturn(WireMock.okJson("{\"journalpostId\" : \"493329380\", \"journalstatus\" : \"ENDELIG\", \"melding\" : \"Gikk bra\"}")));
         server.start();
     }
 }

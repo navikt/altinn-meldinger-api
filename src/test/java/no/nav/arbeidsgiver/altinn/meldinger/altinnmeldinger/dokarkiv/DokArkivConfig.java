@@ -6,18 +6,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
-
 @Configuration
 public class DokArkivConfig {
-    private final URI uri;
+    private final String uri;
 
     @Autowired
-    public DokArkivConfig(@Value("${dokarkiv.uri}") URI uri) {
+    public DokArkivConfig(@Value("${dokarkiv.uri}") String uri) {
         this.uri = uri;
     }
 
-    public URI getUri() {
+    public String getUri() {
         return uri;
     }
 

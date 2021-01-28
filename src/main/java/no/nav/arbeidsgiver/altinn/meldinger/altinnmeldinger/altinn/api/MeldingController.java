@@ -34,7 +34,7 @@ public class MeldingController {
         try {
                 altinnClient.sendAltinnMelding(meldingLogg);
                 meldingLogg.setStatus(AltinnStatus.OK);
-            //dokArkivClient.journalførMelding(meldingLogg);
+            dokArkivClient.journalførMelding(meldingLogg);
             } catch (Exception e) {
                 meldingLogg.setStatus(AltinnStatus.FEIL);
             }

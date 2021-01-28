@@ -14,10 +14,10 @@ dokarkiv:
 
 
 no.nav.security.jwt.client.registration.altinnmelding:
-  token-endpoint-url: todo
-  grant-type: todo
-  scope: 9todo
+  token-endpoint-url: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
+  grant-type: client_credentials
+  scope: 972814f3-8bdf-44f8-a191-c2ed00020b54/.default
   authentication:
-    client-id: todo
-    client-auth-method: todo
-    client-secret: todo
+    client-id: cc1ade99-e83a-4986-9550-8391fb99a8af
+    client-auth-method: client_secret_basic
+    client-secret: ${AZURE_APP_CLIENT_SECRET}
