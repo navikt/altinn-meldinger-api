@@ -85,6 +85,11 @@
 			<artifactId>token-client-spring</artifactId>
 			<version>${nav.security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>no.nav.security</groupId>
+			<artifactId>token-validation-spring</artifactId>
+			<version>${nav.security.version}</version>
+		</dependency>
 
 		<!-- Logging -->
 		<dependency>

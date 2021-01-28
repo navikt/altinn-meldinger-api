@@ -18,3 +18,7 @@ altinn:
   uri: "http://localhost:${wiremock.port}/altinn"
   brukernavn: brukernavn
   passord: passord
+
+dokarkiv:
+  uri: "http://localhost:${wiremock.port}/"
+

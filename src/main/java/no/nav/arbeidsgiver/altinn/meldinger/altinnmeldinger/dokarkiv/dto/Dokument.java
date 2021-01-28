@@ -1,4 +1,4 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.journalføring.dto;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto;
 
 import java.util.List;
 
@@ -9,5 +9,13 @@ public class Dokument {
     public Dokument(String tittel, List<DokumentVariant> dokumentVarianter) {
         this.tittel = tittel;
         this.dokumentVarianter = dokumentVarianter;
+    }
+
+    public String getTittel() {
+        return tittel;
+    }
+
+    public List<DokumentVariant> getDokumentVarianter() {
+        return dokumentVarianter;
     }
 }
