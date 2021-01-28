@@ -1,6 +1,6 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Dokument;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.DokumentVariant;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
@@ -18,21 +18,21 @@ public class JournalpostMapper {
 
     private static final Logger log = LoggerFactory.getLogger(JournalpostMapper.class);
 
-    public Journalpost meldingTilJournalpost(MeldingLogg meldingLogg) {
+    public Journalpost meldingTilJournalpost(Melding melding) {
         try {
-            return opprettJournalpost(meldingLogg);
+            return opprettJournalpost(melding);
         } catch (Exception e) {
             log.error("Feil ved mapping til Journalpost", e);
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    private Journalpost opprettJournalpost(MeldingLogg meldingLogg) {
+    private Journalpost opprettJournalpost(Melding melding) {
 //        Sak sak = new Sak(opprettArkivsaknr(meldingLogg.get));
 //        Bruker bruker = new Bruker(meldingLogg.getOrgnr());
-        Mottaker mottaker = new Mottaker(meldingLogg.getOrgnr(), meldingLogg.getId()); //TODO orgNavn
+        Mottaker mottaker = new Mottaker(melding.getOrgnr(), melding.getId()); //TODO orgNavn
 
-        List<Dokument> dokumenter = meldingLogg.getVedlegg()
+        List<Dokument> dokumenter = melding.getVedlegg()
                 .stream()
                 .map(pdfVedlegg -> new Dokument(pdfVedlegg.getVedleggnavn(), Arrays.asList(new DokumentVariant(pdfVedlegg.getFilinnhold()))))
                 .collect(Collectors.toList());

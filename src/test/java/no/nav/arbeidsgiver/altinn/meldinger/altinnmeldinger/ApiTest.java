@@ -1,9 +1,11 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.*;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLoggRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,10 +17,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @SpringBootTest(classes = LokalApplikasjon.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"wiremock.port=8083"})
@@ -55,9 +59,16 @@ public class ApiTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(201);
-        List<MeldingLogg> meldingsLoggRader = meldingLoggRepository.findAll();
+        List<Melding> meldingsLoggRader = meldingLoggRepository.findAll();
         assertThat(meldingsLoggRader.size()).isEqualTo(1);
-        assertThat(meldingsLoggRader.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
+        assertThat(meldingsLoggRader.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
+
+        await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
+            List<Melding> meldingsLoggRader2 = meldingLoggRepository.findAll();
+            assertThat(meldingsLoggRader2.size()).isEqualTo(1);
+            assertThat(meldingsLoggRader2.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
+        });
+
     }
 
 }

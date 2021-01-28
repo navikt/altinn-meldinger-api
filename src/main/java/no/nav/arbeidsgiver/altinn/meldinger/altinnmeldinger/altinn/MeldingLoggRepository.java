@@ -1,5 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -19,8 +21,30 @@ public class MeldingLoggRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public List<Melding> hent(AltinnStatus status, int antall) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("status", status.name())
+                .addValue("antall", antall);
 
-    public void save(MeldingLogg meldingLogg) {
+        return jdbcTemplate.query("select " +
+                "id, " +
+                "opprettet, " +
+                "orgnr, " +
+                "melding, " +
+                "tittel, " +
+                "system_usercode, " +
+                "service_code, " +
+                "service_edition, " +
+                "tillat_automatisk_sletting_fra_dato, " +
+                "tillat_automatisk_sletting_etter_antall_år, " +
+                "status from melding_logg " +
+                "where status = :status " +
+                "limit :antall",
+                parameterSource,
+                (resultSet, i) -> getMeldingLogg(resultSet));
+    }
+
+    public void save(Melding meldingLogg) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", meldingLogg.getId())
                 .addValue("opprettet", meldingLogg.getOpprettet())
@@ -59,7 +83,7 @@ public class MeldingLoggRepository {
 
     }
 
-    public List<MeldingLogg> findAll() {
+    public List<Melding> findAll() {
 
         return jdbcTemplate.getJdbcTemplate().query("select " +
                 "id, " +
@@ -75,9 +99,9 @@ public class MeldingLoggRepository {
                 "status from melding_logg", (resultSet, i) -> getMeldingLogg(resultSet));
     }
 
-    private MeldingLogg getMeldingLogg(ResultSet resultSet) {
+    private Melding getMeldingLogg(ResultSet resultSet) {
         try {
-            return new MeldingLogg(
+            return new Melding(
                         resultSet.getTimestamp("opprettet").toLocalDateTime(),
                         resultSet.getString("id"),
                         resultSet.getString("orgnr"),
@@ -96,17 +120,11 @@ public class MeldingLoggRepository {
         }
     }
 
-    /*
-        private static Virksomhetsklassifikasjon mapTilVirksomhetsklassifikasjon
-            (ResultSet rs, Klassifikasjonskilde klassifikasjonskilde) throws SQLException {
-        switch (klassifikasjonskilde) {
-            case SEKTOR:
-                return new Sektor(rs.getString(KODE), rs.getString(NAVN));
-            case NÆRING:
-                return new Næring(rs.getString(KODE), rs.getString(NAVN));
-            default:
-                throw new IllegalArgumentException();
-        }
+    public void oppdaterStatus(String id, AltinnStatus status) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("status", status.name());
+
+        jdbcTemplate.update("update melding_logg set status = :status where id = :id ", parameterSource);
     }
-     */
 }

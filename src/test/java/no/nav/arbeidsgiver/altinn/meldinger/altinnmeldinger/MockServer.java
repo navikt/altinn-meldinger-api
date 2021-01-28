@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnConfig;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnConfig;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;

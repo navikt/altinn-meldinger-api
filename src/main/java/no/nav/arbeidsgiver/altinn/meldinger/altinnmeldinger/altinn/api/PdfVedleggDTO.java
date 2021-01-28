@@ -1,6 +1,6 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.PdfVedlegg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.PdfVedlegg;
 
 import java.util.List;
 import java.util.stream.Collectors;

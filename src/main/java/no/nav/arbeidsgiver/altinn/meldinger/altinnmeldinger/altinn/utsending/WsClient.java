@@ -1,4 +1,4 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;

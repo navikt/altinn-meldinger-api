@@ -1,6 +1,6 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,7 +66,7 @@ public class AltinnMeldingDTO {
 
     public List<PdfVedleggDTO> getVedlegg() { return vedlegg; }
 
-    public MeldingLogg toMeldingLogg() {
-        return new MeldingLogg(orgnr, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, PdfVedleggDTO.tilVedleggListe(vedlegg));
+    public Melding toMeldingLogg() {
+        return new Melding(orgnr, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, PdfVedleggDTO.tilVedleggListe(vedlegg));
     }
 }

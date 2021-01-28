@@ -1,4 +1,4 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

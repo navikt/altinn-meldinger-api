@@ -2,7 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.JournalpostResponse;
 import org.slf4j.Logger;
@@ -42,8 +42,8 @@ public class DokArkivClient {
         headers.setContentType((MediaType.APPLICATION_JSON));
     }
 
-    public void journalførMelding(MeldingLogg meldingLogg) {
-        sendJournalpost(journalpostMapper.meldingTilJournalpost(meldingLogg));
+    public void journalførMelding(Melding melding) {
+        sendJournalpost(journalpostMapper.meldingTilJournalpost(melding));
     }
 
     private String sendJournalpost(final Journalpost journalpost) {

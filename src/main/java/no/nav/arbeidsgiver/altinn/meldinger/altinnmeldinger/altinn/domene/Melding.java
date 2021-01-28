@@ -1,11 +1,11 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Ulider;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class MeldingLogg {
+public class Melding {
 
     private String id;
     private LocalDateTime opprettet;
@@ -20,7 +20,7 @@ public class MeldingLogg {
     private List<PdfVedlegg> vedlegg;
     private AltinnStatus altinnStatus;
 
-    public MeldingLogg(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedlegg> vedlegg) {
+    public Melding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedlegg> vedlegg) {
         this.vedlegg = vedlegg;
         this.opprettet = LocalDateTime.now();
         this.id = Ulider.nextULID();
@@ -36,10 +36,10 @@ public class MeldingLogg {
         this.vedlegg = vedlegg;
     }
 
-    protected MeldingLogg() {
+    protected Melding() {
     };
 
-    public MeldingLogg(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus) {
+    public Melding(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus) {
         this.opprettet = opprettet;
         this.id = id;
         this.orgnr = orgnr;
