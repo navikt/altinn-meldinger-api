@@ -1,5 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingLogg;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -19,6 +21,26 @@ public class MeldingLoggRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public List<MeldingLogg> hentAltinnMeldinger(AltinnStatus status, int antall) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("status", status);
+
+        return jdbcTemplate.query("select " +
+                "id, " +
+                "opprettet, " +
+                "orgnr, " +
+                "melding, " +
+                "tittel, " +
+                "system_usercode, " +
+                "service_code, " +
+                "service_edition, " +
+                "tillat_automatisk_sletting_fra_dato, " +
+                "tillat_automatisk_sletting_etter_antall_år, " +
+                "status from melding_logg " +
+                "where status = :status",
+                parameterSource,
+                (resultSet, i) -> getMeldingLogg(resultSet));
+    }
 
     public void save(MeldingLogg meldingLogg) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
@@ -96,17 +118,11 @@ public class MeldingLoggRepository {
         }
     }
 
-    /*
-        private static Virksomhetsklassifikasjon mapTilVirksomhetsklassifikasjon
-            (ResultSet rs, Klassifikasjonskilde klassifikasjonskilde) throws SQLException {
-        switch (klassifikasjonskilde) {
-            case SEKTOR:
-                return new Sektor(rs.getString(KODE), rs.getString(NAVN));
-            case NÆRING:
-                return new Næring(rs.getString(KODE), rs.getString(NAVN));
-            default:
-                throw new IllegalArgumentException();
-        }
+    public void oppdaterStatus(String id, AltinnStatus status) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("status", status);
+
+        jdbcTemplate.update("update melding_logg set status = :status where id = :id ", parameterSource);
     }
-     */
 }

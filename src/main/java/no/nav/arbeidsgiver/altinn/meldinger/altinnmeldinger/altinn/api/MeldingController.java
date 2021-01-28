@@ -1,8 +1,8 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnClient;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.AltinnStatus;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnClient;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingLogg;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLoggRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;

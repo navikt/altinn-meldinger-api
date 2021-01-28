@@ -1,4 +1,4 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
 import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptExternal;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.AttachmentsV2;
@@ -8,6 +8,8 @@ import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondence
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentV2;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.PdfVedlegg;
 import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;

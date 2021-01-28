@@ -16,15 +16,18 @@ public class AltinnScheduler {
 
     private final static Logger log = LoggerFactory.getLogger(AltinnScheduler.class);
     private final LockingTaskExecutor taskExecutor;
+    private final AltinnService altinnService;
+    private final static int ANTALL_MELDINGER_OM_GANGEN = 1;
 
-    public AltinnScheduler(LockingTaskExecutor taskExecutor) {
+    public AltinnScheduler(LockingTaskExecutor taskExecutor, AltinnService altinnService) {
         this.taskExecutor = taskExecutor;
+        this.altinnService = altinnService;
     }
 
     @Scheduled(cron = "* * * * * ?")
     public void scheduledSendMeldingTilAltinn() {
         taskExecutor.executeWithLock(
-                (Runnable) this::sendMeldingTilAltinn,
+                (Runnable) () -> altinnService.sendNyeAltinnMeldinger(ANTALL_MELDINGER_OM_GANGEN),
 
                 new LockConfiguration(
                         Instant.now(),
@@ -35,9 +38,4 @@ public class AltinnScheduler {
         );
 
     }
-
-    public void sendMeldingTilAltinn() {
-        log.info("Sender til Altinn ...");
-    }
-
 }

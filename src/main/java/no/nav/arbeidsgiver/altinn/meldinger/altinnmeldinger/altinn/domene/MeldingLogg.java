@@ -1,4 +1,4 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Ulider;
 
