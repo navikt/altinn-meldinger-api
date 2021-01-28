@@ -17,7 +17,7 @@ public class AltinnScheduler {
     private final static Logger log = LoggerFactory.getLogger(AltinnScheduler.class);
     private final LockingTaskExecutor taskExecutor;
     private final AltinnService altinnService;
-    private final static int ANTALL_MELDINGER_OM_GANGEN = 1;
+    private final static int ANTALL_MELDINGER_OM_GANGEN = 50;
 
     public AltinnScheduler(LockingTaskExecutor taskExecutor, AltinnService altinnService) {
         this.taskExecutor = taskExecutor;
@@ -36,6 +36,6 @@ public class AltinnScheduler {
                         Duration.of(2, ChronoUnit.SECONDS)
                 )
         );
-
     }
+
 }

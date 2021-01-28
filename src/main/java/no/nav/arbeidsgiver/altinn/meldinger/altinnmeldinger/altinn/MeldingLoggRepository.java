@@ -1,7 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingLogg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -21,9 +21,10 @@ public class MeldingLoggRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<MeldingLogg> hentAltinnMeldinger(AltinnStatus status, int antall) {
+    public List<Melding> hent(AltinnStatus status, int antall) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("status", status);
+                .addValue("status", status.name())
+                .addValue("antall", antall);
 
         return jdbcTemplate.query("select " +
                 "id, " +
@@ -37,12 +38,13 @@ public class MeldingLoggRepository {
                 "tillat_automatisk_sletting_fra_dato, " +
                 "tillat_automatisk_sletting_etter_antall_år, " +
                 "status from melding_logg " +
-                "where status = :status",
+                "where status = :status " +
+                "limit :antall",
                 parameterSource,
                 (resultSet, i) -> getMeldingLogg(resultSet));
     }
 
-    public void save(MeldingLogg meldingLogg) {
+    public void save(Melding meldingLogg) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", meldingLogg.getId())
                 .addValue("opprettet", meldingLogg.getOpprettet())
@@ -81,7 +83,7 @@ public class MeldingLoggRepository {
 
     }
 
-    public List<MeldingLogg> findAll() {
+    public List<Melding> findAll() {
 
         return jdbcTemplate.getJdbcTemplate().query("select " +
                 "id, " +
@@ -97,9 +99,9 @@ public class MeldingLoggRepository {
                 "status from melding_logg", (resultSet, i) -> getMeldingLogg(resultSet));
     }
 
-    private MeldingLogg getMeldingLogg(ResultSet resultSet) {
+    private Melding getMeldingLogg(ResultSet resultSet) {
         try {
-            return new MeldingLogg(
+            return new Melding(
                         resultSet.getTimestamp("opprettet").toLocalDateTime(),
                         resultSet.getString("id"),
                         resultSet.getString("orgnr"),
@@ -121,7 +123,7 @@ public class MeldingLoggRepository {
     public void oppdaterStatus(String id, AltinnStatus status) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
-                .addValue("status", status);
+                .addValue("status", status.name());
 
         jdbcTemplate.update("update melding_logg set status = :status where id = :id ", parameterSource);
     }
