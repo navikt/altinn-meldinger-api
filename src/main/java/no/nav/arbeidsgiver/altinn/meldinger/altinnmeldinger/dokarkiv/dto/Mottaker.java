@@ -4,13 +4,13 @@ import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.
 
 public class Mottaker {
 
+    private final static String NA = "N/A";
     private final String idType = ID_TYPE_ORGNR;
     private final String id;
-    private final String navn;
+    private final String navn = NA;
 
-    public Mottaker(String id, String navn) {
+    public Mottaker(String id) {
         this.id = id;
-        this.navn = navn;
     }
 
     public String getIdType() {

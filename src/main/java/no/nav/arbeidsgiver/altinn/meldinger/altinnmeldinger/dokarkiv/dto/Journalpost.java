@@ -7,42 +7,40 @@ public class Journalpost {
     static final String ID_TYPE_ORGNR = "ORGNR";
     private final static String JOURNALPOST_TYPE = "UTGAAENDE";
     private final static String KANAL = "NAV_NO";
-    private final static String TEMA = ""; //TODO
+    private final static String TEMA = "PER";
     private final static String JOURNALFOERENDE_ENHET = "9999";
-
-    public final static String TITTEL = "";
 
     private final String journalposttype = JOURNALPOST_TYPE;
     private final String kanal = KANAL;
     private final String tema = TEMA;
     private final String journalfoerendeEnhet = JOURNALFOERENDE_ENHET;
     private final Mottaker avsenderMottaker;
-
+    private final Bruker bruker;
+    private final Sak sak = new Sak();
+    private final String tittel;
     private final List<Dokument> dokumenter;
 
-    public Journalpost(Mottaker mottaker, List<Dokument> dokumenter) {
+    public Journalpost(String tittel, Bruker bruker, Mottaker mottaker, List<Dokument> dokumenter) {
+        this.tittel = tittel;
+        this.bruker = bruker;
         this.avsenderMottaker = mottaker;
         this.dokumenter = dokumenter;
     }
 
-    public static String getIdTypeOrgnr() {
-        return ID_TYPE_ORGNR;
+    public Bruker getBruker() {
+        return bruker;
     }
 
-    public static String getJournalpostType() {
-        return JOURNALPOST_TYPE;
+    public String getTema() {
+        return tema;
     }
 
-    public static String getKANAL() {
-        return KANAL;
+    public String getTittel() {
+        return tittel;
     }
 
-    public static String getTEMA() {
-        return TEMA;
-    }
-
-    public static String getJournalfoerendeEnhet() {
-        return JOURNALFOERENDE_ENHET;
+    public Sak getSak() {
+        return sak;
     }
 
     public Mottaker getAvsenderMottaker() {
@@ -53,10 +51,6 @@ public class Journalpost {
         return dokumenter;
     }
 
-    public static String getTITTEL() {
-        return TITTEL;
-    }
-
     public String getJournalposttype() {
         return journalposttype;
     }
@@ -65,7 +59,7 @@ public class Journalpost {
         return kanal;
     }
 
-    public String getTema() {
-        return tema;
+    public String getJournalfoerendeEnhet() {
+        return journalfoerendeEnhet;
     }
 }

@@ -1,10 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Dokument;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.DokumentVariant;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Mottaker;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,15 +25,14 @@ public class JournalpostMapper {
     }
 
     private Journalpost opprettJournalpost(Melding melding) {
-//        Sak sak = new Sak(opprettArkivsaknr(meldingLogg.get));
-//        Bruker bruker = new Bruker(meldingLogg.getOrgnr());
-        Mottaker mottaker = new Mottaker(melding.getOrgnr(), melding.getId()); //TODO orgNavn
+        Bruker bruker = new Bruker(melding.getOrgnr());
+        Mottaker mottaker = new Mottaker(melding.getOrgnr());
 
         List<Dokument> dokumenter = melding.getVedlegg()
                 .stream()
                 .map(pdfVedlegg -> new Dokument(pdfVedlegg.getVedleggnavn(), Arrays.asList(new DokumentVariant(pdfVedlegg.getFilinnhold()))))
                 .collect(Collectors.toList());
 
-        return new Journalpost(mottaker, dokumenter);
+        return new Journalpost(melding.getTittel(), bruker, mottaker, dokumenter);
     }
 }
