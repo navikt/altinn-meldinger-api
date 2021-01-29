@@ -2,8 +2,6 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.juli.logging.LogFactory;
-import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +36,7 @@ public class DatabaseConfig {
         config.setJdbcUrl(url);
         config.setUsername(username);
         config.setPassword(password);
-        config.setMaximumPoolSize(5);
+        config.setMaximumPoolSize(2);
         config.setMinimumIdle(1);
         config.setInitializationFailTimeout(60000);
 
