@@ -9,7 +9,7 @@ import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespon
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentV2;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.PdfVedlegg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
 import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
@@ -98,14 +98,14 @@ public class AltinnClient {
     }
 
     private AttachmentsV2 createAttachments(Melding altinnMelding) {
-        List<PdfVedlegg> vedlegg = altinnMelding.getVedlegg();
+        List<Vedlegg> vedlegg = altinnMelding.getVedlegg();
         return vedlegg == null || vedlegg.isEmpty() ? null
                 : new AttachmentsV2()
                     .withBinaryAttachments(new BinaryAttachmentExternalBEV2List()
                             .withBinaryAttachmentV2(vedlegg.stream().map(AltinnClient::tilBinaryAttachment).collect(Collectors.toList())));
     }
 
-    private static BinaryAttachmentV2 tilBinaryAttachment(PdfVedlegg vedlegg) {
+    private static BinaryAttachmentV2 tilBinaryAttachment(Vedlegg vedlegg) {
         return new BinaryAttachmentV2()
                 .withData(Base64.getDecoder().decode(vedlegg.getFilinnhold()))
                 .withFileName(vedlegg.getFilnavn())

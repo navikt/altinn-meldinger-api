@@ -1,7 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLoggRepository;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
@@ -32,7 +32,7 @@ public class ApiTest {
     private String port;
 
     @Autowired
-    private MeldingLoggRepository meldingLoggRepository;
+    private MeldingRepository meldingRepository;
 
     @Test
     public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
@@ -59,12 +59,12 @@ public class ApiTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(201);
-        List<Melding> meldingsLoggRader = meldingLoggRepository.findAll();
+        List<Melding> meldingsLoggRader = meldingRepository.findAll();
         assertThat(meldingsLoggRader.size()).isEqualTo(1);
         assertThat(meldingsLoggRader.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
-            List<Melding> meldingsLoggRader2 = meldingLoggRepository.findAll();
+            List<Melding> meldingsLoggRader2 = meldingRepository.findAll();
             assertThat(meldingsLoggRader2.size()).isEqualTo(1);
             assertThat(meldingsLoggRader2.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
         });

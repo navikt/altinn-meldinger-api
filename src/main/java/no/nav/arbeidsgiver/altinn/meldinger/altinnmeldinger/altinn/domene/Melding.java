@@ -17,10 +17,10 @@ public class Melding {
     private String serviceEdition;
     private LocalDateTime tillatAutomatiskSlettingFraDato;
     private Integer tillatAutomatiskSlettingEtterAntallÅr;
-    private List<PdfVedlegg> vedlegg;
+    private List<Vedlegg> vedlegg;
     private AltinnStatus altinnStatus;
 
-    public Melding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedlegg> vedlegg) {
+    public Melding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, List<Vedlegg> vedlegg) {
         this.vedlegg = vedlegg;
         this.opprettet = LocalDateTime.now();
         this.id = Ulider.nextULID();
@@ -39,7 +39,7 @@ public class Melding {
     protected Melding() {
     };
 
-    public Melding(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus) {
+    public Melding(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg) {
         this.opprettet = opprettet;
         this.id = id;
         this.orgnr = orgnr;
@@ -51,6 +51,7 @@ public class Melding {
         this.tillatAutomatiskSlettingFraDato = tillatAutomatiskSlettingFraDato;
         this.tillatAutomatiskSlettingEtterAntallÅr = tillatAutomatiskSlettingEtterAntallÅr;
         this.altinnStatus = altinnStatus;
+        this.vedlegg = vedlegg;
     }
 
     public void setStatus(AltinnStatus altinnStatus) {
@@ -101,7 +102,7 @@ public class Melding {
         return tillatAutomatiskSlettingEtterAntallÅr;
     }
 
-    public List<PdfVedlegg> getVedlegg() {
+    public List<Vedlegg> getVedlegg() {
         return vedlegg;
     }
 }
