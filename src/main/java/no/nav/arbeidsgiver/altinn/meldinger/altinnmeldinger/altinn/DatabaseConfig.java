@@ -38,7 +38,7 @@ public class DatabaseConfig {
         config.setJdbcUrl(url);
         config.setUsername(username);
         config.setPassword(password);
-        config.setMaximumPoolSize(2);
+        config.setMaximumPoolSize(5);
         config.setMinimumIdle(1);
         config.setInitializationFailTimeout(60000);
 
