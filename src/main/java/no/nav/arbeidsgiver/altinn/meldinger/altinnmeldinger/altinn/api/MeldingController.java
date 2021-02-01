@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Protected
-@Profile({"local", "dev-gcp"})
+@Profile("!prod-gcp")
 @RestController
 public class MeldingController {
 

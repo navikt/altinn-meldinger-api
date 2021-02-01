@@ -6,9 +6,13 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMel
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.security.mock.oauth2.MockOAuth2Server;
+import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
+import no.nav.security.token.support.spring.test.MockLoginController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
@@ -17,16 +21,20 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"wiremock.port=8082"})
+@TestPropertySource(properties = {"wiremock.port=8082", "spring.profiles.active=test"})
+@EnableMockOAuth2Server
 public class ApiTest {
 
     @LocalServerPort
@@ -34,6 +42,12 @@ public class ApiTest {
 
     @Autowired
     private MeldingLoggRepository meldingLoggRepository;
+
+    @Autowired
+    private MockOAuth2Server mockOAuth2Server;
+
+    @Value("${no.nav.security.jwt.issuer.saksbehandler.accepted_audience}")
+    private String test;
 
     @Test
     public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
@@ -53,6 +67,7 @@ public class ApiTest {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
+                        .header("Authorization", "Bearer " + token("saksbehandler", "subject", "audience_saksbehandler"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .header("Content-Type", "application/json")
                         .build(),
@@ -70,6 +85,34 @@ public class ApiTest {
             assertThat(meldingsLoggRader2.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
         });
 
+    }
+
+    @Test
+    public void api__skal_validere_token() throws Exception {
+        HttpResponse<String> response = newBuilder().build().send(
+                HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
+                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
+                        .header("Content-Type", "application/json")
+                        .build(),
+                ofString()
+        );
+
+        assertThat(response.statusCode()).isEqualTo(401);
+    }
+
+    private String token(String issuerId, String subject, String audience){
+        return mockOAuth2Server.issueToken(
+                issuerId,
+                "theclientid",
+                new DefaultOAuth2TokenCallback(
+                        issuerId,
+                        subject,
+                        audience,
+                        Collections.emptyMap(),
+                        3600
+                )
+        ).serialize();
     }
 
 }
