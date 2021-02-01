@@ -13,7 +13,7 @@ import java.net.URL;
 
 import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesFilSomString;
 
-@Profile("local")
+@Profile({"local", "test"})
 @Component
 public class MockServer {
     public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN = false;
