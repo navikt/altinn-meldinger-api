@@ -43,6 +43,8 @@ public class MeldingRepository {
             "m.tillat_automatisk_sletting_fra_dato, " +
             "m.tillat_automatisk_sletting_etter_antall_år, " +
             "m.altinn_status, " +
+            "m.altinn_referanse, " +
+            "m.altinn_sendt_tidspunkt, " +
             "v.id as vedlegg_id, " +
             "v.filinnhold as vedlegg_filinnhold, " +
             "v.filnavn as vedlegg_filnavn, " +
@@ -144,11 +146,13 @@ public class MeldingRepository {
                 MELDING_MAPPER);
     }
 
-    public void oppdaterStatus(String id, AltinnStatus altinn_status) {
+    public void oppdaterAltinnStatus(String id, AltinnStatus altinnStatus, String altinnReferanse) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
-                .addValue("altinn_status", altinn_status.name());
+                .addValue("altinn_status", altinnStatus.name())
+                .addValue("altinn_referanse", altinnReferanse)
+                .addValue("altinn_sendt_tidspunkt", LocalDateTime.now());
 
-        jdbcTemplate.update("update melding set altinn_status = :altinn_status where id = :id ", parameterSource);
+        jdbcTemplate.update("update melding set altinn_status = :altinn_status, altinn_referanse = :altinn_referanse, altinn_sendt_tidspunkt = :altinn_sendt_tidspunkt where id = :id ", parameterSource);
     }
 }

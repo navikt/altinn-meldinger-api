@@ -61,12 +61,18 @@ public class ApiTest {
         assertThat(response.statusCode()).isEqualTo(201);
         List<Melding> meldingsLoggRader = meldingRepository.findAll();
         assertThat(meldingsLoggRader.size()).isEqualTo(1);
-        assertThat(meldingsLoggRader.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
+        Melding melding = meldingsLoggRader.get(0);
+        assertThat(melding.getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
+        assertThat(melding.getAltinnReferanse()).isNull();
+        assertThat(melding.getAltinnSendtTidspunkt()).isNull();
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
             List<Melding> meldingsLoggRader2 = meldingRepository.findAll();
             assertThat(meldingsLoggRader2.size()).isEqualTo(1);
             assertThat(meldingsLoggRader2.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
+            Melding melding2 = meldingsLoggRader2.get(0);
+            assertThat(melding2.getAltinnReferanse()).contains(melding2.getId());
+            assertThat(melding2.getAltinnSendtTidspunkt()).isNotNull();
         });
 
     }

@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,11 +44,11 @@ public class AltinnClient {
         this.altinnConfig = altinnConfig;
     }
 
-    public void sendAltinnMelding(Melding altinnMelding) {
-        sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
+    public String sendAltinnMelding(Melding altinnMelding) {
+        return sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
     }
 
-    private void sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
+    private String sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
         try {
             ReceiptExternal receiptExternal = iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
                     insertCorrespondenceBasicV2.getSystemUserName(),
@@ -62,6 +61,7 @@ public class AltinnClient {
             log.info("Response fra Altinn for melding med ExternalShipmentReference {}: {}",
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
                     ReflectionToStringBuilder.toStringExclude(receiptExternal, "lastChanged"));
+            return insertCorrespondenceBasicV2.getExternalShipmentReference();
         } catch (Exception fault) {
             log.error("Feil mot Altinn for melding med ExternalShipmentReference {} ",
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
@@ -81,7 +81,7 @@ public class AltinnClient {
                 .withSystemUserName(altinnConfig.getBrukernavn())
                 .withSystemPassword(altinnConfig.getPassord())
                 .withSystemUserCode(altinnMelding.getSystemUsercode())
-                .withExternalShipmentReference(genererExtShipmentRef())
+                .withExternalShipmentReference(genererExtShipmentRef(altinnMelding.getId()))
                 .withCorrespondence(new InsertCorrespondenceV2()
                         .withServiceCode(altinnMelding.getServiceCode())
                         .withServiceEdition(altinnMelding.getServiceEdition())
@@ -120,7 +120,7 @@ public class AltinnClient {
         }
     }
 
-    private String genererExtShipmentRef() {
-        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + UUID.randomUUID();
+    private String genererExtShipmentRef(String id) {
+        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + id;
     }
 }

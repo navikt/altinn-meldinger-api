@@ -19,9 +19,10 @@ public class Melding {
     private Integer tillatAutomatiskSlettingEtterAntallÅr;
     private List<Vedlegg> vedlegg;
     private AltinnStatus altinnStatus;
+    private String altinnReferanse;
+    private LocalDateTime altinnSendtTidspunkt;
 
     public Melding(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, List<Vedlegg> vedlegg) {
-        this.vedlegg = vedlegg;
         this.opprettet = LocalDateTime.now();
         this.id = Ulider.nextULID();
         this.altinnStatus = AltinnStatus.IKKE_SENDT;
@@ -39,7 +40,7 @@ public class Melding {
     protected Melding() {
     };
 
-    public Melding(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg) {
+    public Melding(LocalDateTime opprettet, String id, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg, String altinnReferanse, LocalDateTime altinnSendtTidspunkt) {
         this.opprettet = opprettet;
         this.id = id;
         this.orgnr = orgnr;
@@ -52,6 +53,8 @@ public class Melding {
         this.tillatAutomatiskSlettingEtterAntallÅr = tillatAutomatiskSlettingEtterAntallÅr;
         this.altinnStatus = altinnStatus;
         this.vedlegg = vedlegg;
+        this.altinnReferanse = altinnReferanse;
+        this.altinnSendtTidspunkt = altinnSendtTidspunkt;
     }
 
     public void setStatus(AltinnStatus altinnStatus) {
@@ -105,4 +108,9 @@ public class Melding {
     public List<Vedlegg> getVedlegg() {
         return vedlegg;
     }
+
+    public String getAltinnReferanse() { return altinnReferanse; }
+
+    public LocalDateTime getAltinnSendtTidspunkt() { return altinnSendtTidspunkt; }
+
 }

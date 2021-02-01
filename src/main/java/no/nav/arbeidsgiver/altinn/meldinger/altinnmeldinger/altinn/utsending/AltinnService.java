@@ -73,15 +73,16 @@ public class AltinnService {
     private Pair<String, AltinnStatus> sendMeldingOgLagreStatus(Melding meldingLogg) {
         String id = meldingLogg.getId();
         AltinnStatus status = AltinnStatus.OK;
+        String altinnReferanse = null;
         try {
             // TODO Her må vi forbedre feilhåndtering
             // TODO Vi må lagre når meldingen er sendt
-            altinnClient.sendAltinnMelding(meldingLogg);
+            altinnReferanse = altinnClient.sendAltinnMelding(meldingLogg);
         } catch (Exception e) {
             log.warn("Feil mot Altinn", e);
             status = AltinnStatus.FEIL;
         }
-        meldingRepository.oppdaterStatus(id, status);
+        meldingRepository.oppdaterAltinnStatus(id, status, altinnReferanse);
         return Pair.of(id, status);
     }
 
