@@ -9,12 +9,4 @@ import org.springframework.context.annotation.Profile;
 @EnableMockOAuth2Server
 @Profile("local")
 public class LocalOauthConfig {
-    private final String url;
-
-    public LocalOauthConfig(
-            @Value("${no.nav.security.jwt.issuer.saksbehandler.discoveryurl}") String url
-    ) {
-        this.url = url;
-        System.out.println("@@@ " + url);
-    }
 }
