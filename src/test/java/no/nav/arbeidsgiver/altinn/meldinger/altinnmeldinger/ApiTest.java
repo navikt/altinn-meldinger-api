@@ -46,9 +46,6 @@ public class ApiTest {
     @Autowired
     private MockOAuth2Server mockOAuth2Server;
 
-    @Value("${no.nav.security.jwt.issuer.saksbehandler.accepted_audience}")
-    private String test;
-
     @Test
     public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -67,7 +64,7 @@ public class ApiTest {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
-                        .header("Authorization", "Bearer " + token("saksbehandler", "subject", "audience_saksbehandler"))
+                        .header("Authorization", "Bearer " + token("aad", "subject", "audience"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .header("Content-Type", "application/json")
                         .build(),

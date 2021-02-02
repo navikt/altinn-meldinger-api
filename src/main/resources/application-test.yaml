@@ -20,7 +20,7 @@ altinn:
   passord: passord
 
 no.nav.security.jwt.issuer:
-  saksbehandler:
-    discoveryurl: http://localhost:${mock-oauth2-server.port}/saksbehandler/.well-known/openid-configuration
+  aad:
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
     cookie_name: localhost-idtoken
-    accepted_audience: audience_saksbehandler
+    accepted_audience: audience
