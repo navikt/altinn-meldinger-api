@@ -35,7 +35,9 @@ public class MockServer {
         String altinnPath = new URL(altinnConfig.getUri()).getPath();
 
         server.stubFor(WireMock.post(altinnPath).willReturn(
-                WireMock.ok().withBody(altinnResponse200))
+                WireMock.ok()
+                    .withUniformRandomDelay(50, 500)
+                    .withBody(altinnResponse200))
         );
         server.start();
     }

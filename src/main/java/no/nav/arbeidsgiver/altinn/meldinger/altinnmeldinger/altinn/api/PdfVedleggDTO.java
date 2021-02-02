@@ -1,8 +1,9 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.PdfVedlegg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PdfVedleggDTO {
@@ -16,12 +17,12 @@ public class PdfVedleggDTO {
         this.vedleggnavn = vedleggnavn;
     }
 
-    public static List<PdfVedlegg> tilVedleggListe(List<PdfVedleggDTO> vedlegg) {
-        return vedlegg.stream().map(PdfVedleggDTO::tilVedlegg).collect(Collectors.toList());
+    public static List<Vedlegg> tilVedleggListe(List<PdfVedleggDTO> vedlegg) {
+        return Optional.ofNullable(vedlegg).orElse(List.of()).stream().map(PdfVedleggDTO::tilVedlegg).collect(Collectors.toList());
     }
 
-    private PdfVedlegg tilVedlegg() {
-        return new PdfVedlegg(filinnhold, filnavn, vedleggnavn);
+    private Vedlegg tilVedlegg() {
+        return new Vedlegg(filinnhold, filnavn, vedleggnavn);
     }
 
     public String getFilnavn() {

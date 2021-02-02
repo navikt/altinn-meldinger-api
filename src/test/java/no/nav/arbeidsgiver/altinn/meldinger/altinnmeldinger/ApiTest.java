@@ -1,7 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingLoggRepository;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
@@ -9,12 +9,11 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Meldin
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
-import no.nav.security.token.support.spring.test.MockLoginController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import java.net.URI;
@@ -23,25 +22,24 @@ import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"wiremock.port=8082", "spring.profiles.active=test"})
+@TestPropertySource(properties = {"wiremock.port=8089"})
 @EnableMockOAuth2Server
+@ActiveProfiles("test")
 public class ApiTest {
 
     @LocalServerPort
     private String port;
 
     @Autowired
-    private MeldingLoggRepository meldingLoggRepository;
+    private MeldingRepository meldingRepository;
 
     @Autowired
     private MockOAuth2Server mockOAuth2Server;
@@ -72,14 +70,20 @@ public class ApiTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(201);
-        List<Melding> meldingsLoggRader = meldingLoggRepository.findAll();
+        List<Melding> meldingsLoggRader = meldingRepository.findAll();
         assertThat(meldingsLoggRader.size()).isEqualTo(1);
-        assertThat(meldingsLoggRader.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
+        Melding melding = meldingsLoggRader.get(0);
+        assertThat(melding.getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
+        assertThat(melding.getAltinnReferanse()).isNull();
+        assertThat(melding.getAltinnSendtTidspunkt()).isNull();
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
-            List<Melding> meldingsLoggRader2 = meldingLoggRepository.findAll();
+            List<Melding> meldingsLoggRader2 = meldingRepository.findAll();
             assertThat(meldingsLoggRader2.size()).isEqualTo(1);
             assertThat(meldingsLoggRader2.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
+            Melding melding2 = meldingsLoggRader2.get(0);
+            assertThat(melding2.getAltinnReferanse()).contains(melding2.getId());
+            assertThat(melding2.getAltinnSendtTidspunkt()).isNotNull();
         });
 
     }

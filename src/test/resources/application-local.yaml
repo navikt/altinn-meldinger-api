@@ -1,0 +1,20 @@
+spring:
+  config.activate.on-profile: local
+  h2.console:
+    enabled: true
+    path: /h2
+  datasource:
+#    url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    url: jdbc:h2:file:/tmp/altinn-meldinger-db;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  flyway:
+    locations: classpath:/db/migration
+
+wiremock.port: 8081
+
+altinn:
+  uri: "http://localhost:${wiremock.port}/altinn"
+  brukernavn: brukernavn
+  passord: passord
