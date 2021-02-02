@@ -33,9 +33,6 @@ spec:
     envFrom:
         - secret: altinn-meldinger-api-secrets
     accessPolicy:
-        inbound:
-            rules:
-                - application: altinn-meldinger-api
         outbound:
             external:
                 - host: tt02.altinn.no
