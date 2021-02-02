@@ -25,7 +25,7 @@ public class MeldingController {
     public ResponseEntity<HttpStatus> sendAltinnMelding(
             @RequestBody AltinnMeldingDTO altinnMeldingDTO
     ) {
-        meldingRepository.save(altinnMeldingDTO.toMeldingLogg());
+        meldingRepository.opprett(altinnMeldingDTO.tilMelding());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

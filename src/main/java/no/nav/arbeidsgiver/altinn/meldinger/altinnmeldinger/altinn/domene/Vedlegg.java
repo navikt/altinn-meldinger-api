@@ -29,22 +29,6 @@ public class Vedlegg {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setFilinnhold(String filinnhold) {
-        this.filinnhold = filinnhold;
-    }
-
-    public void setFilnavn(String filnavn) {
-        this.filnavn = filnavn;
-    }
-
-    public void setVedleggnavn(String vedleggnavn) {
-        this.vedleggnavn = vedleggnavn;
-    }
-
     public String getFilnavn() {
         return filnavn;
     }

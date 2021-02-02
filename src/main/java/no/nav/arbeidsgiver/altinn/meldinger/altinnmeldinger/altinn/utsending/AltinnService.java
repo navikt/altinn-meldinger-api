@@ -2,7 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,19 +28,18 @@ public class AltinnService {
     }
 
     public void sendNyeAltinnMeldinger(int antall) {
-        List<Melding> meldinger = meldingRepository.hent(AltinnStatus.IKKE_SENDT, antall);
+        List<MeldingsProsessering> meldinger = meldingRepository.hent(AltinnStatus.IKKE_SENDT, antall);
         if(meldinger.size() > 0) {
             sendTilAltinn(meldinger);
         }
     }
 
-    private void sendTilAltinn(List<Melding> meldinger) {
+    private void sendTilAltinn(List<MeldingsProsessering> meldinger) {
         List<Callable<Pair<String, AltinnStatus>>> callables = meldinger.stream()
                 .map(this::callable)
                 .collect(Collectors.toList());
 
         try {
-
             List<Future<Pair<String, AltinnStatus>>> futures = executor.invokeAll(callables,280, TimeUnit.SECONDS);
             List<Optional<Pair<String, AltinnStatus>>> optionalStatus = futures.stream()
                     .map(AltinnService::mapTilStatusPar)
@@ -66,18 +65,17 @@ public class AltinnService {
         }
     }
 
-    private Callable<Pair<String, AltinnStatus>> callable(Melding meldingLogg) {
-        return () -> sendMeldingOgLagreStatus(meldingLogg);
+    private Callable<Pair<String, AltinnStatus>> callable(MeldingsProsessering meldingsProsessering) {
+        return () -> sendMeldingOgLagreStatus(meldingsProsessering);
     }
 
-    private Pair<String, AltinnStatus> sendMeldingOgLagreStatus(Melding meldingLogg) {
-        String id = meldingLogg.getId();
+    private Pair<String, AltinnStatus> sendMeldingOgLagreStatus(MeldingsProsessering meldingsProsessering) {
+        String id = meldingsProsessering.getId();
         AltinnStatus status = AltinnStatus.OK;
         String altinnReferanse = null;
         try {
             // TODO Her må vi forbedre feilhåndtering
-            // TODO Vi må lagre når meldingen er sendt
-            altinnReferanse = altinnClient.sendAltinnMelding(meldingLogg);
+            altinnReferanse = altinnClient.sendAltinnMelding(meldingsProsessering);
         } catch (Exception e) {
             log.warn("Feil mot Altinn", e);
             status = AltinnStatus.FEIL;
