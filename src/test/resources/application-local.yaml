@@ -24,3 +24,7 @@ no.nav.security.jwt.issuer:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
     cookie_name: localhost-idtoken
     accepted_audience: audience
+
+utsending.altinn.scheduler:
+  lockAtMostFor: 2000
+  lockAtLeastFor: 101
