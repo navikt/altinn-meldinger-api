@@ -8,8 +8,8 @@ import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondence
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentV2;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.PdfVedlegg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
 import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,11 +44,11 @@ public class AltinnClient {
         this.altinnConfig = altinnConfig;
     }
 
-    public void sendAltinnMelding(Melding altinnMelding) {
-        sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
+    public String sendAltinnMelding(MeldingsProsessering altinnMelding) {
+        return sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
     }
 
-    private void sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
+    private String sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
         try {
             ReceiptExternal receiptExternal = iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
                     insertCorrespondenceBasicV2.getSystemUserName(),
@@ -62,6 +61,7 @@ public class AltinnClient {
             log.info("Response fra Altinn for melding med ExternalShipmentReference {}: {}",
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
                     ReflectionToStringBuilder.toStringExclude(receiptExternal, "lastChanged"));
+            return insertCorrespondenceBasicV2.getExternalShipmentReference();
         } catch (Exception fault) {
             log.error("Feil mot Altinn for melding med ExternalShipmentReference {} ",
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
@@ -70,7 +70,7 @@ public class AltinnClient {
         }
     }
 
-    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(Melding altinnMelding) {
+    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(MeldingsProsessering altinnMelding) {
         LocalDateTime allowSystemDeleteDateTime = Optional.ofNullable(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr())
                 .map(antallÅr -> LocalDateTime.now().plusYears(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr()))
                 .orElse(altinnMelding.getTillatAutomatiskSlettingFraDato());
@@ -81,7 +81,7 @@ public class AltinnClient {
                 .withSystemUserName(altinnConfig.getBrukernavn())
                 .withSystemPassword(altinnConfig.getPassord())
                 .withSystemUserCode(altinnMelding.getSystemUsercode())
-                .withExternalShipmentReference(genererExtShipmentRef())
+                .withExternalShipmentReference(genererExtShipmentRef(altinnMelding.getId()))
                 .withCorrespondence(new InsertCorrespondenceV2()
                         .withServiceCode(altinnMelding.getServiceCode())
                         .withServiceEdition(altinnMelding.getServiceEdition())
@@ -97,15 +97,15 @@ public class AltinnClient {
                         ));
     }
 
-    private AttachmentsV2 createAttachments(Melding altinnMelding) {
-        List<PdfVedlegg> vedlegg = altinnMelding.getVedlegg();
+    private AttachmentsV2 createAttachments(MeldingsProsessering altinnMelding) {
+        List<Vedlegg> vedlegg = altinnMelding.getVedlegg();
         return vedlegg == null || vedlegg.isEmpty() ? null
                 : new AttachmentsV2()
                     .withBinaryAttachments(new BinaryAttachmentExternalBEV2List()
                             .withBinaryAttachmentV2(vedlegg.stream().map(AltinnClient::tilBinaryAttachment).collect(Collectors.toList())));
     }
 
-    private static BinaryAttachmentV2 tilBinaryAttachment(PdfVedlegg vedlegg) {
+    private static BinaryAttachmentV2 tilBinaryAttachment(Vedlegg vedlegg) {
         return new BinaryAttachmentV2()
                 .withData(Base64.getDecoder().decode(vedlegg.getFilinnhold()))
                 .withFileName(vedlegg.getFilnavn())
@@ -120,7 +120,7 @@ public class AltinnClient {
         }
     }
 
-    private String genererExtShipmentRef() {
-        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + UUID.randomUUID();
+    private String genererExtShipmentRef(String id) {
+        return EXTERNAL_SHIPMENT_REFERENCE_PREFIX + id;
     }
 }

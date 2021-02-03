@@ -7,14 +7,12 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnConfig;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivConfig;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
 import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesFilSomString;
 
-@Profile("local")
 @Component
 public class MockServer {
     public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN = false;
@@ -39,7 +37,9 @@ public class MockServer {
         String dokarkivPath = new URL(dokArkivConfig.getUri()).getPath() + "?forsoekFerdigstill=true";
 
         server.stubFor(WireMock.post(altinnPath).willReturn(
-                WireMock.ok().withBody(altinnResponse200))
+                WireMock.ok()
+                    .withUniformRandomDelay(50, 500)
+                    .withBody(altinnResponse200))
         );
         server.stubFor(WireMock.post(dokarkivPath).willReturn(WireMock.okJson("{\"journalpostId\" : \"493329380\", \"journalstatus\" : \"ENDELIG\", \"melding\" : \"Gikk bra\"}")));
         server.start();

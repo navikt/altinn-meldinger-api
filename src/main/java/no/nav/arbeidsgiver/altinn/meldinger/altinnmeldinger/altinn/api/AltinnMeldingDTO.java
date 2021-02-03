@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AltinnMeldingDTO {
 
-    private final String orgnr;
+    private final List<String> organisasjonsnumre;
     private final String melding;
     private final String tittel;
 
@@ -21,8 +21,8 @@ public class AltinnMeldingDTO {
     private final List<PdfVedleggDTO> vedlegg;
     private String journalpostId;
 
-    public AltinnMeldingDTO(String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedleggDTO> vedlegg) {
-        this.orgnr = orgnr;
+    public AltinnMeldingDTO(List<String> orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedleggDTO> vedlegg) {
+        this.organisasjonsnumre = orgnr;
         this.melding = melding;
         this.tittel = tittel;
         this.systemUsercode = systemUsercode;
@@ -33,8 +33,8 @@ public class AltinnMeldingDTO {
         this.vedlegg = vedlegg;
     }
 
-    public String getOrgnr() {
-        return orgnr;
+    public List<String> getOrganisasjonsnumre() {
+        return organisasjonsnumre;
     }
 
     public String getMelding() {
@@ -75,7 +75,7 @@ public class AltinnMeldingDTO {
 
     public List<PdfVedleggDTO> getVedlegg() { return vedlegg; }
 
-    public Melding toMeldingLogg() {
-        return new Melding(orgnr, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, PdfVedleggDTO.tilVedleggListe(vedlegg));
+    public Melding tilMelding() {
+        return new Melding(organisasjonsnumre, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, PdfVedleggDTO.tilVedleggListe(vedlegg));
     }
 }

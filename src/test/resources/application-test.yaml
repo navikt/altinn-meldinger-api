@@ -1,5 +1,5 @@
 spring:
-  config.activate.on-profile: local
+  config.activate.on-profile: test
   h2.console:
     enabled: true
     path: /h2
@@ -12,7 +12,7 @@ spring:
   flyway:
     locations: classpath:/db/migration
 
-wiremock.port: 8081
+wiremock.port: 8082
 
 altinn:
   uri: "http://localhost:${wiremock.port}/altinn"
@@ -26,6 +26,16 @@ dokarkiv:
 pdfgen:
   #  uri: "http://localhost:5913/template/arbeidsgiver2-altinnmelding-melding/create-pdf"
   uri: "uri"
+
+no.nav.security.jwt.issuer:
+  aad:
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
+    cookie_name: localhost-idtoken
+    accepted_audience: audience
+
+utsending.altinn.scheduler:
+  lockAtMostFor: 2000
+  lockAtLeastFor: 101
 
 
 
