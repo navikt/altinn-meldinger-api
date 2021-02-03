@@ -18,3 +18,13 @@ altinn:
   uri: "http://localhost:${wiremock.port}/altinn"
   brukernavn: brukernavn
   passord: passord
+
+no.nav.security.jwt.issuer:
+  aad:
+    discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
+    cookie_name: localhost-idtoken
+    accepted_audience: audience
+
+utsending.altinn.scheduler:
+  lockAtMostFor: 2000
+  lockAtLeastFor: 101

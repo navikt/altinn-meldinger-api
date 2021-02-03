@@ -9,3 +9,9 @@ spring:
 
 altinn:
   uri: https://tt02.altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
+
+no.nav.security.jwt.issuer:
+  aad:
+    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+    cookie_name: isso-idtoken
+    accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}

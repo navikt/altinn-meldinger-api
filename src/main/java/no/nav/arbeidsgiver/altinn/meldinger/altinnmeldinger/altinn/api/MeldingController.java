@@ -2,6 +2,8 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnClient;
+import no.nav.security.token.support.core.api.Protected;
+import no.nav.security.token.support.core.api.Unprotected;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Profile({"local", "test", "dev-gcp"})
+@Unprotected
+@Profile("!prod-gcp")
 @RestController
 public class MeldingController {
 

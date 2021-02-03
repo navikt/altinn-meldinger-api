@@ -4,4 +4,8 @@ management.endpoints.web:
   exposure.include: info, health, metrics, prometheus
   base-path: /internal/actuator
 
+utsending.altinn.scheduler:
+      lockAtMostFor: 300000
+      lockAtLeastFor: 2000
+
 spring.profiles.active: local
