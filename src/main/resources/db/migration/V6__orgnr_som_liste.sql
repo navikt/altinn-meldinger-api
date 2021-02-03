@@ -1,4 +1,4 @@
-ALTER TABLE melding ALTER COLUMN orgnr text;
+ALTER TABLE melding ALTER COLUMN orgnr TYPE text;
 
 CREATE TABLE prosesserings_status as
 (select id as id, id as melding_id, opprettet, orgnr, altinn_status, altinn_referanse, altinn_sendt_tidspunkt from melding);
