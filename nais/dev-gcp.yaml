@@ -37,6 +37,7 @@ spec:
             external:
                 - host: tt02.altinn.no
                 - host: dokarkiv.dev-fss-pub.nais.io
+                - host: login.microsoftonline.com
     azure:
         application:
             enabled: true
