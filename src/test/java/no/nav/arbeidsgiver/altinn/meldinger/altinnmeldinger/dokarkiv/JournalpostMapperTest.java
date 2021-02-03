@@ -2,7 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.PdfGenClient;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class JournalpostMapperTest {
     @Test
     public void mapperMelding() {
 
-        Melding melding = Testdata.enMelding();
+        MeldingsProsessering melding = Testdata.enMelding();
 
 //        when(pdfGenClient.hovedmeldingPdfBytes(any())).thenReturn("hepp".getBytes());
 //

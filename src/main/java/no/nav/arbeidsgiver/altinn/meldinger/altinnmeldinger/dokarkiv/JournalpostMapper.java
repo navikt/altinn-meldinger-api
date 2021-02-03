@@ -1,7 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.PdfGenClient;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,9 +24,9 @@ public class JournalpostMapper {
         this.pdfGenClient = pdfGenClient;
     }
 
-    public Journalpost meldingTilJournalpost(Melding melding) {
+    public Journalpost meldingTilJournalpost(MeldingsProsessering melding) {
         try {
-            String meldingPdf = opprettHovedDokument(melding);
+            String meldingPdf = opprettHovedDokument(melding.getMelding());
             return opprettJournalpost(meldingPdf.getBytes(), melding);
         } catch (Exception e) {
             log.error("Feil ved mapping til Journalpost", e);
@@ -34,10 +34,10 @@ public class JournalpostMapper {
         }
     }
 
-    private String opprettHovedDokument(Melding melding) {
+    private String opprettHovedDokument(String melding) {
         List<String> meldinger = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
-        Document doc = Jsoup.parse(melding.getMelding());
+        Document doc = Jsoup.parse(melding);
 
         builder.append("{\"melding\": \"").append(doc.text()).append("\"}");
         meldinger.add(builder.toString());
@@ -57,7 +57,7 @@ public class JournalpostMapper {
         return "{ \"meldinger\":" + meldinger.toString() + "}";
     }
 
-    private Journalpost opprettJournalpost(byte[] meldingPdf, Melding melding) {
+    private Journalpost opprettJournalpost(byte[] meldingPdf, MeldingsProsessering melding) {
         Bruker bruker = new Bruker(melding.getOrgnr());
         Mottaker mottaker = new Mottaker(melding.getOrgnr());
 

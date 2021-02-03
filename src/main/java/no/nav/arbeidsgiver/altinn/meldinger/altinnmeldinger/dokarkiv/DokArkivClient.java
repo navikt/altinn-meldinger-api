@@ -2,7 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.JournalpostResponse;
 import org.slf4j.Logger;
@@ -42,10 +42,9 @@ public class DokArkivClient {
         headers.setContentType((MediaType.APPLICATION_JSON));
     }
 
-    public void journalførMelding(AltinnMeldingDTO altinnMeldingDTO) {
-        String journalpostId = sendJournalpost(journalpostMapper.meldingTilJournalpost(altinnMeldingDTO.toMeldingLogg()));
-        altinnMeldingDTO.setJournalpostId(journalpostId);
-        log.info("journalført melding {}. journalpostId={}", altinnMeldingDTO.toMeldingLogg().getId(), journalpostId);
+    public void journalførMelding(MeldingsProsessering meldingsProsessering) {
+        String journalpostId = sendJournalpost(journalpostMapper.meldingTilJournalpost(meldingsProsessering));
+        log.info("journalført melding {}. journalpostId={}", meldingsProsessering.getId(), journalpostId);
     }
 
     private String sendJournalpost(final Journalpost journalpost) {
