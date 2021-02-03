@@ -21,4 +21,12 @@ altinn:
 
 dokarkiv:
   uri: "http://localhost:${wiremock.port}/dokarkiv"
+  #uri: https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1/journalpost
+
+pdfgen:
+  #  uri: "http://localhost:5913/template/arbeidsgiver2-altinnmelding-melding/create-pdf"
+  uri: "uri"
+
+
+
 

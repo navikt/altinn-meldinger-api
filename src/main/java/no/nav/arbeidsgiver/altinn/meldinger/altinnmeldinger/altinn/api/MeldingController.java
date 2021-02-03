@@ -28,7 +28,7 @@ public class MeldingController {
     public ResponseEntity<HttpStatus> sendAltinnMelding(
             @RequestBody AltinnMeldingDTO altinnMeldingDTO
     ) {
-        dokArkivClient.journalførMelding(altinnMeldingDTO.toMeldingLogg());
+        dokArkivClient.journalførMelding(altinnMeldingDTO);
         meldingLoggRepository.save(altinnMeldingDTO.toMeldingLogg());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

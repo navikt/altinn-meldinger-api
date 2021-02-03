@@ -2,7 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.JournalpostResponse;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class DokArkivClient {
 
     @Autowired
-    private RestTemplate restempateDokArkivOauth2;
+    private RestTemplate restempateOauth2;
 
     @Autowired
     private JournalpostMapper journalpostMapper;
@@ -42,14 +42,16 @@ public class DokArkivClient {
         headers.setContentType((MediaType.APPLICATION_JSON));
     }
 
-    public void journalførMelding(Melding melding) {
-        sendJournalpost(journalpostMapper.meldingTilJournalpost(melding));
+    public void journalførMelding(AltinnMeldingDTO altinnMeldingDTO) {
+        String journalpostId = sendJournalpost(journalpostMapper.meldingTilJournalpost(altinnMeldingDTO.toMeldingLogg()));
+        altinnMeldingDTO.setJournalpostId(journalpostId);
+        log.info("journalført melding {}. journalpostId={}", altinnMeldingDTO.toMeldingLogg().getId(), journalpostId);
     }
 
     private String sendJournalpost(final Journalpost journalpost) {
         debugLogJournalpost(journalpost);
         try {
-            return restempateDokArkivOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
+            return restempateOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
         } catch (Exception e) {
             log.error("Kall til Joark feilet", e);
             throw new RuntimeException("Kall til Joark feilet: " + e);

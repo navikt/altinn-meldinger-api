@@ -7,39 +7,40 @@ import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.spring.SpringTokenValidationContextHolder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 @Configuration
-@Profile({"dev-gcp", "prod-gcp"})
 @EnableOAuth2Client(cacheEnabled = true)
 public class DokArkivConfig {
     private final String uri;
+    private String pdfGenUri;
 
-    @Autowired
-    public DokArkivConfig(@Value("${dokarkiv.uri}") String uri) {
+    public DokArkivConfig(@Value("${dokarkiv.uri}") String uri, @Value("${pdfgen.uri}") String pdfGenUri) {
         this.uri = uri;
+        this.pdfGenUri = pdfGenUri;
     }
 
     public String getUri() {
         return uri;
     }
 
+    public String getPdfGenUri() {
+        return pdfGenUri;
+    }
+
     @Bean
-    RestTemplate restempateDokArkivOauth2(
+    RestTemplate restempateOauth2(
             RestTemplateBuilder restTemplateBuilder,
             ClientConfigurationProperties clientConfigurationProperties,
             OAuth2AccessTokenService oAuth2AccessTokenService
     ) {
-
         ClientProperties clientProperties =
                 Optional.ofNullable(clientConfigurationProperties.getRegistration().get("altinnmelding"))
                         .orElseThrow(() -> new RuntimeException("could not find oauth2 client config for altinnmelding"));
