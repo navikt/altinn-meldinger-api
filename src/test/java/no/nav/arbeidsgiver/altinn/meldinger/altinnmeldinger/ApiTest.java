@@ -94,9 +94,8 @@ public class ApiTest {
     public void api__skal_validere_token() throws Exception {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
-                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
-                        .header("Content-Type", "application/json")
+                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/protected"))
+                        .GET()
                         .build(),
                 ofString()
         );
