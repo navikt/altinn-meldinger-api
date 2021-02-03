@@ -103,6 +103,20 @@ public class ApiTest {
         assertThat(response.statusCode()).isEqualTo(401);
     }
 
+    @Test
+    public void api__skal_validere_token_og_returnere_ok() throws Exception {
+        HttpResponse<String> response = newBuilder().build().send(
+                HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/protected"))
+                        .header("Authorization", "Bearer " + token("aad", "subject", "audience"))
+                        .GET()
+                        .build(),
+                ofString()
+        );
+
+        assertThat(response.statusCode()).isEqualTo(200);
+    }
+
     private String token(String issuerId, String subject, String audience){
         return mockOAuth2Server.issueToken(
                 issuerId,
