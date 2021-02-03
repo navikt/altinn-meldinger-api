@@ -19,8 +19,8 @@ public class AltinnScheduler {
     private final LockingTaskExecutor taskExecutor;
     private final AltinnService altinnService;
     private final static int ANTALL_MELDINGER_OM_GANGEN = 50;
-    private final int lockAtMostForMillis; // 5 minutes
-    private final int lockAtLeastForMillis; // 2 seconds minutes
+    private final int lockAtMostForMillis;
+    private final int lockAtLeastForMillis;
 
     public AltinnScheduler(
             LockingTaskExecutor taskExecutor,
