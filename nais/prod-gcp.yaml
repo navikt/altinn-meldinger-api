@@ -37,6 +37,7 @@ spec:
             external:
                 - host: www.altinn.no
                 - host: altinn.no
+                - host: login.microsoftonline.com
     azure:
         application:
             enabled: true
