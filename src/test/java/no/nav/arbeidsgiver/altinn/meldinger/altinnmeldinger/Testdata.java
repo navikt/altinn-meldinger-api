@@ -1,18 +1,29 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
-import io.micrometer.core.instrument.util.IOUtils;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
+
+import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Testdata {
 
+    public static byte[] lesFilSomBytes(String filnavn) {
+        try {
+            return Testdata.class.getClassLoader().getResourceAsStream("mock/" + filnavn).readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String lesFilSomString(String filnavn) {
-        return IOUtils.toString(Testdata.class.getClassLoader().getResourceAsStream("mock/" + filnavn), UTF_8);
+        return new String(lesFilSomBytes(filnavn), UTF_8);
     }
 
     public static MeldingsProsessering enMelding() {
-        //return new Melding(null, lesFilSomString("melding.txt"), null, null, null, null, null, null, Arrays.asList());
+        //Testdata.class.getClassLoader().getResourceAsStream("mock/" + filnavn);
+        lesFilSomBytes("vedlegg.pdf");
         return null;
     }
 }

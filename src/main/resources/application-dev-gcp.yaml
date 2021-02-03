@@ -12,6 +12,9 @@ altinn:
 dokarkiv:
   uri: https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1/journalpost
 
+pdfgen:
+  uri: "uri"
+
 no.nav.security.jwt:
   issuer:
     aad:
