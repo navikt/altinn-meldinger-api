@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
@@ -32,7 +30,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"wiremock.port=8089"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @EnableMockOAuth2Server
 @ActiveProfiles("test")
@@ -43,8 +40,6 @@ public class ApiTest {
 
     @Autowired
     private MeldingRepository meldingRepository;
-    @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private MockOAuth2Server mockOAuth2Server;
