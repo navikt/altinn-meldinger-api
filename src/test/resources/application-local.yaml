@@ -19,6 +19,13 @@ altinn:
   brukernavn: brukernavn
   passord: passord
 
+dokarkiv:
+  uri: "http://localhost:${wiremock.port}/dokarkiv"
+
+pdfgen:
+  #  uri: "http://localhost:5913/template/arbeidsgiver2-altinnmelding-melding/create-pdf"
+  uri: "uri"
+
 no.nav.security.jwt.issuer:
   aad:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
