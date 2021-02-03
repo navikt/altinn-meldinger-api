@@ -1,7 +1,9 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Ulider;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
 import org.simpleflatmapper.jdbc.spring.JdbcTemplateMapperFactory;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -25,51 +27,74 @@ public class MeldingRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private static final ResultSetExtractor<List<Melding>> MELDING_MAPPER =
+    private static final ResultSetExtractor<List<MeldingsProsessering>> MELDINGS_PROSESSERING_MAPPER =
             JdbcTemplateMapperFactory
                     .newInstance()
                     .addKeys("id", "vedlegg_id")
-                    .newResultSetExtractor(Melding.class);
+                    .newResultSetExtractor(MeldingsProsessering.class);
 
-    private static final String SELECT_MELDING = "select " +
-            "m.id, " +
-            "m.opprettet, " +
-            "m.orgnr, " +
-            "m.melding, " +
-            "m.tittel, " +
-            "m.system_usercode, " +
-            "m.service_code, " +
-            "m.service_edition, " +
-            "m.tillat_automatisk_sletting_fra_dato, " +
-            "m.tillat_automatisk_sletting_etter_antall_år, " +
-            "m.altinn_status, " +
-            "m.altinn_referanse, " +
-            "m.altinn_sendt_tidspunkt, " +
-            "v.id as vedlegg_id, " +
-            "v.filinnhold as vedlegg_filinnhold, " +
-            "v.filnavn as vedlegg_filnavn, " +
-            "v.vedleggnavn as vedlegg_vedleggnavn " +
-            "from melding m left join vedlegg v on v.melding_id = m.id ";
-
-
-    public List<Melding> hent(AltinnStatus altinn_status, int antall) {
+    public List<MeldingsProsessering> hent(AltinnStatus altinnStatus, int antall) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("altinn_status", altinn_status.name())
+                .addValue("altinn_status", altinnStatus.name())
                 .addValue("antall", antall);
 
         return jdbcTemplate.query(
-                SELECT_MELDING + " " +
-                "where altinn_status = :altinn_status " +
-                "order by m.id " +
-                "limit :antall",
-            parameterSource,
-            MELDING_MAPPER);
+                ("select " +
+                        "prosesserings_status.id, " +
+                        "prosesserings_status.melding_id, " +
+                        "prosesserings_status.orgnr, " +
+                        "melding.melding, " +
+                        "melding.tittel, " +
+                        "melding.system_usercode, " +
+                        "melding.service_code, " +
+                        "melding.service_edition, " +
+                        "melding.tillat_automatisk_sletting_fra_dato, " +
+                        "melding.tillat_automatisk_sletting_etter_antall_år, " +
+                        "prosesserings_status.altinn_status, " +
+                        "prosesserings_status.altinn_referanse, " +
+                        "prosesserings_status.altinn_sendt_tidspunkt, " +
+                        "vedlegg.id as vedlegg_id, " +
+                        "vedlegg.filinnhold as vedlegg_filinnhold, " +
+                        "vedlegg.filnavn as vedlegg_filnavn, " +
+                        "vedlegg.vedleggnavn as vedlegg_vedleggnavn " +
+                        "from melding melding " +
+                        "join prosesserings_status prosesserings_status on prosesserings_status.melding_id = melding.id " +
+                        "left join vedlegg vedlegg on vedlegg.melding_id = melding.id ") +
+                        "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status order by id limit :antall) " +
+                        "order by melding.id ",
+                parameterSource,
+                MELDINGS_PROSESSERING_MAPPER);
     }
 
     @Transactional
-    public void save(Melding melding) {
+    public void opprett(Melding melding) {
         lagreMelding(melding);
         melding.getVedlegg().forEach(v -> lagreVedlegg(v, melding.getId()));
+        melding.getOrganisasjoner().forEach(o -> lagreProsesseringsStatus(o, melding));
+    }
+
+    private void lagreProsesseringsStatus(String orgnr, Melding melding) {
+        jdbcTemplate.update("Insert into prosesserings_status (" +
+                "id, " +
+                "melding_id, " +
+                "opprettet, " +
+                "orgnr, " +
+                "altinn_status) values (" +
+                ":id, " +
+                ":melding_id, " +
+                ":opprettet, " +
+                ":orgnr, " +
+                ":altinn_status)", lagParameterMapForProsesseringsStatus(melding, orgnr));
+
+    }
+
+    private SqlParameterSource lagParameterMapForProsesseringsStatus(Melding melding, String orgnr) {
+        return new MapSqlParameterSource()
+                .addValue("id", Ulider.nextULID())
+                .addValue("melding_id", melding.getId())
+                .addValue("opprettet", LocalDateTime.now())
+                .addValue("orgnr", orgnr)
+                .addValue("altinn_status", AltinnStatus.IKKE_SENDT.name());
     }
 
     private SqlParameterSource lagParameterMapForVedlegg(Vedlegg vedlegg, String meldingId) {
@@ -98,7 +123,7 @@ public class MeldingRepository {
                 ":vedleggnavn)", lagParameterMapForVedlegg(v, meldingId));
     }
 
-    private void lagreMelding(Melding meldingLogg) {
+    private void lagreMelding(Melding melding) {
         jdbcTemplate.update("Insert into melding (" +
                 "id, " +
                 "opprettet, " +
@@ -109,8 +134,7 @@ public class MeldingRepository {
                 "service_code, " +
                 "service_edition, " +
                 "tillat_automatisk_sletting_fra_dato, " +
-                "tillat_automatisk_sletting_etter_antall_år, " +
-                "altinn_status) values (" +
+                "tillat_automatisk_sletting_etter_antall_år) values (" +
                 ":id, " +
                 ":opprettet, " +
                 ":orgnr, " +
@@ -120,30 +144,21 @@ public class MeldingRepository {
                 ":service_code, " +
                 ":service_edition, " +
                 ":tillat_automatisk_sletting_fra_dato, " +
-                ":tillat_automatisk_sletting_etter_antall_år, " +
-                ":altinn_status)", lagParameterMapForMelding(meldingLogg));
+                ":tillat_automatisk_sletting_etter_antall_år)", lagParameterMapForMelding(melding));
     }
 
-    private SqlParameterSource lagParameterMapForMelding(Melding meldingLogg) {
+    private SqlParameterSource lagParameterMapForMelding(Melding melding) {
         return new MapSqlParameterSource()
-                .addValue("id", meldingLogg.getId())
-                .addValue("opprettet", meldingLogg.getOpprettet())
-                .addValue("orgnr", meldingLogg.getOrgnr())
-                .addValue("melding", meldingLogg.getMelding())
-                .addValue("tittel", meldingLogg.getTittel())
-                .addValue("system_usercode", meldingLogg.getSystemUsercode())
-                .addValue("service_code", meldingLogg.getServiceCode())
-                .addValue("service_edition", meldingLogg.getServiceEdition())
-                .addValue("tillat_automatisk_sletting_fra_dato", meldingLogg.getTillatAutomatiskSlettingFraDato())
-                .addValue("tillat_automatisk_sletting_etter_antall_år", meldingLogg.getTillatAutomatiskSlettingEtterAntallÅr())
-                .addValue("altinn_status", meldingLogg.getAltinnStatus().name());
-    }
-
-    public List<Melding> findAll() {
-        return jdbcTemplate.getJdbcTemplate().query(
-                SELECT_MELDING +
-                "order by m.id ",
-                MELDING_MAPPER);
+                .addValue("id", melding.getId())
+                .addValue("opprettet", LocalDateTime.now())
+                .addValue("orgnr", String.join(",", melding.getOrganisasjoner()))
+                .addValue("melding", melding.getMelding())
+                .addValue("tittel", melding.getTittel())
+                .addValue("system_usercode", melding.getSystemUsercode())
+                .addValue("service_code", melding.getServiceCode())
+                .addValue("service_edition", melding.getServiceEdition())
+                .addValue("tillat_automatisk_sletting_fra_dato", melding.getTillatAutomatiskSlettingFraDato())
+                .addValue("tillat_automatisk_sletting_etter_antall_år", melding.getTillatAutomatiskSlettingEtterAntallÅr());
     }
 
     public void oppdaterAltinnStatus(String id, AltinnStatus altinnStatus, String altinnReferanse) {
@@ -153,6 +168,6 @@ public class MeldingRepository {
                 .addValue("altinn_referanse", altinnReferanse)
                 .addValue("altinn_sendt_tidspunkt", LocalDateTime.now());
 
-        jdbcTemplate.update("update melding set altinn_status = :altinn_status, altinn_referanse = :altinn_referanse, altinn_sendt_tidspunkt = :altinn_sendt_tidspunkt where id = :id ", parameterSource);
+        jdbcTemplate.update("update prosesserings_status set altinn_status = :altinn_status, altinn_referanse = :altinn_referanse, altinn_sendt_tidspunkt = :altinn_sendt_tidspunkt where id = :id ", parameterSource);
     }
 }

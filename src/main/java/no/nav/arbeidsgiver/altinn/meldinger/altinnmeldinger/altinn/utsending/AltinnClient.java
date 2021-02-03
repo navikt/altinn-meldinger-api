@@ -8,7 +8,7 @@ import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondence
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentV2;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
 import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -44,7 +44,7 @@ public class AltinnClient {
         this.altinnConfig = altinnConfig;
     }
 
-    public String sendAltinnMelding(Melding altinnMelding) {
+    public String sendAltinnMelding(MeldingsProsessering altinnMelding) {
         return sendAltinnMelding(mapTilInsertCorrespondenceBasicV2(altinnMelding));
     }
 
@@ -70,7 +70,7 @@ public class AltinnClient {
         }
     }
 
-    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(Melding altinnMelding) {
+    private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(MeldingsProsessering altinnMelding) {
         LocalDateTime allowSystemDeleteDateTime = Optional.ofNullable(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr())
                 .map(antallÅr -> LocalDateTime.now().plusYears(altinnMelding.getTillatAutomatiskSlettingEtterAntallÅr()))
                 .orElse(altinnMelding.getTillatAutomatiskSlettingFraDato());
@@ -97,7 +97,7 @@ public class AltinnClient {
                         ));
     }
 
-    private AttachmentsV2 createAttachments(Melding altinnMelding) {
+    private AttachmentsV2 createAttachments(MeldingsProsessering altinnMelding) {
         List<Vedlegg> vedlegg = altinnMelding.getVedlegg();
         return vedlegg == null || vedlegg.isEmpty() ? null
                 : new AttachmentsV2()

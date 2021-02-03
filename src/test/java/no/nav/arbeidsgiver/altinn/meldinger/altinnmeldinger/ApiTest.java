@@ -5,7 +5,6 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingReposi
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -24,6 +24,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -42,6 +43,8 @@ public class ApiTest {
 
     @Autowired
     private MeldingRepository meldingRepository;
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private MockOAuth2Server mockOAuth2Server;
@@ -51,7 +54,7 @@ public class ApiTest {
         ObjectMapper mapper = new ObjectMapper();
         List<PdfVedleggDTO> vedlegg = List.of(new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"));
         AltinnMeldingDTO altinnMelding = new AltinnMeldingDTO(
-                "999999999",
+                List.of("999999999", "888888888"),
                 "Dette er en melding som skal til Altinn",
                 "Tittel!",
                 "NAV_AGP2",
@@ -72,20 +75,20 @@ public class ApiTest {
         );
 
         assertThat(response.statusCode()).isEqualTo(201);
-        List<Melding> meldingsLoggRader = meldingRepository.findAll();
-        assertThat(meldingsLoggRader.size()).isEqualTo(1);
-        Melding melding = meldingsLoggRader.get(0);
-        assertThat(melding.getAltinnStatus()).isEqualTo(AltinnStatus.IKKE_SENDT);
-        assertThat(melding.getAltinnReferanse()).isNull();
-        assertThat(melding.getAltinnSendtTidspunkt()).isNull();
+
+        assertThat(meldingRepository.hent(AltinnStatus.IKKE_SENDT, 10)
+                .stream()
+                .map(p -> p.getOrgnr())
+                .collect(Collectors.toList()))
+            .containsExactly("999999999", "888888888");
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
-            List<Melding> meldingsLoggRader2 = meldingRepository.findAll();
-            assertThat(meldingsLoggRader2.size()).isEqualTo(1);
-            assertThat(meldingsLoggRader2.get(0).getAltinnStatus()).isEqualTo(AltinnStatus.OK);
-            Melding melding2 = meldingsLoggRader2.get(0);
-            assertThat(melding2.getAltinnReferanse()).contains(melding2.getId());
-            assertThat(melding2.getAltinnSendtTidspunkt()).isNotNull();
+            assertThat(meldingRepository.hent(AltinnStatus.IKKE_SENDT, 10)).isEmpty();
+            assertThat(meldingRepository.hent(AltinnStatus.OK, 10)
+                    .stream()
+                    .map(p -> p.getOrgnr())
+                    .collect(Collectors.toList()))
+                    .containsExactly("999999999", "888888888");
         });
 
     }
