@@ -5,6 +5,7 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Meldin
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -42,19 +43,19 @@ public class JournalpostMapper {
         builder.append("{\"melding\": \"").append(doc.text()).append("\"}");
         meldinger.add(builder.toString());
 
-//        StringBuilder sb = new StringBuilder("{\"melding\": \"");
-//        Elements links = doc.select("a[href]");
-//        links.stream().forEach(link -> {
-//                    sb.append(link.text()).append(": ");
-//
-//                    String s = link.attr("href").replace("\"", "");
-//                    sb.append(s).append("\"}");
-//                    meldinger.add(sb.toString());
-//                    sb.delete(0, sb.length());
-//
-//                });
+        Elements links = doc.select("a[href]");
+        links.stream().forEach(link -> {
+            builder.delete(0, builder.length());
+            builder.append("{\"melding\": \"")
+                    .append(link.text())
+                    .append(": ")
+                    .append(link.attr("href")).append("\"}");
+            meldinger.add(builder.toString());
+        });
 
-        return "{ \"meldinger\":" + meldinger.toString() + "}";
+        builder.delete(0, builder.length());
+        builder.append("{ \"meldinger\":").append(meldinger.toString()).append("}");
+        return builder.toString();
     }
 
     private Journalpost opprettJournalpost(byte[] meldingPdf, MeldingsProsessering melding) {
