@@ -19,8 +19,11 @@ public class MeldingsProsessering {
     private AltinnStatus altinnStatus;
     private String altinnReferanse;
     private LocalDateTime altinnSendtTidspunkt;
+    private JoarkStatus joarkStatus;
+    private String journalpostId;
+    private LocalDateTime joarkSendtTidspunkt;
 
-    public MeldingsProsessering(String id, String meldingId, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg, String altinnReferanse, LocalDateTime altinnSendtTidspunkt) {
+    public MeldingsProsessering(String id, String meldingId, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg, String altinnReferanse, LocalDateTime altinnSendtTidspunkt, JoarkStatus joarkStatus, String journalpostId, LocalDateTime joarkSendtTidspunkt) {
         this.id = id;
         this.meldingId = meldingId;
         this.orgnr = orgnr;
@@ -35,6 +38,9 @@ public class MeldingsProsessering {
         this.vedlegg = vedlegg;
         this.altinnReferanse = altinnReferanse;
         this.altinnSendtTidspunkt = altinnSendtTidspunkt;
+        this.joarkStatus = joarkStatus;
+        this.journalpostId = journalpostId;
+        this.joarkSendtTidspunkt = joarkSendtTidspunkt;
     }
 
     public String getId() {

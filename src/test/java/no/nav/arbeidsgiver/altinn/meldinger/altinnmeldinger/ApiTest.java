@@ -5,6 +5,7 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingReposi
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.JoarkStatus;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
@@ -47,7 +48,7 @@ public class ApiTest {
     private MockOAuth2Server mockOAuth2Server;
 
     @Test
-    public void api__skal_sende_melding_via_ws_og_returnere_created() throws Exception {
+    public void api__skal_sende_melding_til_altinn_og_sende_til_joark_og_returnere_created() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         List<PdfVedleggDTO> vedlegg = List.of(new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"));
         AltinnMeldingDTO altinnMelding = new AltinnMeldingDTO(
@@ -73,15 +74,20 @@ public class ApiTest {
 
         assertThat(response.statusCode()).isEqualTo(201);
 
-        assertThat(meldingRepository.hent(AltinnStatus.IKKE_SENDT, 10)
+        assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT, 10)
                 .stream()
                 .map(p -> p.getOrgnr())
                 .collect(Collectors.toList()))
             .containsExactly("999999999", "888888888");
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
-            assertThat(meldingRepository.hent(AltinnStatus.IKKE_SENDT, 10)).isEmpty();
-            assertThat(meldingRepository.hent(AltinnStatus.OK, 10)
+            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT, 10)).isEmpty();
+            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.OK, 10)
+                    .stream()
+                    .map(p -> p.getOrgnr())
+                    .collect(Collectors.toList()))
+                    .containsExactly("999999999", "888888888");
+            assertThat(meldingRepository.hentMedJoarkStatus(JoarkStatus.OK, 10)
                     .stream()
                     .map(p -> p.getOrgnr())
                     .collect(Collectors.toList()))
