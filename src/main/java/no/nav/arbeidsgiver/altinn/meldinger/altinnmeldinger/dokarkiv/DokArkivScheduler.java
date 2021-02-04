@@ -1,4 +1,4 @@
-package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockingTaskExecutor;
@@ -13,35 +13,33 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Component
-public class AltinnScheduler {
+public class DokArkivScheduler {
 
-    private final static Logger log = LoggerFactory.getLogger(AltinnScheduler.class);
+    private final static Logger log = LoggerFactory.getLogger(DokArkivScheduler.class);
     private final LockingTaskExecutor taskExecutor;
-    private final AltinnService altinnService;
+    private final DokArkivService dokArkivService;
     private final int lockAtMostForMillis;
     private final int lockAtLeastForMillis;
 
-    public AltinnScheduler(
+    public DokArkivScheduler(
             LockingTaskExecutor taskExecutor,
-            AltinnService altinnService,
-            @Value("${utsending.altinn.scheduler.lockAtMostFor}") int lockAtMostForMillis,
-            @Value("${utsending.altinn.scheduler.lockAtLeastFor}") int lockAtLeastForMillis
+            DokArkivService dokArkivService,
+            @Value("${utsending.dokarkiv.scheduler.lockAtMostFor}") int lockAtMostForMillis,
+            @Value("${utsending.dokarkiv.scheduler.lockAtLeastFor}") int lockAtLeastForMillis
     ) {
         this.taskExecutor = taskExecutor;
-        this.altinnService = altinnService;
+        this.dokArkivService = dokArkivService;
         this.lockAtMostForMillis = lockAtMostForMillis;
         this.lockAtLeastForMillis = lockAtLeastForMillis;
     }
 
     @Scheduled(cron = "* * * * * ?")
-    public void scheduledSendMeldingTilAltinn() {
+    public void scheduledSendMeldingTilDokarkiv() {
         taskExecutor.executeWithLock(
-                (Runnable) () -> altinnService.sendNyeAltinnMeldinger(),
-
-
+                (Runnable) () -> dokArkivService.sendTilDokarkiv(),
                 new LockConfiguration(
                         Instant.now(),
-                        "utsendingAvAltinnMeldinger",
+                        "utsendingTilDokarkiv",
                         Duration.of(lockAtMostForMillis, ChronoUnit.MILLIS),
                         Duration.of(lockAtLeastForMillis, ChronoUnit.MILLIS)
                 )

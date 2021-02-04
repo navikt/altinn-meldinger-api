@@ -33,10 +33,10 @@ no.nav.security.jwt.issuer:
     cookie_name: localhost-idtoken
     accepted_audience: audience
 
-utsending.altinn.scheduler:
-  lockAtMostFor: 2000
-  lockAtLeastFor: 101
-
-
-
-
+utsending:
+  altinn.scheduler:
+    lockAtMostFor: 2000
+    lockAtLeastFor: 101
+  dokarkiv.scheduler:
+    lockAtMostFor: 2000
+    lockAtLeastFor: 101

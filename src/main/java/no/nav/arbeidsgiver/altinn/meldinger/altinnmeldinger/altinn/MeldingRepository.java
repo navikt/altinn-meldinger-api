@@ -19,6 +19,7 @@ import java.util.List;
 public class MeldingRepository {
 
     private NamedParameterJdbcTemplate jdbcTemplate;
+    private static final int ANTALL_PROSESSERINGS_RADER = 50;
 
     public MeldingRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -55,10 +56,24 @@ public class MeldingRepository {
                     .addKeys("id", "vedlegg_id")
                     .newResultSetExtractor(MeldingsProsessering.class);
 
-    public List<MeldingsProsessering> hentMedAltinnStatus(AltinnStatus altinnStatus, int antall) {
+    public List<MeldingsProsessering> hentMedStatus(AltinnStatus altinnStatus, JoarkStatus joarkStatus) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("altinn_status", altinnStatus.name())
-                .addValue("antall", antall);
+                .addValue("joark_status", joarkStatus.name())
+                .addValue("antall", ANTALL_PROSESSERINGS_RADER);
+
+        return jdbcTemplate.query(
+                SELECT_PROSESSERINGS_STATUS +
+                        "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status and joark_status = :joark_status order by id limit :antall) " +
+                        "order by melding.id ",
+                parameterSource,
+                MELDINGS_PROSESSERING_MAPPER);
+    }
+
+    public List<MeldingsProsessering> hentMedAltinnStatus(AltinnStatus altinnStatus) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("altinn_status", altinnStatus.name())
+                .addValue("antall", ANTALL_PROSESSERINGS_RADER);
 
         return jdbcTemplate.query(
                 SELECT_PROSESSERINGS_STATUS +
@@ -68,17 +83,12 @@ public class MeldingRepository {
                 MELDINGS_PROSESSERING_MAPPER);
     }
 
-    public List<MeldingsProsessering> hentMedJoarkStatus(JoarkStatus joarkStatus, int antall) {
-        SqlParameterSource parameterSource = new MapSqlParameterSource()
-                .addValue("joark_status", joarkStatus.name())
-                .addValue("antall", antall);
+    public List<MeldingsProsessering> hentMeldingerSomSkalSendesTilAltinn() {
+        return hentMedAltinnStatus(AltinnStatus.IKKE_SENDT);
+    }
 
-        return jdbcTemplate.query(
-                SELECT_PROSESSERINGS_STATUS +
-                        "where prosesserings_status.id in (select id from prosesserings_status where joark_status = :joark_status order by id limit :antall) " +
-                        "order by melding.id ",
-                parameterSource,
-                MELDINGS_PROSESSERING_MAPPER);
+    public List<MeldingsProsessering> hentMeldingerSomSkalSendesTilDokarkiv() {
+        return hentMedStatus(AltinnStatus.OK, JoarkStatus.IKKE_SENDT);
     }
 
     @Transactional
@@ -198,4 +208,5 @@ public class MeldingRepository {
 
         jdbcTemplate.update("update prosesserings_status set joark_status = :joark_status, journalpost_id = :journalpost_id, joark_sendt_tidspunkt = :joark_sendt_tidspunkt where id = :id ", parameterSource);
     }
+
 }

@@ -74,20 +74,20 @@ public class ApiTest {
 
         assertThat(response.statusCode()).isEqualTo(201);
 
-        assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT, 10)
+        assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT)
                 .stream()
                 .map(p -> p.getOrgnr())
                 .collect(Collectors.toList()))
             .containsExactly("999999999", "888888888");
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
-            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT, 10)).isEmpty();
-            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.OK, 10)
+            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT)).isEmpty();
+            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.OK)
                     .stream()
                     .map(p -> p.getOrgnr())
                     .collect(Collectors.toList()))
                     .containsExactly("999999999", "888888888");
-            assertThat(meldingRepository.hentMedJoarkStatus(JoarkStatus.OK, 10)
+            assertThat(meldingRepository.hentMedStatus(AltinnStatus.OK, JoarkStatus.OK)
                     .stream()
                     .map(p -> p.getOrgnr())
                     .collect(Collectors.toList()))
