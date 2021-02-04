@@ -10,8 +10,30 @@ spring:
 altinn:
   uri: https://www.altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
 
+dokarkiv:
+  uri: https://dokarkiv.nais.adeo.no/rest/journalpostapi/v1/journalpost
+
+pdfgen:
+  uri: "uri"
+
 no.nav.security.jwt.issuer:
   aad:
     discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
     cookie_name: isso-idtoken
     accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+      cookie_name: isso-idtoken
+      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+
+  client.registration.altinnmelding:
+    token-endpoint-url: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/token
+    grant-type: client_credentials
+    scope: 162b3255-2f72-4399-8f7a-244add9ffaac/.default
+    authentication:
+      client-id: ${AZURE_APP_CLIENT_ID}
+      client-auth-method: client_secret_basic
+      client-secret: ${AZURE_APP_CLIENT_SECRET}
