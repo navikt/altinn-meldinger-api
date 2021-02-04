@@ -42,9 +42,10 @@ public class DokArkivClient {
         headers.setContentType((MediaType.APPLICATION_JSON));
     }
 
-    public void journalførMelding(MeldingsProsessering meldingsProsessering) {
+    public String journalførMelding(MeldingsProsessering meldingsProsessering) {
         String journalpostId = sendJournalpost(journalpostMapper.meldingTilJournalpost(meldingsProsessering));
         log.info("journalført melding {}. journalpostId={}", meldingsProsessering.getId(), journalpostId);
+        return journalpostId;
     }
 
     private String sendJournalpost(final Journalpost journalpost) {

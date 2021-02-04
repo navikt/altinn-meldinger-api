@@ -2,6 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.JoarkStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivClient;
 import org.apache.commons.lang3.tuple.Pair;
@@ -31,7 +32,7 @@ public class AltinnService {
     }
 
     public void sendNyeAltinnMeldinger(int antall) {
-        List<MeldingsProsessering> meldinger = meldingRepository.hent(AltinnStatus.IKKE_SENDT, antall);
+        List<MeldingsProsessering> meldinger = meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT, antall);
         if(meldinger.size() > 0) {
             sendTilAltinn(meldinger);
 
@@ -75,19 +76,29 @@ public class AltinnService {
 
     private Pair<String, AltinnStatus> sendMeldingOgLagreStatus(MeldingsProsessering meldingsProsessering) {
         String id = meldingsProsessering.getId();
-        AltinnStatus status = AltinnStatus.OK;
+        AltinnStatus altinnStatus = AltinnStatus.OK;
         String altinnReferanse = null;
+        JoarkStatus joarkStatus = JoarkStatus.IKKE_SENDT;
+        String journalpostId = null;
         try {
             // TODO Her må vi forbedre feilhåndtering
             altinnReferanse = altinnClient.sendAltinnMelding(meldingsProsessering);
-            //TODO Legger journalføering her inntil videre
-            dokArkivClient.journalførMelding(meldingsProsessering);
         } catch (Exception e) {
             log.warn("Feil mot Altinn", e);
-            status = AltinnStatus.FEIL;
+            altinnStatus = AltinnStatus.FEIL;
         }
-        meldingRepository.oppdaterAltinnStatus(id, status, altinnReferanse);
-        return Pair.of(id, status);
+        meldingRepository.oppdaterAltinnStatus(id, altinnStatus, altinnReferanse);
+        if(altinnStatus == AltinnStatus.OK)
+        try {
+            //TODO Legger journalføering her inntil videre
+            journalpostId = dokArkivClient.journalførMelding(meldingsProsessering);
+            joarkStatus = JoarkStatus.OK;
+        } catch (Exception e) {
+            log.warn("Feil mot Altinn", e);
+            joarkStatus = JoarkStatus.FEIL;
+        }
+        meldingRepository.oppdaterJournalpostId(id, joarkStatus, journalpostId);
+        return Pair.of(id, altinnStatus);
     }
 
 }

@@ -1,10 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Ulider;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Melding;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.*;
 import org.simpleflatmapper.jdbc.spring.JdbcTemplateMapperFactory;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -27,40 +24,58 @@ public class MeldingRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    private static final String SELECT_PROSESSERINGS_STATUS = "select " +
+            "prosesserings_status.id, " +
+            "prosesserings_status.melding_id, " +
+            "prosesserings_status.orgnr, " +
+            "melding.melding, " +
+            "melding.tittel, " +
+            "melding.system_usercode, " +
+            "melding.service_code, " +
+            "melding.service_edition, " +
+            "melding.tillat_automatisk_sletting_fra_dato, " +
+            "melding.tillat_automatisk_sletting_etter_antall_år, " +
+            "prosesserings_status.altinn_status, " +
+            "prosesserings_status.altinn_referanse, " +
+            "prosesserings_status.altinn_sendt_tidspunkt, " +
+            "prosesserings_status.joark_status, " +
+            "prosesserings_status.journalpost_id, " +
+            "prosesserings_status.joark_sendt_tidspunkt, " +
+            "vedlegg.id as vedlegg_id, " +
+            "vedlegg.filinnhold as vedlegg_filinnhold, " +
+            "vedlegg.filnavn as vedlegg_filnavn, " +
+            "vedlegg.vedleggnavn as vedlegg_vedleggnavn " +
+            "from melding melding " +
+            "join prosesserings_status prosesserings_status on prosesserings_status.melding_id = melding.id " +
+            "left join vedlegg vedlegg on vedlegg.melding_id = melding.id ";
+
     private static final ResultSetExtractor<List<MeldingsProsessering>> MELDINGS_PROSESSERING_MAPPER =
             JdbcTemplateMapperFactory
                     .newInstance()
                     .addKeys("id", "vedlegg_id")
                     .newResultSetExtractor(MeldingsProsessering.class);
 
-    public List<MeldingsProsessering> hent(AltinnStatus altinnStatus, int antall) {
+    public List<MeldingsProsessering> hentMedAltinnStatus(AltinnStatus altinnStatus, int antall) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("altinn_status", altinnStatus.name())
                 .addValue("antall", antall);
 
         return jdbcTemplate.query(
-                ("select " +
-                        "prosesserings_status.id, " +
-                        "prosesserings_status.melding_id, " +
-                        "prosesserings_status.orgnr, " +
-                        "melding.melding, " +
-                        "melding.tittel, " +
-                        "melding.system_usercode, " +
-                        "melding.service_code, " +
-                        "melding.service_edition, " +
-                        "melding.tillat_automatisk_sletting_fra_dato, " +
-                        "melding.tillat_automatisk_sletting_etter_antall_år, " +
-                        "prosesserings_status.altinn_status, " +
-                        "prosesserings_status.altinn_referanse, " +
-                        "prosesserings_status.altinn_sendt_tidspunkt, " +
-                        "vedlegg.id as vedlegg_id, " +
-                        "vedlegg.filinnhold as vedlegg_filinnhold, " +
-                        "vedlegg.filnavn as vedlegg_filnavn, " +
-                        "vedlegg.vedleggnavn as vedlegg_vedleggnavn " +
-                        "from melding melding " +
-                        "join prosesserings_status prosesserings_status on prosesserings_status.melding_id = melding.id " +
-                        "left join vedlegg vedlegg on vedlegg.melding_id = melding.id ") +
+                SELECT_PROSESSERINGS_STATUS +
                         "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status order by id limit :antall) " +
+                        "order by melding.id ",
+                parameterSource,
+                MELDINGS_PROSESSERING_MAPPER);
+    }
+
+    public List<MeldingsProsessering> hentMedJoarkStatus(JoarkStatus joarkStatus, int antall) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("joark_status", joarkStatus.name())
+                .addValue("antall", antall);
+
+        return jdbcTemplate.query(
+                SELECT_PROSESSERINGS_STATUS +
+                        "where prosesserings_status.id in (select id from prosesserings_status where joark_status = :joark_status order by id limit :antall) " +
                         "order by melding.id ",
                 parameterSource,
                 MELDINGS_PROSESSERING_MAPPER);
@@ -169,5 +184,15 @@ public class MeldingRepository {
                 .addValue("altinn_sendt_tidspunkt", LocalDateTime.now());
 
         jdbcTemplate.update("update prosesserings_status set altinn_status = :altinn_status, altinn_referanse = :altinn_referanse, altinn_sendt_tidspunkt = :altinn_sendt_tidspunkt where id = :id ", parameterSource);
+    }
+
+    public void oppdaterJournalpostId(String id, JoarkStatus joarkStatus, String journalpostId) {
+        SqlParameterSource parameterSource = new MapSqlParameterSource()
+                .addValue("id", id)
+                .addValue("joark_status", joarkStatus.name())
+                .addValue("journalpost_id", journalpostId)
+                .addValue("joark_sendt_tidspunkt", LocalDateTime.now());
+
+        jdbcTemplate.update("update prosesserings_status set joark_status = :joark_status, journalpost_id = :journalpost_id, joark_sendt_tidspunkt = :joark_sendt_tidspunkt where id = :id ", parameterSource);
     }
 }
