@@ -27,15 +27,19 @@ public class JournalpostMapper {
 
     public Journalpost meldingTilJournalpost(MeldingsProsessering melding) {
         try {
-            String meldingPdf = opprettHovedDokument(melding.getMelding());
-            return opprettJournalpost(meldingPdf.getBytes(), melding);
+            byte[] meldingPdf = opprettHovedDokument(meldingTilJson(melding.getMelding()));
+            return opprettJournalpost(meldingPdf, melding);
         } catch (Exception e) {
             log.error("Feil ved mapping til Journalpost", e);
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    private String opprettHovedDokument(String melding) {
+    private byte[] opprettHovedDokument(String jsonMelding) {
+        return pdfGenClient.hovedmeldingPdfBytes(jsonMelding);
+    }
+
+    private String meldingTilJson(String melding) {
         List<String> meldinger = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         Document doc = Jsoup.parse(melding);
@@ -67,7 +71,7 @@ public class JournalpostMapper {
                 .map(pdfVedlegg -> new Dokument(pdfVedlegg.getVedleggnavn(), Arrays.asList(new DokumentVariant(pdfVedlegg.getFilinnhold()))))
                 .collect(Collectors.toList());
 
-        //dokumenter.add(new Dokument("Melding", Arrays.asList(new DokumentVariant(meldingPdf.toString()))));
+        dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(meldingPdf.toString()))));
         return new Journalpost(melding.getTittel(), bruker, mottaker, dokumenter);
     }
 }

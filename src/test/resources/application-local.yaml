@@ -24,7 +24,7 @@ dokarkiv:
 
 pdfgen:
   #  uri: "http://localhost:5913/template/arbeidsgiver2-altinnmelding-melding/create-pdf"
-  uri: "uri"
+  uri: "http://localhost:${wiremock.port}/pdfgen"
 
 no.nav.security.jwt.issuer:
   aad:

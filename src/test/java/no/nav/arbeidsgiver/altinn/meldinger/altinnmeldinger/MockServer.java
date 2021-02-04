@@ -35,12 +35,14 @@ public class MockServer {
 
         String altinnPath = new URL(altinnConfig.getUri()).getPath();
         String dokarkivPath = new URL(dokArkivConfig.getUri()).getPath() + "?forsoekFerdigstill=true";
+        String pdfGenPath = new URL(dokArkivConfig.getPdfGenUri()).getPath();
 
         server.stubFor(WireMock.post(altinnPath).willReturn(
                 WireMock.ok()
-                    .withUniformRandomDelay(50, 500)
-                    .withBody(altinnResponse200))
+                        .withUniformRandomDelay(50, 500)
+                        .withBody(altinnResponse200))
         );
+        server.stubFor(WireMock.post(pdfGenPath).willReturn(WireMock.okJson("{\"pdf\" : \"" + "ok".getBytes() + "\"}")));
         server.stubFor(WireMock.post(dokarkivPath).willReturn(WireMock.okJson("{\"journalpostId\" : \"493329380\", \"journalstatus\" : \"ENDELIG\", \"melding\" : \"Gikk bra\"}")));
         server.start();
     }

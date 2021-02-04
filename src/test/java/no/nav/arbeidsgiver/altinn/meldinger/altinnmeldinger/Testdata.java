@@ -26,8 +26,9 @@ public class Testdata {
 
     public static MeldingsProsessering enMelding() {
 
-        Vedlegg vedlegg = new Vedlegg(lesFilSomString("vedlegg.pdf"), "vedlegg.pdf", "Navn Vedlegg");
-        List<Vedlegg> vedleggList = Arrays.asList(vedlegg);
+        Vedlegg vedlegg1 = new Vedlegg(lesFilSomString("vedlegg.pdf"), "vedlegg.pdf", "Vedlegg nr.1");
+        Vedlegg vedlegg2 = new Vedlegg(lesFilSomString("vedlegg.pdf"), "vedlegg.pdf", "Vedlegg nr. 2");
+        List<Vedlegg> vedleggList = Arrays.asList(vedlegg1, vedlegg2);
 
         return new MeldingsProsessering(null, null, null, lesFilSomString("melding.txt"),
                 "Tittelen", null, null, null, null,
