@@ -79,7 +79,19 @@
             <version>1.2019.06.11-13.36-786a4cec3151</version>
         </dependency>
 
+		<!-- Melding-til pdf -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.10.2</version>
+		</dependency>
+
         <!-- Token -->
+		<dependency>
+			<groupId>no.nav.security</groupId>
+			<artifactId>token-client-spring</artifactId>
+			<version>${nav.security.version}</version>
+		</dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-spring</artifactId>

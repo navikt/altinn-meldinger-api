@@ -3,6 +3,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivClient;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,12 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,18 +20,21 @@ public class AltinnService {
 
     private final MeldingRepository meldingRepository;
     private final AltinnClient altinnClient;
+    private final DokArkivClient dokArkivClient;
     private final ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5,
             0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 
-    public AltinnService(MeldingRepository meldingRepository, AltinnClient altinnClient) {
+    public AltinnService(MeldingRepository meldingRepository, AltinnClient altinnClient, DokArkivClient dokArkivClient) {
         this.meldingRepository = meldingRepository;
         this.altinnClient = altinnClient;
+        this.dokArkivClient = dokArkivClient;
     }
 
     public void sendNyeAltinnMeldinger(int antall) {
         List<MeldingsProsessering> meldinger = meldingRepository.hent(AltinnStatus.IKKE_SENDT, antall);
         if(meldinger.size() > 0) {
             sendTilAltinn(meldinger);
+
         }
     }
 
@@ -81,6 +80,8 @@ public class AltinnService {
         try {
             // TODO Her må vi forbedre feilhåndtering
             altinnReferanse = altinnClient.sendAltinnMelding(meldingsProsessering);
+            //TODO Legger journalføering her inntil videre
+            dokArkivClient.journalførMelding(meldingsProsessering);
         } catch (Exception e) {
             log.warn("Feil mot Altinn", e);
             status = AltinnStatus.FEIL;

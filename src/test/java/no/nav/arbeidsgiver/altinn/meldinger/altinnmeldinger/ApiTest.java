@@ -30,7 +30,7 @@ import static java.net.http.HttpResponse.BodyHandlers.ofString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LokalApplikasjon.class)
 @TestPropertySource(properties = {"wiremock.port=8089"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @EnableMockOAuth2Server

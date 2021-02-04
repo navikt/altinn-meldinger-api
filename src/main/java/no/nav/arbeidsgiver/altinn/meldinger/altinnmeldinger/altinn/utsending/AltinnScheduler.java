@@ -39,6 +39,7 @@ public class AltinnScheduler {
         taskExecutor.executeWithLock(
                 (Runnable) () -> altinnService.sendNyeAltinnMeldinger(ANTALL_MELDINGER_OM_GANGEN),
 
+
                 new LockConfiguration(
                         Instant.now(),
                         "utsendingAvAltinnMeldinger",
