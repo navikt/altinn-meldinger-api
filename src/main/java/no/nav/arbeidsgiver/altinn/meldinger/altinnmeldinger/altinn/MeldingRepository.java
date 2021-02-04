@@ -83,23 +83,25 @@ public class MeldingRepository {
 
     @Transactional
     public void opprett(Melding melding) {
-        lagreMelding(melding);
-        melding.getVedlegg().forEach(v -> lagreVedlegg(v, melding.getId()));
-        melding.getOrganisasjoner().forEach(o -> lagreProsesseringsStatus(o, melding));
+        opprettMelding(melding);
+        melding.getVedlegg().forEach(v -> opprettVedlegg(v, melding.getId()));
+        melding.getOrganisasjoner().forEach(o -> opprettProsesseringsStatus(o, melding));
     }
 
-    private void lagreProsesseringsStatus(String orgnr, Melding melding) {
+    private void opprettProsesseringsStatus(String orgnr, Melding melding) {
         jdbcTemplate.update("Insert into prosesserings_status (" +
                 "id, " +
                 "melding_id, " +
                 "opprettet, " +
                 "orgnr, " +
-                "altinn_status) values (" +
+                "altinn_status, " +
+                "joark_status) values (" +
                 ":id, " +
                 ":melding_id, " +
                 ":opprettet, " +
                 ":orgnr, " +
-                ":altinn_status)", lagParameterMapForProsesseringsStatus(melding, orgnr));
+                ":altinn_status, " +
+                ":joark_status)", lagParameterMapForProsesseringsStatus(melding, orgnr));
 
     }
 
@@ -109,7 +111,8 @@ public class MeldingRepository {
                 .addValue("melding_id", melding.getId())
                 .addValue("opprettet", LocalDateTime.now())
                 .addValue("orgnr", orgnr)
-                .addValue("altinn_status", AltinnStatus.IKKE_SENDT.name());
+                .addValue("altinn_status", AltinnStatus.IKKE_SENDT.name())
+                .addValue("joark_status", JoarkStatus.IKKE_SENDT.name());
     }
 
     private SqlParameterSource lagParameterMapForVedlegg(Vedlegg vedlegg, String meldingId) {
@@ -122,7 +125,7 @@ public class MeldingRepository {
                 .addValue("vedleggnavn", vedlegg.getVedleggnavn());
     }
 
-    private void lagreVedlegg(Vedlegg v, String meldingId) {
+    private void opprettVedlegg(Vedlegg v, String meldingId) {
         jdbcTemplate.update("Insert into vedlegg (" +
                 "id, " +
                 "melding_id, " +
@@ -138,7 +141,7 @@ public class MeldingRepository {
                 ":vedleggnavn)", lagParameterMapForVedlegg(v, meldingId));
     }
 
-    private void lagreMelding(Melding melding) {
+    private void opprettMelding(Melding melding) {
         jdbcTemplate.update("Insert into melding (" +
                 "id, " +
                 "opprettet, " +
