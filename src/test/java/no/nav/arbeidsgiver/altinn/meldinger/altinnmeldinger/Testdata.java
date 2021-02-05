@@ -32,7 +32,7 @@ public class Testdata {
 
         return new MeldingsProsessering(null, null, null, lesFilSomString("melding.txt"),
                 "Tittelen", null, null, null, null,
-                null, null, vedleggList, null, null);
+                null, null, vedleggList, null, null, null, null, null);
 
     }
 }
