@@ -13,6 +13,7 @@ spring:
     locations: classpath:/db/migration
 
 wiremock.port: 8081
+mock-oauth2-server.port: 9000
 
 altinn:
   uri: "http://localhost:${wiremock.port}/altinn"
@@ -32,6 +33,10 @@ no.nav.security.jwt.issuer:
     cookie_name: localhost-idtoken
     accepted_audience: audience
 
-utsending.altinn.scheduler:
-  lockAtMostFor: 2000
-  lockAtLeastFor: 101
+utsending:
+  altinn.scheduler:
+    lockAtMostFor: 2000
+    lockAtLeastFor: 101
+  dokarkiv.scheduler:
+    lockAtMostFor: 2000
+    lockAtLeastFor: 101

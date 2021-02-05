@@ -19,7 +19,6 @@ public class AltinnMeldingDTO {
     private final LocalDateTime tillatAutomatiskSlettingFraDato;
     private final Integer tillatAutomatiskSlettingEtterAntallÅr;
     private final List<PdfVedleggDTO> vedlegg;
-    private String journalpostId;
 
     public AltinnMeldingDTO(List<String> orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedleggDTO> vedlegg) {
         this.organisasjonsnumre = orgnr;
@@ -43,14 +42,6 @@ public class AltinnMeldingDTO {
 
     public String getTittel() {
         return tittel;
-    }
-
-    public String getJournalpostId() {
-        return journalpostId;
-    }
-
-    public void setJournalpostId(String journalpostId) {
-        this.journalpostId = journalpostId;
     }
 
     public String getSystemUsercode() {

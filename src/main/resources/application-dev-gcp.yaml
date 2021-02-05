@@ -13,7 +13,7 @@ dokarkiv:
   uri: https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1/journalpost
 
 pdfgen:
-  uri: "uri"
+  uri: https://tag-dokgen.dev.intern.nav.no/template/arbeidsgiver2-altinnmelding-melding/create-pdf
 
 no.nav.security.jwt:
   issuer:
@@ -23,7 +23,7 @@ no.nav.security.jwt:
       accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
 
   client.registration.altinnmelding:
-    token-endpoint-url: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
+    token-endpoint-url: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/token
     grant-type: client_credentials
     scope: 972814f3-8bdf-44f8-a191-c2ed00020b54/.default
     authentication:
