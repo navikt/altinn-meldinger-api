@@ -4,6 +4,7 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.PdfGenClient;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -18,6 +19,7 @@ public class JournalpostMapperTest {
     JournalpostMapper journalpostMapper = new JournalpostMapper(pdfGenClient);
 
     @Test
+    @DisplayName("Legger melding som hoveddokument pluss 2 vedlegg")
     public void mapperMelding() {
         MeldingsProsessering melding = Testdata.enMelding();
 
