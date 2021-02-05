@@ -5,6 +5,7 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Meldin
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,15 +27,19 @@ public class JournalpostMapper {
 
     public Journalpost meldingTilJournalpost(MeldingsProsessering melding) {
         try {
-            String meldingPdf = opprettHovedDokument(melding.getMelding());
-            return opprettJournalpost(meldingPdf.getBytes(), melding);
+            byte[] meldingPdf = opprettHovedDokument(meldingTilJson(melding.getMelding()));
+            return opprettJournalpost(meldingPdf, melding);
         } catch (Exception e) {
             log.error("Feil ved mapping til Journalpost", e);
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    private String opprettHovedDokument(String melding) {
+    private byte[] opprettHovedDokument(String jsonMelding) {
+        return pdfGenClient.hovedmeldingPdfBytes(jsonMelding);
+    }
+
+    private String meldingTilJson(String melding) {
         List<String> meldinger = new ArrayList<>();
         StringBuilder builder = new StringBuilder();
         Document doc = Jsoup.parse(melding);
@@ -42,19 +47,19 @@ public class JournalpostMapper {
         builder.append("{\"melding\": \"").append(doc.text()).append("\"}");
         meldinger.add(builder.toString());
 
-//        StringBuilder sb = new StringBuilder("{\"melding\": \"");
-//        Elements links = doc.select("a[href]");
-//        links.stream().forEach(link -> {
-//                    sb.append(link.text()).append(": ");
-//
-//                    String s = link.attr("href").replace("\"", "");
-//                    sb.append(s).append("\"}");
-//                    meldinger.add(sb.toString());
-//                    sb.delete(0, sb.length());
-//
-//                });
+        Elements links = doc.select("a[href]");
+        links.stream().forEach(link -> {
+            builder.delete(0, builder.length());
+            builder.append("{\"melding\": \"")
+                    .append(link.text())
+                    .append(": ")
+                    .append(link.attr("href")).append("\"}");
+            meldinger.add(builder.toString());
+        });
 
-        return "{ \"meldinger\":" + meldinger.toString() + "}";
+        builder.delete(0, builder.length());
+        builder.append("{ \"meldinger\":").append(meldinger.toString()).append("}");
+        return builder.toString();
     }
 
     private Journalpost opprettJournalpost(byte[] meldingPdf, MeldingsProsessering melding) {
@@ -66,7 +71,7 @@ public class JournalpostMapper {
                 .map(pdfVedlegg -> new Dokument(pdfVedlegg.getVedleggnavn(), Arrays.asList(new DokumentVariant(pdfVedlegg.getFilinnhold()))))
                 .collect(Collectors.toList());
 
-        //dokumenter.add(new Dokument("Melding", Arrays.asList(new DokumentVariant(meldingPdf.toString()))));
+        dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(meldingPdf.toString()))));
         return new Journalpost(melding.getTittel(), bruker, mottaker, dokumenter);
     }
 }

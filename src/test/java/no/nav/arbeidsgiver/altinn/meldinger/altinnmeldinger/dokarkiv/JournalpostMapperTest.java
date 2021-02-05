@@ -4,34 +4,30 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.PdfGenClient;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@Disabled
-@ExtendWith(MockitoExtension.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 public class JournalpostMapperTest {
 
-    @Mock
-    DokArkivConfig dokArkivConfig;// = new DokArkivConfig("uri", "pdfGenUri");
-
-    @Mock
     private PdfGenClient pdfGenClient = Mockito.mock(PdfGenClient.class);
 
     JournalpostMapper journalpostMapper = new JournalpostMapper(pdfGenClient);
 
     @Test
+    @DisplayName("Legger melding som hoveddokument pluss 2 vedlegg")
     public void mapperMelding() {
-
         MeldingsProsessering melding = Testdata.enMelding();
 
-//        when(pdfGenClient.hovedmeldingPdfBytes(any())).thenReturn("hepp".getBytes());
-//
+        when(pdfGenClient.hovedmeldingPdfBytes(anyString())).thenReturn("ok".getBytes());
         Journalpost journalpost = journalpostMapper.meldingTilJournalpost(melding);
-        String dok = journalpost.getDokumenter().get(0).getDokumentVarianter().get(0).getFysiskDokument();
+
+        assertEquals(3, journalpost.getDokumenter().size());
+        assertEquals(melding.getTittel(), journalpost.getDokumenter().get(0).getTittel());
     }
 
 }
