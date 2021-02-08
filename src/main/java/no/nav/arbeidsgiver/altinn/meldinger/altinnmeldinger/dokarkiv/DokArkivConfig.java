@@ -33,12 +33,12 @@ public class DokArkivConfig {
         return pdfGenUri;
     }
 
-    @Bean
+    //@Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
-    //@Bean
+    @Bean
     RestTemplate restTemplateOauth2(
             RestTemplateBuilder restTemplateBuilder,
             ClientConfigurationProperties clientConfigurationProperties,

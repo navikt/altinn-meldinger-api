@@ -20,7 +20,7 @@ public class PdfGenClient {
     private static final Logger log = LoggerFactory.getLogger(PdfGenClient.class);
 
     @Autowired
-    private RestTemplate restTemplate;
+    private RestTemplate restTemplateOauth2;
 
     private HttpHeaders headers = new HttpHeaders();
     private URI uri;
@@ -39,7 +39,7 @@ public class PdfGenClient {
     private byte[] hentPdf(String meldingJson) {
         try {
             HttpEntity<String> entity = new HttpEntity<>(meldingJson, headers);
-            return restTemplate.postForObject(uri, entity, byte[].class);
+            return restTemplateOauth2.postForObject(uri, entity, byte[].class);
         } catch (Exception e) {
             log.error("Feil ved oppretting av pdf fil", e);
             throw new RuntimeException(e.getMessage());
