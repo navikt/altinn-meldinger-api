@@ -39,7 +39,7 @@ public class DokArkivConfig {
     }
 
     @Bean
-    RestTemplate restempateOauth2(
+    RestTemplate restTemplateOauth2(
             RestTemplateBuilder restTemplateBuilder,
             ClientConfigurationProperties clientConfigurationProperties,
             OAuth2AccessTokenService oAuth2AccessTokenService

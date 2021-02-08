@@ -24,7 +24,7 @@ public class DokArkivConfig {
     }
 
     @Bean
-    RestTemplate restempate() {
+    RestTemplate restTemplate() {
         return new RestTemplate();
     }
 }

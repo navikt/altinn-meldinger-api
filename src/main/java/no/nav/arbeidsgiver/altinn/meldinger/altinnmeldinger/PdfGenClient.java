@@ -3,6 +3,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,12 +19,13 @@ public class PdfGenClient {
 
     private static final Logger log = LoggerFactory.getLogger(PdfGenClient.class);
 
+    @Autowired
     private RestTemplate restTemplate;
+
     private HttpHeaders headers = new HttpHeaders();
     private URI uri;
 
-    public PdfGenClient(DokArkivConfig dokArkivConfig, RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public PdfGenClient(DokArkivConfig dokArkivConfig) {
         uri = UriComponentsBuilder.fromUriString(dokArkivConfig.getPdfGenUri())
                 .build()
                 .toUri();

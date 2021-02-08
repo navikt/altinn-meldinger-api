@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class DokArkivClient {
 
     @Autowired
-    private RestTemplate restempateOauth2;
+    private RestTemplate restTemplateOauth2;
 
     @Autowired
     private JournalpostMapper journalpostMapper;
@@ -51,7 +51,7 @@ public class DokArkivClient {
     private String sendJournalpost(final Journalpost journalpost) {
         debugLogJournalpost(journalpost);
         try {
-            return restempateOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
+            return restTemplateOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
         } catch (Exception e) {
             log.error("Kall til Joark feilet", e);
             throw new RuntimeException("Kall til Joark feilet: " + e);
