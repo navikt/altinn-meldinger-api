@@ -13,7 +13,7 @@ dokarkiv:
   uri: https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1/journalpost
 
 pdfgen:
-  uri: https://tag-dokgen.dev.intern.nav.no/template/arbeidsgiver2-altinnmelding-melding/create-pdf
+  uri: https://arbeidsgiver.dev.intern.nav.no/tag-dokgen/template/arbeidsgiver2-altinnmelding-melding/create-pdf
 
 no.nav.security.jwt:
   issuer:

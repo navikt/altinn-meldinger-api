@@ -9,5 +9,5 @@ quis dapibus justo. Cras vitae erat lobortis, aliquam diam sit amet, consectetur
 diam mollis nec. Maecenas hendrerit sed eros et ultrices. Integer faucibus quam non dignissim varius. Aliquam posuere aliquet
 sapien.
 
-<br />Liste:<ul><li>element 1</li><li>element 2</li><li>element 3</li></ul><a href=\"https://nav.no\">Lenke til mer
+<br />Liste:<ul><li>element 1</li><li>element 2</li><li>element 3</li></ul><a href="https://nav.no">Lenke til mer
 informasjon</a></div>
