@@ -64,7 +64,7 @@ public class MeldingRepository {
 
         return jdbcTemplate.query(
                 SELECT_PROSESSERINGS_STATUS +
-                        "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status and joark_status = :joark_status order by id limit :antall) " +
+                        "where prosesserings_status.id in (select distinct id from prosesserings_status where altinn_status = :altinn_status and joark_status = :joark_status order by id limit :antall) " +
                         "order by melding.id ",
                 parameterSource,
                 MELDINGS_PROSESSERING_MAPPER);
@@ -77,7 +77,7 @@ public class MeldingRepository {
 
         return jdbcTemplate.query(
                 SELECT_PROSESSERINGS_STATUS +
-                        "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status order by id limit :antall) " +
+                        "where prosesserings_status.id in (select distinct id from prosesserings_status where altinn_status = :altinn_status order by id limit :antall) " +
                         "order by melding.id ",
                 parameterSource,
                 MELDINGS_PROSESSERING_MAPPER);
