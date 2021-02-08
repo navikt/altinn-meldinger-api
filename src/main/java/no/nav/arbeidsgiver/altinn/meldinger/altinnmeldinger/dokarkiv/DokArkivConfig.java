@@ -38,7 +38,7 @@ public class DokArkivConfig {
         return new RestTemplate();
     }
 
-    @Bean
+    //@Bean
     RestTemplate restTemplateOauth2(
             RestTemplateBuilder restTemplateBuilder,
             ClientConfigurationProperties clientConfigurationProperties,

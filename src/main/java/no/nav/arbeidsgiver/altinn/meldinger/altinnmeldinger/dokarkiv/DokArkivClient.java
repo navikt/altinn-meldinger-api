@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.Journalpost;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.JournalpostResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -51,7 +49,8 @@ public class DokArkivClient {
     private String sendJournalpost(final Journalpost journalpost) {
         debugLogJournalpost(journalpost);
         try {
-            return restTemplateOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
+//            return restTemplateOauth2.postForObject(uri, new HttpEntity<>(journalpost, headers), JournalpostResponse.class).getJournalpostId();
+            return null;
         } catch (Exception e) {
             log.error("Kall til Joark feilet", e);
             throw new RuntimeException("Kall til Joark feilet: " + e);
