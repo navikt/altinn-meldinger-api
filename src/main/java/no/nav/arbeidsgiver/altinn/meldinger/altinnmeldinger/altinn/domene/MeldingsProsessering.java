@@ -47,7 +47,7 @@ public class MeldingsProsessering {
         return id;
     }
 
-    public String getMeldingsId() {
+    public String getMeldingId() {
         return meldingId;
     }
 
@@ -98,4 +98,11 @@ public class MeldingsProsessering {
     public LocalDateTime getAltinnSendtTidspunkt() {
         return altinnSendtTidspunkt;
     }
+
+    public JoarkStatus getJoarkStatus() { return joarkStatus; }
+
+    public String getJournalpostId() { return journalpostId; }
+
+    public LocalDateTime getJoarkSendtTidspunkt() { return joarkSendtTidspunkt; }
+
 }
