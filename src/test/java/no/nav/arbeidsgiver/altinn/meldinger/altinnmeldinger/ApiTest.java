@@ -50,7 +50,10 @@ public class ApiTest {
     @Test
     public void api__skal_sende_melding_til_altinn_og_sende_til_joark_og_returnere_created() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        List<PdfVedleggDTO> vedlegg = List.of(new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"));
+        List<PdfVedleggDTO> vedlegg = List.of(
+                new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"),
+                new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en ny fil".getBytes()), "Filnavn2.txt", "Vedleggnavn2")
+        );
         AltinnMeldingDTO altinnMelding = new AltinnMeldingDTO(
                 List.of("999999999", "888888888"),
                 "Dette er en melding som skal til Altinn",
@@ -86,12 +89,12 @@ public class ApiTest {
                     .stream()
                     .map(p -> p.getOrgnr())
                     .collect(Collectors.toList()))
-                    .containsExactly("999999999", "888888888");
+                    .containsExactlyInAnyOrder("999999999", "888888888");
             assertThat(meldingRepository.hentMedStatus(AltinnStatus.OK, JoarkStatus.OK)
                     .stream()
                     .map(p -> p.getOrgnr())
                     .collect(Collectors.toList()))
-                    .containsExactly("999999999", "888888888");
+                    .containsExactlyInAnyOrder("999999999", "888888888");
         });
 
     }

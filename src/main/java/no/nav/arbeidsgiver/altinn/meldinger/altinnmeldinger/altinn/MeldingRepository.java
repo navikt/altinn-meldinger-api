@@ -64,8 +64,8 @@ public class MeldingRepository {
 
         return jdbcTemplate.query(
                 SELECT_PROSESSERINGS_STATUS +
-                        "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status and joark_status = :joark_status order by id limit :antall) " +
-                        "order by melding.id ",
+                        "where prosesserings_status.id in (select distinct id from prosesserings_status where altinn_status = :altinn_status and joark_status = :joark_status order by id limit :antall) " +
+                        "order by prosesserings_status.id",
                 parameterSource,
                 MELDINGS_PROSESSERING_MAPPER);
     }
@@ -77,8 +77,8 @@ public class MeldingRepository {
 
         return jdbcTemplate.query(
                 SELECT_PROSESSERINGS_STATUS +
-                        "where prosesserings_status.id in (select id from prosesserings_status where altinn_status = :altinn_status order by id limit :antall) " +
-                        "order by melding.id ",
+                        "where prosesserings_status.id in (select distinct id from prosesserings_status where altinn_status = :altinn_status order by id limit :antall) " +
+                        "order by prosesserings_status.id",
                 parameterSource,
                 MELDINGS_PROSESSERING_MAPPER);
     }
@@ -199,7 +199,7 @@ public class MeldingRepository {
         jdbcTemplate.update("update prosesserings_status set altinn_status = :altinn_status, altinn_referanse = :altinn_referanse, altinn_sendt_tidspunkt = :altinn_sendt_tidspunkt where id = :id ", parameterSource);
     }
 
-    public void oppdaterJournalpostId(String id, JoarkStatus joarkStatus, String journalpostId) {
+    public void oppdaterDokarkivStatus(String id, JoarkStatus joarkStatus, String journalpostId) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
                 .addValue("joark_status", joarkStatus.name())
