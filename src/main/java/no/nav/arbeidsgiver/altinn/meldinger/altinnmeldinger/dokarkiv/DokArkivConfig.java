@@ -38,7 +38,7 @@ public class DokArkivConfig {
 
     @Bean
     public RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer) {
-        return configurer.configure(new RestTemplateBuilder()).setReadTimeout(Duration.ofSeconds(10));
+        return configurer.configure(new RestTemplateBuilder()).setConnectTimeout(Duration.ofSeconds(10)).setReadTimeout(Duration.ofSeconds(10));
     }
 
     @Bean
