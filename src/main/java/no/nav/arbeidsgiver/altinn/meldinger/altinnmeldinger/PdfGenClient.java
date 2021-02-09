@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.util.List;
 
 @Service
 public class PdfGenClient {
@@ -28,6 +29,7 @@ public class PdfGenClient {
                 .build()
                 .toUri();
         headers.setContentType(new MediaType(MediaType.APPLICATION_JSON, Charset.defaultCharset()));
+        headers.setAccept(List.of(MediaType.APPLICATION_PDF));
     }
 
     public byte[] hovedmeldingPdfBytes(String meldingJson) {
