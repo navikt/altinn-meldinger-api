@@ -37,7 +37,9 @@ public class DokArkivConfig {
     @Bean
     RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory());
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setReadTimeout(5000);
+        restTemplate.setRequestFactory(factory);
         return restTemplate;
     }
 
