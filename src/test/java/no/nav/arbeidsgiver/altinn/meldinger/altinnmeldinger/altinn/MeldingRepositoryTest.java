@@ -48,7 +48,7 @@ class MeldingRepositoryTest {
         assertThat(meldingRepository.hentMeldingerSomSkalSendesTilDokarkiv().size()).isEqualTo(2);
 
         meldingRepository.hentMeldingerSomSkalSendesTilDokarkiv().forEach(
-                meldingsProsessering -> meldingRepository.oppdaterJournalpostId(meldingsProsessering.getId(), JoarkStatus.OK, "joarkref"));
+                meldingsProsessering -> meldingRepository.oppdaterDokarkivStatus(meldingsProsessering.getId(), JoarkStatus.OK, "joarkref"));
 
         assertThat(meldingRepository.hentMeldingerSomSkalSendesTilAltinn().size()).isEqualTo(0);
         assertThat(meldingRepository.hentMeldingerSomSkalSendesTilDokarkiv().size()).isEqualTo(0);
@@ -68,7 +68,7 @@ class MeldingRepositoryTest {
 
         prosesseringList.forEach(meldingsProsessering -> {
             meldingRepository.oppdaterAltinnStatus(meldingsProsessering.getId(), AltinnStatus.OK, "altinnref");
-            meldingRepository.oppdaterJournalpostId(meldingsProsessering.getId(), JoarkStatus.OK, "journalpost");
+            meldingRepository.oppdaterDokarkivStatus(meldingsProsessering.getId(), JoarkStatus.OK, "journalpost");
         });
 
         prosesseringList = meldingRepository.hentMedStatus(AltinnStatus.OK, JoarkStatus.OK);

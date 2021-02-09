@@ -80,7 +80,7 @@ public class DokArkivService {
             log.warn("Feil mot Dokarkiv", e);
             joarkStatus = JoarkStatus.FEIL;
         }
-        meldingRepository.oppdaterJournalpostId(id, joarkStatus, journalpostId);
+        meldingRepository.oppdaterDokarkivStatus(id, joarkStatus, journalpostId);
         return Pair.of(id, joarkStatus);
     }
 

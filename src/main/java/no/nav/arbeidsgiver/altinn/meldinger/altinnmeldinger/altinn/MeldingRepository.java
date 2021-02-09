@@ -199,7 +199,7 @@ public class MeldingRepository {
         jdbcTemplate.update("update prosesserings_status set altinn_status = :altinn_status, altinn_referanse = :altinn_referanse, altinn_sendt_tidspunkt = :altinn_sendt_tidspunkt where id = :id ", parameterSource);
     }
 
-    public void oppdaterJournalpostId(String id, JoarkStatus joarkStatus, String journalpostId) {
+    public void oppdaterDokarkivStatus(String id, JoarkStatus joarkStatus, String journalpostId) {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
                 .addValue("joark_status", joarkStatus.name())
