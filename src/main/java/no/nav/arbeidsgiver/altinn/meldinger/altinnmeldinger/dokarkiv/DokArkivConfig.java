@@ -6,12 +6,15 @@ import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.client.RestTemplateBuilderConfigurer;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Configuration
@@ -31,6 +34,17 @@ public class DokArkivConfig {
 
     public String getPdfGenUri() {
         return pdfGenUri;
+    }
+
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder(RestTemplateBuilderConfigurer configurer) {
+        return configurer.configure(new RestTemplateBuilder()).setReadTimeout(Duration.ofSeconds(10));
+    }
+
+    @Bean
+    RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .customizers(restTemplate -> restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory())).build();
     }
 
     @Bean
