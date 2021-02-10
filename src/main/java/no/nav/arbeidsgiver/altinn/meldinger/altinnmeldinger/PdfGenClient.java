@@ -30,7 +30,6 @@ public class PdfGenClient {
                 .toUri();
         headers.setContentType(new MediaType(MediaType.APPLICATION_JSON, Charset.defaultCharset()));
         headers.setAccept(List.of(MediaType.APPLICATION_PDF));
-        log.info("Init restTemplate med reqFactory {}", restTemplate.getRequestFactory()); //TODO Ta vekk
     }
 
     public byte[] hovedmeldingPdfBytes(String meldingJson) {

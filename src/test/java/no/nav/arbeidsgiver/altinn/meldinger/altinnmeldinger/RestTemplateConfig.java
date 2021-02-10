@@ -1,0 +1,14 @@
+package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class RestTemplateConfig {
+
+    @Bean
+    RestTemplate restempate() {
+        return new RestTemplate();
+    }
+}
