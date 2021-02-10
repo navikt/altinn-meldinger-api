@@ -38,6 +38,7 @@ spec:
                 - host: tt02.altinn.no
                 - host: dokarkiv.dev-fss-pub.nais.io
                 - host: login.microsoftonline.com
+                - host: altinn-meldinger-dokgen.dev.intern.nav.no
     azure:
         application:
             enabled: true
