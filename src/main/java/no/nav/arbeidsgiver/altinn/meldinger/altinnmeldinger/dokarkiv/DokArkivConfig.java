@@ -1,10 +1,12 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenResponse;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateBuilderConfigurer;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,8 +14,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -22,6 +28,9 @@ import java.util.Optional;
 public class DokArkivConfig {
     private final String uri;
     private String pdfGenUri;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     public DokArkivConfig(@Value("${dokarkiv.uri}") String uri, @Value("${pdfgen.uri}") String pdfGenUri) {
         this.uri = uri;
@@ -44,7 +53,12 @@ public class DokArkivConfig {
     @Bean
     RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
-                .customizers(restTemplate -> restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory())).build();
+                .customizers(restTemplate -> restTemplate.setRequestFactory(new SimpleClientHttpRequestFactory()))
+                .additionalMessageConverters(
+                        new StringHttpMessageConverter(StandardCharsets.UTF_8),
+                        new ByteArrayHttpMessageConverter(),
+                        new MappingJackson2HttpMessageConverter(objectMapper))
+                .build();
     }
 
     @Bean
