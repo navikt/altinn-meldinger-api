@@ -81,7 +81,7 @@ public class ApiTest {
                 .stream()
                 .map(p -> p.getOrgnr())
                 .collect(Collectors.toList()))
-            .containsExactly("999999999", "888888888");
+            .containsExactlyInAnyOrder("999999999", "888888888");
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
             assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT)).isEmpty();
