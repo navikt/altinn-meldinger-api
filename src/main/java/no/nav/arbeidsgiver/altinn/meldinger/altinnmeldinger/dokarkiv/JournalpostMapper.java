@@ -72,7 +72,7 @@ public class JournalpostMapper {
                 .map(pdfVedlegg -> new Dokument(pdfVedlegg.getVedleggnavn(), Arrays.asList(new DokumentVariant(pdfVedlegg.getFilinnhold()))))
                 .collect(Collectors.toList());
 
-        dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(Base64.getEncoder().encodeToString(meldingPdf))));
+        dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(Base64.getEncoder().encodeToString(meldingPdf)))));
         return new Journalpost(melding.getTittel(), bruker, mottaker, dokumenter);
     }
 }
