@@ -31,7 +31,6 @@ public class DokArkivService {
         List<MeldingsProsessering> meldinger = meldingRepository.hentMeldingerSomSkalSendesTilDokarkiv();
         if(meldinger.size() > 0) {
             sendTilDokarkiv(meldinger);
-
         }
     }
 
