@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,7 @@ public class JournalpostMapper {
                 .map(pdfVedlegg -> new Dokument(pdfVedlegg.getVedleggnavn(), Arrays.asList(new DokumentVariant(pdfVedlegg.getFilinnhold()))))
                 .collect(Collectors.toList());
 
-        dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(meldingPdf.toString()))));
+        dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(Base64.getEncoder().encodeToString(meldingPdf))));
         return new Journalpost(melding.getTittel(), bruker, mottaker, dokumenter);
     }
 }
