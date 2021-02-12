@@ -3,18 +3,16 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.PdfGenClient;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.*;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.MeldingTilPdfJson.opprettPdfJson;
 
 @Component
 public class JournalpostMapper {
@@ -28,7 +26,7 @@ public class JournalpostMapper {
 
     public Journalpost meldingTilJournalpost(MeldingsProsessering melding) {
         try {
-            byte[] meldingPdf = opprettHovedDokument(meldingTilJson(melding.getMelding()));
+            byte[] meldingPdf = opprettHovedDokument(opprettPdfJson(melding.getMelding()));
             return opprettJournalpost(meldingPdf, melding);
         } catch (Exception e) {
             log.error("Feil ved mapping til Journalpost", e);
@@ -38,29 +36,6 @@ public class JournalpostMapper {
 
     private byte[] opprettHovedDokument(String jsonMelding) {
         return pdfGenClient.hovedmeldingPdfBytes(jsonMelding);
-    }
-
-    private String meldingTilJson(String melding) {
-        List<String> meldinger = new ArrayList<>();
-        StringBuilder builder = new StringBuilder();
-        Document doc = Jsoup.parse(melding);
-
-        builder.append("{\"melding\": \"").append(doc.text()).append("\"}");
-        meldinger.add(builder.toString());
-
-        Elements links = doc.select("a[href]");
-        links.stream().forEach(link -> {
-            builder.delete(0, builder.length());
-            builder.append("{\"melding\": \"")
-                    .append(link.text())
-                    .append(": ")
-                    .append(link.attr("href")).append("\"}");
-            meldinger.add(builder.toString());
-        });
-
-        builder.delete(0, builder.length());
-        builder.append("{ \"meldinger\":").append(meldinger.toString()).append("}");
-        return builder.toString();
     }
 
     private Journalpost opprettJournalpost(byte[] meldingPdf, MeldingsProsessering melding) {
