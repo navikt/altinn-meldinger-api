@@ -26,7 +26,10 @@ Appen benytter Altinns tjenesteeier-api.
  - Endepunkteter: https://altinn.github.io/docs/api/tjenesteeiere/soap/endepunkt-liste/#correspondence
 
 # Andre relevante lenker
+
 Appen kjører i Google Cloud Platform (GCP). GCP-prosjekter administreres her: https://console.cloud.google.com/
+
+Grafana-dashboard for overvåkning: https://grafana.adeo.no/d/RbFj0LEGk/altinn-meldigner-api
 
 # Henvendelser
 
