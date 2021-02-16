@@ -13,7 +13,7 @@ dokarkiv:
   uri: https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1/journalpost
 
 pdfgen:
-  uri: https://altinn-meldinger-dokgen.dev.intern.nav.no/template/arbeidsgiver2-altinnmelding-melding/create-pdf
+  uri: https://altinn-meldinger-dokgen.dev.intern.nav.no/template/arbeidsgiver-altinnmelding-melding/create-pdf
 
 groupid: 45ddeb07-f047-4dc0-bf49-4b1c0a60b8ed
 
