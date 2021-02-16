@@ -14,7 +14,7 @@ dokarkiv:
   uri: https://dokarkiv.nais.adeo.no/rest/journalpostapi/v1/journalpost
 
 pdfgen:
-  uri: "uri"
+  uri: https://altinn-meldinger-dokgen.intern.nav.no/template/arbeidsgiver-altinnmelding-melding/create-pdf
 
 groupid: 53e6bb70-00e3-498a-9a69-1466e9a22d39
 
