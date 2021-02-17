@@ -43,6 +43,9 @@ spec:
                 - host: dokarkiv.dev-fss-pub.nais.io
                 - host: login.microsoftonline.com
                 - host: altinn-meldinger-dokgen.dev.intern.nav.no
+        inbound:
+            rules:
+                - application: altinn-meldinger-web
     azure:
         application:
             enabled: true
