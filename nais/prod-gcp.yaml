@@ -38,6 +38,9 @@ spec:
                 - host: www.altinn.no
                 - host: altinn.no
                 - host: login.microsoftonline.com
+        inbound:
+            rules:
+                - application: altinn-meldinger-web
     azure:
         application:
             enabled: true
