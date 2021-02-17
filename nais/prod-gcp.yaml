@@ -32,6 +32,8 @@ spec:
           value: prod-gcp
     envFrom:
         - secret: altinn-meldinger-api-secrets
+        - secret: altinn-meldinger-api-enkelutsending-orgnrs
+        - secret: altinn-meldinger-api-enkelutsending-melding
     accessPolicy:
         outbound:
             external:

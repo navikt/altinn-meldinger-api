@@ -10,12 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Unprotected
 @RestController
-@Profile({"dev-gcp", "local"})
 public class Enkelutsending {
     private final static Logger log = LoggerFactory.getLogger(Enkelutsending.class);
 
@@ -32,7 +32,9 @@ public class Enkelutsending {
     ) {
         this.meldingRepository = meldingRepository;
         this.id = id;
-        this.orgnrs = Arrays.asList(kommaseparerteOrgnrs.split(","));
+        this.orgnrs = kommaseparerteOrgnrs.length() > 0
+                ? Arrays.asList(kommaseparerteOrgnrs.split(","))
+                : new ArrayList<>();
         log.info("Enkelutsending konfigurert til å sende ut meldinger til " + this.orgnrs.size() + " organisasjoner");
         this.meldingstekst = meldingstekst;
     }
@@ -43,14 +45,13 @@ public class Enkelutsending {
                 id,
                 orgnrs,
                 meldingstekst,
-                "tittel", // TODO
+                "Dette er en testmelding fra Nav", // TODO
                 "NAV_AGP2", // TODO
                 "5562", // TODO
                 "1", // TODO
                 null,
                 2, // TODO
                 List.of() // vedlegg
-
         );
 
         try {
