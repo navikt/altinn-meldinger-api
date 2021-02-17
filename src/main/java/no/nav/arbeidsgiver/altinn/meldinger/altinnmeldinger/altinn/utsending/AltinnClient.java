@@ -58,14 +58,8 @@ public class AltinnClient {
                     insertCorrespondenceBasicV2.getCorrespondence()
             );
             ReflectionToStringBuilder.setDefaultStyle(new MultilineRecursiveToStringStyle());
-            log.info("Response fra Altinn for melding med ExternalShipmentReference {}: {}",
-                    insertCorrespondenceBasicV2.getExternalShipmentReference(),
-                    ReflectionToStringBuilder.toStringExclude(receiptExternal, "lastChanged"));
             return insertCorrespondenceBasicV2.getExternalShipmentReference();
         } catch (Exception fault) {
-            log.error("Feil mot Altinn for melding med ExternalShipmentReference {} ",
-                    insertCorrespondenceBasicV2.getExternalShipmentReference(),
-                    fault);
             throw new RuntimeException(fault);
         }
     }
