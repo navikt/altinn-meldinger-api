@@ -72,9 +72,9 @@ public class ApiTest {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
-                        .header("Authorization", "Bearer " + token("aad", "subject", "audience", ""))
-                        .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + token("aad", "subject", "audience", "min-gruppe"))
+                        .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .build(),
                 ofString()
         );
