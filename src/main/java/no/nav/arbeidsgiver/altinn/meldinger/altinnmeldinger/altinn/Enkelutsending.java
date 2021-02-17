@@ -33,6 +33,7 @@ public class Enkelutsending {
         this.meldingRepository = meldingRepository;
         this.id = id;
         this.orgnrs = Arrays.asList(kommaseparerteOrgnrs.split(","));
+        log.info("Enkelutsending konfigurert til å sende ut meldinger til " + this.orgnrs.size() + " organisasjoner");
         this.meldingstekst = meldingstekst;
     }
 
