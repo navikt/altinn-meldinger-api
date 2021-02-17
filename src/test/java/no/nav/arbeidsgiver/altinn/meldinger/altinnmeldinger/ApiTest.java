@@ -105,7 +105,7 @@ public class ApiTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {"feilgruppe"})
+    @ValueSource(strings = {"feilgruppe", "min-gruppe"})
     public void api__skal_validere_token(String gruppe) throws Exception {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
@@ -116,6 +116,10 @@ public class ApiTest {
                 ofString()
         );
 
+        if ("min-gruppe".equals(gruppe)) {
+            assertThat(response.statusCode()).isEqualTo(200);
+            return;
+        }
         assertThat(response.statusCode()).isEqualTo(403);
     }
 
