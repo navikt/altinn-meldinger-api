@@ -21,10 +21,10 @@ public class Enkeltutsending {
         this.meldingRepository = meldingRepository;
     }
 
-    @PostMapping("/enkeltmelding")
-    private ResponseEntity<String> sendEnkeltmelding() {
+    @PostMapping("/enkelutsending")
+    private ResponseEntity<String> utførEnkelutsending() {
         Melding melding = new Melding(
-                "id-enkeltmelding",
+                "id-enkelutsending",
                 List.of("orgnr1", "orgnr2"),
                 "melding",
                 "tittel",
@@ -39,10 +39,10 @@ public class Enkeltutsending {
 
         try {
             meldingRepository.opprett(melding);
-            log.info("Enkeltmelding lagret");
-            return ResponseEntity.ok("Enkeltmelding lagret");
+            log.info("Enkeltutsending lagret");
+            return ResponseEntity.ok("Enkeltutsending lagret");
         } catch (Error e) {
-            log.info("En feil har skjedd under lagring av enkeltmelding");
+            log.info("En feil har skjedd under lagring av enkeltutsending");
             return ResponseEntity.status(500).body("En feil har skjedd");
         }
     }
