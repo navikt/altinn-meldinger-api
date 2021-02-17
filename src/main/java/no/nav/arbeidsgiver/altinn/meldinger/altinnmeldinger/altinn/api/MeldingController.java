@@ -2,7 +2,6 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnClient;
-import no.nav.security.token.support.core.api.Protected;
 import no.nav.security.token.support.core.api.Unprotected;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;

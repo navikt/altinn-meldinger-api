@@ -4,10 +4,12 @@ management.endpoints.web:
   exposure.include: info, health, metrics, prometheus
   base-path: /internal/actuator
 
+groupid: "min-gruppe"
+
 utsending:
   altinn.scheduler:
-      lockAtMostFor: 300000
-      lockAtLeastFor: 2000
+    lockAtMostFor: 300000
+    lockAtLeastFor: 2000
   dokarkiv.scheduler:
     lockAtMostFor: 300000
     lockAtLeastFor: 2000

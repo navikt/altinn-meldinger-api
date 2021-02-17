@@ -10,6 +10,9 @@ import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -20,6 +23,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +72,7 @@ public class ApiTest {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
-                        .header("Authorization", "Bearer " + token("aad", "subject", "audience"))
+                        .header("Authorization", "Bearer " + token("aad", "subject", "audience", ""))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .header("Content-Type", "application/json")
                         .build(),
@@ -99,20 +103,23 @@ public class ApiTest {
 
     }
 
-    @Test
-    public void api__skal_validere_token() throws Exception {
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"feilgruppe"})
+    public void api__skal_validere_token(String gruppe) throws Exception {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/protected"))
                         .GET()
+                        .header("Authorization", "Bearer " + token("aad", "subject", "audience", gruppe))
                         .build(),
                 ofString()
         );
 
-        assertThat(response.statusCode()).isEqualTo(401);
+        assertThat(response.statusCode()).isEqualTo(403);
     }
 
-    private String token(String issuerId, String subject, String audience){
+    private String token(String issuerId, String subject, String audience, String... groups) {
         return mockOAuth2Server.issueToken(
                 issuerId,
                 "theclientid",
@@ -120,7 +127,7 @@ public class ApiTest {
                         issuerId,
                         subject,
                         audience,
-                        Collections.emptyMap(),
+                        Collections.singletonMap("groups", Arrays.asList(groups)),
                         3600
                 )
         ).serialize();
