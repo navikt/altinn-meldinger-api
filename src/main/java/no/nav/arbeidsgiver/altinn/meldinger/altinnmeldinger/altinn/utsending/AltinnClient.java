@@ -36,8 +36,10 @@ public class AltinnClient {
     private static final String EXTERNAL_SHIPMENT_REFERENCE_PREFIX = "NAV_ALTINN_MELDINGER_";
     private static final String SPRÅKKODE_NORSK_BOKMÅL = "1044";
     private static final String VARSLING_TYPE = "TokenTextOnly";
+    private static final String VARSLING_TITTEL = "Ny melding fra NAV til organisasjon ";
     private static final String VARSLING_HOVEDTEKST_PRE = "NAV har sendt en melding til organisasjon ";
-    private static final String VARSLING_HOVEDTEKST_POST = ". Logg inn i Altinn for å se innholdet. Vennlig hilsen NAV";
+    private static final String VARSLING_HOVEDTEKST_POST = "Logg inn i Altinn for å se innholdet.";
+    private static final String VARSLING_HILSEN = "Vennlig hilsen NAV";
 
     private static final Logger log = LoggerFactory.getLogger(AltinnClient.class);
 
@@ -100,9 +102,14 @@ public class AltinnClient {
     private Notification notification(String orgNummer) {
 
         final String VARSLING_TEKST = new StringBuilder(7)
+                .append("<p>")
                 .append(VARSLING_HOVEDTEKST_PRE)
-                .append(orgNummer)
+                .append(orgNummer + ".")
+                .append("<p>")
                 .append(VARSLING_HOVEDTEKST_POST)
+                .append("<p>")
+                .append("<p>")
+                .append(VARSLING_HILSEN)
                 .toString();
 
         return new Notification()
@@ -110,10 +117,14 @@ public class AltinnClient {
                 .withShipmentDateTime(fromLocalDate(LocalDateTime.now()))
                 .withReceiverEndPoints(new ReceiverEndPointBEList()
                         .withReceiverEndPoint(new ReceiverEndPoint()
-                                .withTransportType(TransportType.SMS)))
+                                .withTransportType(TransportType.EMAIL)))
                 .withNotificationType(VARSLING_TYPE)
+                .withFromAddress("noreply@altinn.no")
                 .withTextTokens(new TextTokenSubstitutionBEList()
                         .withTextToken(
+                                new TextToken()
+                                        .withTokenNum(0)
+                                        .withTokenValue(VARSLING_TITTEL + orgNummer),
                                 new TextToken()
                                         .withTokenNum(1)
                                         .withTokenValue(VARSLING_TEKST)
