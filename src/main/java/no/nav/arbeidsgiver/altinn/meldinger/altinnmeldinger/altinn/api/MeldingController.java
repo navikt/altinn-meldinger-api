@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Protected
-@Profile("!prod-gcp")
 @RestController
 public class MeldingController {
 
