@@ -1,7 +1,6 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
 import org.apache.cxf.endpoint.Client;
-import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.apache.cxf.message.Message;
@@ -19,7 +18,6 @@ public class WsClient {
         factory.setServiceClass(portType);
         factory.setAddress(Objects.requireNonNull(serviceUrl));
         factory.getFeatures().add(new WSAddressingFeature());
-        factory.getFeatures().add(new LoggingFeature());
         T port = (T) factory.create();
         Client client = ClientProxy.getClient(port);
         Arrays.stream(interceptors).forEach(client.getOutInterceptors()::add);
