@@ -18,18 +18,12 @@ pdfgen:
 
 groupid: 53e6bb70-00e3-498a-9a69-1466e9a22d39
 
-no.nav.security.jwt.issuer:
-  aad:
-    discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    cookie_name: isso-idtoken
-    accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
-
 no.nav.security.jwt:
   issuer:
     aad:
       discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
       cookie_name: isso-idtoken
-      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+      accepted_audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}, 05b20497-e175-431e-8324-c19354d71355
 
   client.registration.altinnmelding:
     token-endpoint-url: https://login.microsoftonline.com/${AZURE_APP_TENANT_ID}/oauth2/v2.0/token
