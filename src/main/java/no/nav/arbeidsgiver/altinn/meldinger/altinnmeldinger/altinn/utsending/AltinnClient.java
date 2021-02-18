@@ -1,9 +1,11 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending;
 
+import no.altinn.schemas.serviceengine.formsengine._2009._10.TransportType;
 import no.altinn.schemas.services.intermediary.receipt._2009._10.ReceiptExternal;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.AttachmentsV2;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.ExternalContentV2;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.InsertCorrespondenceV2;
+import no.altinn.schemas.services.serviceengine.notification._2009._10.*;
 import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondenceAgencyExternalBasic;
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
@@ -33,6 +35,9 @@ public class AltinnClient {
 
     private static final String EXTERNAL_SHIPMENT_REFERENCE_PREFIX = "NAV_ALTINN_MELDINGER_";
     private static final String SPRÅKKODE_NORSK_BOKMÅL = "1044";
+    private static final String VARSLING_TYPE = "TokenTextOnly";
+    private static final String VARSLING_HOVEDTEKST_PRE = "NAV har sendt en melding til organisasjon ";
+    private static final String VARSLING_HOVEDTEKST_POST = ". Logg inn i Altinn for å se innholdet. Vennlig hilsen NAV";
 
     private static final Logger log = LoggerFactory.getLogger(AltinnClient.class);
 
@@ -83,6 +88,7 @@ public class AltinnClient {
                         .withAllowSystemDeleteDateTime(allowSystemDeleteDateTimeXML)
                         .withAllowForwarding(false)
                         .withReportee(altinnMelding.getOrgnr())
+                        .withNotifications(new NotificationBEList().withNotification(notification(altinnMelding.getOrgnr())))
                         .withContent(new ExternalContentV2()
                                 .withLanguageCode(SPRÅKKODE_NORSK_BOKMÅL)
                                 .withMessageTitle(altinnMelding.getTittel())
@@ -91,12 +97,35 @@ public class AltinnClient {
                         ));
     }
 
+    private Notification notification(String orgNummer) {
+
+        final String VARSLING_TEKST = new StringBuilder(7)
+                .append(VARSLING_HOVEDTEKST_PRE)
+                .append(orgNummer)
+                .append(VARSLING_HOVEDTEKST_POST)
+                .toString();
+
+        return new Notification()
+                .withLanguageCode(SPRÅKKODE_NORSK_BOKMÅL)
+                .withShipmentDateTime(fromLocalDate(LocalDateTime.now()))
+                .withReceiverEndPoints(new ReceiverEndPointBEList()
+                        .withReceiverEndPoint(new ReceiverEndPoint()
+                                .withTransportType(TransportType.SMS)))
+                .withNotificationType(VARSLING_TYPE)
+                .withTextTokens(new TextTokenSubstitutionBEList()
+                        .withTextToken(
+                                new TextToken()
+                                        .withTokenNum(1)
+                                        .withTokenValue(VARSLING_TEKST)
+                        ));
+    }
+
     private AttachmentsV2 createAttachments(MeldingsProsessering altinnMelding) {
         List<Vedlegg> vedlegg = altinnMelding.getVedlegg();
         return vedlegg == null || vedlegg.isEmpty() ? null
                 : new AttachmentsV2()
-                    .withBinaryAttachments(new BinaryAttachmentExternalBEV2List()
-                            .withBinaryAttachmentV2(vedlegg.stream().map(AltinnClient::tilBinaryAttachment).collect(Collectors.toList())));
+                .withBinaryAttachments(new BinaryAttachmentExternalBEV2List()
+                        .withBinaryAttachmentV2(vedlegg.stream().map(AltinnClient::tilBinaryAttachment).collect(Collectors.toList())));
     }
 
     private static BinaryAttachmentV2 tilBinaryAttachment(Vedlegg vedlegg) {
