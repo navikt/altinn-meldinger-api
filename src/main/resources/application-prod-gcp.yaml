@@ -11,7 +11,7 @@ altinn:
   uri: https://www.altinn.no/ServiceEngineExternal/CorrespondenceAgencyExternalBasic.svc
 
 dokarkiv:
-  uri: https://dokarkiv.nais.adeo.no/rest/journalpostapi/v1/journalpost
+  uri: https://dokarkiv.prod-fss-pub.nais.io/rest/journalpostapi/v1/journalpost
 
 pdfgen:
   uri: https://altinn-meldinger-dokgen.intern.nav.no/template/arbeidsgiver-altinnmelding-melding/create-pdf
