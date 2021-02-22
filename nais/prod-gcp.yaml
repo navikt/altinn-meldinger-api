@@ -51,4 +51,7 @@ spec:
         application:
             enabled: true
             tenant: nav.no
+            claims:
+                groups:
+                    - id: 53e6bb70-00e3-498a-9a69-1466e9a22d39
     webproxy: false
