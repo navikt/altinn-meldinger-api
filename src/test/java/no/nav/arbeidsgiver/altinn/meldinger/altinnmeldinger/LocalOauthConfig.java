@@ -9,6 +9,7 @@ import no.nav.security.token.support.spring.test.MockLoginController;
 import no.nav.security.token.support.spring.test.MockOAuth2ServerAutoConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Profile;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -34,12 +36,12 @@ public class LocalOauthConfig {
     private final int port = 9000;
     private final boolean interactiveLogin = false;
 
-    public LocalOauthConfig() {
+    public LocalOauthConfig(@Value("${groupid}") String groupId) {
         DefaultOAuth2TokenCallback callback = new DefaultOAuth2TokenCallback(
                 "aad",
                 UUID.randomUUID().toString(),
-                null,
-                Map.of("hei", "test"),
+                "altinn-meldinger-api",
+                Map.of("groups", List.of(groupId)),
                 3600L
         );
 

@@ -29,7 +29,7 @@ no.nav.security.jwt.issuer:
   aad:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
     cookie_name: localhost-idtoken
-    accepted_audience: audience
+    accepted_audience: altinn-meldinger-api
 
 utsending:
   altinn.scheduler:
@@ -38,3 +38,5 @@ utsending:
   dokarkiv.scheduler:
     lockAtMostFor: 2000
     lockAtLeastFor: 101
+
+groupid: rettighet-for-å-bruke-apiet-lokalt
