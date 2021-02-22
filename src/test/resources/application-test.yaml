@@ -38,8 +38,3 @@ utsending:
   dokarkiv.scheduler:
     lockAtMostFor: 2000
     lockAtLeastFor: 101
-
-enkelutsending:
-  id: enkelutsending-test
-  orgnrs: 123456789,987654321
-  melding: Denne meldingen skal sendes
