@@ -33,9 +33,6 @@ public class LocalOauthConfig {
     private final Logger log = LoggerFactory.getLogger(MockOAuth2ServerAutoConfiguration.class);
     private final MockOAuth2Server mockOAuth2Server;
 
-    private final int port = 9000;
-    private final boolean interactiveLogin = false;
-
     public LocalOauthConfig(@Value("${groupid}") String groupId) {
         DefaultOAuth2TokenCallback callback = new DefaultOAuth2TokenCallback(
                 "aad",
@@ -47,7 +44,7 @@ public class LocalOauthConfig {
 
         this.mockOAuth2Server = new MockOAuth2Server(
                 new OAuth2Config(
-                        interactiveLogin,
+                        false,
                         new OAuth2TokenProvider(),
                         Set.of(callback)
                 )
@@ -69,6 +66,7 @@ public class LocalOauthConfig {
     @PostConstruct
     void start() {
         try {
+            int port = 9000;
             log.debug("starting mock oauth2 server on port " + port);
             mockOAuth2Server.start(port);
         } catch (IOException e) {
