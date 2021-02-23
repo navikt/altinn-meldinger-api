@@ -27,11 +27,13 @@ pdfgen:
   #  uri: "http://localhost:5913/template/arbeidsgiver2-altinnmelding-melding/create-pdf"
   uri: "http://localhost:${wiremock.port}/pdfgen"
 
+tilgangskontroll.group: rettighet-for-å-bruke-apiet-lokalt
+
 no.nav.security.jwt.issuer:
   aad:
     discoveryurl: http://localhost:${mock-oauth2-server.port}/aad/.well-known/openid-configuration
     cookie_name: localhost-idtoken
-    accepted_audience: audience
+    accepted_audience: altinn-meldinger-api
 
 utsending:
   altinn.scheduler:

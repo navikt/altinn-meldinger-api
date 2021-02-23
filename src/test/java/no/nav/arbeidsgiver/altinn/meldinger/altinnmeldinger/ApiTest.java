@@ -73,7 +73,7 @@ public class ApiTest {
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + token("aad", "subject", "audience", "min-gruppe"))
+                        .header("Authorization", "Bearer " + token("aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .build(),
                 ofString()
@@ -103,23 +103,29 @@ public class ApiTest {
 
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"feilgruppe", "min-gruppe"})
-    public void api__skal_validere_token(String gruppe) throws Exception {
+    @Test
+    public void api__skal_autentisere_bruker() throws Exception {
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/protected"))
-                        .GET()
-                        .header("Authorization", "Bearer " + token("aad", "subject", "audience", gruppe))
+                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
+                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
                         .build(),
                 ofString()
         );
+        assertThat(response.statusCode()).isEqualTo(401);
+    }
 
-        if ("min-gruppe".equals(gruppe)) {
-            assertThat(response.statusCode()).isEqualTo(200);
-            return;
-        }
+    @Test
+    public void api__skal_autorisere_bruker() throws Exception {
+        HttpResponse<String> response = newBuilder().build().send(
+                HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + token("aad", "subject", "altinn-meldinger-api", "feilgruppe"))
+                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
+                        .build(),
+                ofString()
+        );
         assertThat(response.statusCode()).isEqualTo(403);
     }
 
