@@ -15,7 +15,7 @@ dokarkiv:
 pdfgen:
   uri: https://altinn-meldinger-dokgen.dev.intern.nav.no/template/arbeidsgiver-altinnmelding-melding/create-pdf
 
-groupid: 45ddeb07-f047-4dc0-bf49-4b1c0a60b8ed
+tilgangskontroll.group: 45ddeb07-f047-4dc0-bf49-4b1c0a60b8ed
 
 no.nav.security.jwt:
   issuer:

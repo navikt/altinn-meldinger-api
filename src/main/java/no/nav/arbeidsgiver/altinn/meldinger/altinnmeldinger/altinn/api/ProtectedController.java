@@ -19,8 +19,8 @@ public class ProtectedController {
     @Autowired
     private TokenValidationContextHolder contextHolder;
 
-    @Value("${groupid}")
-    private String groupId;
+    @Value("${tilgangskontroll.group}")
+    private String group;
 
     @GetMapping("/protected")
     public ResponseEntity<String> protectedEndepunkt() {
@@ -38,7 +38,7 @@ public class ProtectedController {
         }
 
         try {
-            return object.map(groups -> ((List<String>) groups).contains(groupId)).orElse(false);
+            return object.map(groups -> ((List<String>) groups).contains(group)).orElse(false);
         } catch (Exception a) {
             throw new RuntimeException("Kunne ikke håndtere token");
         }

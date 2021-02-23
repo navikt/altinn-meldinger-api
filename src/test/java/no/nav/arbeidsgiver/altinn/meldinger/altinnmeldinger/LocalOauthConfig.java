@@ -33,12 +33,12 @@ public class LocalOauthConfig {
     private final Logger log = LoggerFactory.getLogger(MockOAuth2ServerAutoConfiguration.class);
     private final MockOAuth2Server mockOAuth2Server;
 
-    public LocalOauthConfig(@Value("${groupid}") String groupId) {
+    public LocalOauthConfig(@Value("${tilgangskontroll.group}") String group) {
         DefaultOAuth2TokenCallback callback = new DefaultOAuth2TokenCallback(
                 "aad",
                 UUID.randomUUID().toString(),
                 "altinn-meldinger-api",
-                Map.of("groups", List.of(groupId)),
+                Map.of("groups", List.of(group)),
                 3600L
         );
 

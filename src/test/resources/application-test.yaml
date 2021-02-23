@@ -25,7 +25,7 @@ dokarkiv:
 pdfgen:
   uri: "http://localhost:${wiremock.port}/pdfgen"
 
-groupid: rettighet-for-å-bruke-apiet-lokalt
+tilgangskontroll.group: rettighet-for-å-bruke-apiet-lokalt
 
 no.nav.security.jwt.issuer:
   aad:
