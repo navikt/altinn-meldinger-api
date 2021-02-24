@@ -1,5 +1,8 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.JoarkStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
@@ -18,13 +21,31 @@ public class DokArkivService {
     private final static Logger log = LoggerFactory.getLogger(DokArkivService.class);
 
     private final MeldingRepository meldingRepository;
+    private final MeterRegistry meterRegistry;
     private final DokArkivClient dokArkivClient;
     private final ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 5,
             0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+    private final Counter dokArkivOKCounter;
+    private final Counter dokArkivFailedCounter;
+    private final Counter dokArkivIgnoredCounter;
+    private final Timer dokArkivTimer;
 
-    public DokArkivService(MeldingRepository meldingRepository, DokArkivClient dokArkivClient) {
+    public DokArkivService(MeldingRepository meldingRepository, MeterRegistry meterRegistry, DokArkivClient dokArkivClient) {
         this.meldingRepository = meldingRepository;
+        this.meterRegistry = meterRegistry;
         this.dokArkivClient = dokArkivClient;
+
+        dokArkivOKCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.ok")
+                .description("Antall meldinger arkivert OK")
+                .register(meterRegistry);
+        dokArkivFailedCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.feilet")
+                .description("Antall meldinger feilet ved arkivering")
+                .register(meterRegistry);
+        dokArkivIgnoredCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.ikke-prosessert")
+                .description("Antall meldinger ikke prosessert ved arkivering")
+                .register(meterRegistry);
+        dokArkivTimer = Timer.builder("altinn-meldinger-api.melding-arkivert.timer")
+                .register(meterRegistry);
     }
 
     public void sendTilDokarkiv() {
@@ -35,25 +56,34 @@ public class DokArkivService {
     }
 
     private void sendTilDokarkiv(List<MeldingsProsessering> meldinger) {
-        List<Callable<Pair<String, JoarkStatus>>> callables = meldinger.stream()
-                .map(this::callable)
-                .collect(Collectors.toList());
-
-        try {
-            List<Future<Pair<String, JoarkStatus>>> futures = executor.invokeAll(callables,280, TimeUnit.SECONDS);
-            List<Optional<Pair<String, JoarkStatus>>> optionalStatus = futures.stream()
-                    .map(DokArkivService::mapTilStatusPar)
+        dokArkivTimer.record(() -> {
+            List<Callable<Pair<String, JoarkStatus>>> callables = meldinger.stream()
+                    .map(this::callable)
                     .collect(Collectors.toList());
 
-            log.info("Sending til Dokarkiv fullført. Antall sendt ok: {}, antall sendt med feil {}, antall ikke prosessert {}",
-                    optionalStatus.stream().filter(Optional::isPresent).map(Optional::get).filter(pair -> JoarkStatus.OK.equals(pair.getRight())).count(),
-                    optionalStatus.stream().filter(Optional::isPresent).map(Optional::get).filter(pair -> JoarkStatus.FEIL.equals(pair.getRight())).count(),
-                    optionalStatus.stream().filter(Optional::isEmpty).count()
-            );
+            try {
+                List<Future<Pair<String, JoarkStatus>>> futures = executor.invokeAll(callables,280, TimeUnit.SECONDS);
+                List<Optional<Pair<String, JoarkStatus>>> optionalStatus = futures.stream()
+                        .map(DokArkivService::mapTilStatusPar)
+                        .collect(Collectors.toList());
 
-        } catch (InterruptedException e) {
-            log.warn("Kjøring avbrutt", e);
-        }
+                long antallSendtOk = optionalStatus.stream().filter(Optional::isPresent).map(Optional::get).filter(pair -> JoarkStatus.OK.equals(pair.getRight())).count();
+                long antallSendtMedFeil = optionalStatus.stream().filter(Optional::isPresent).map(Optional::get).filter(pair -> JoarkStatus.FEIL.equals(pair.getRight())).count();
+                long antallIkkeProsessert = optionalStatus.stream().filter(Optional::isEmpty).count();
+                dokArkivOKCounter.increment(antallSendtOk);
+                dokArkivFailedCounter.increment(antallSendtMedFeil);
+                dokArkivIgnoredCounter.increment(antallIkkeProsessert);
+                log.info("Sending til Dokarkiv fullført. Antall sendt ok: {}, antall sendt med feil {}, antall ikke prosessert {}",
+                        antallSendtOk,
+                        antallSendtMedFeil,
+                        antallIkkeProsessert
+                );
+
+
+            } catch (InterruptedException e) {
+                log.warn("Kjøring avbrutt", e);
+            }
+        });
     }
 
     private static Optional<Pair<String, JoarkStatus>> mapTilStatusPar(Future<Pair<String, JoarkStatus>> pairFuture) {
