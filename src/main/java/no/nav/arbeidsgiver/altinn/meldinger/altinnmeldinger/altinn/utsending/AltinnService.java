@@ -36,13 +36,13 @@ public class AltinnService {
         this.meterRegistry = meterRegistry;
         this.altinnClient = altinnClient;
 
-        altinnOKCounter = Counter.builder("altinn-meldinger-api.melding-sendt.ok.count")
+        altinnOKCounter = Counter.builder("altinn-meldinger-api.melding-sendt.ok")
                 .description("Antall meldinger sendt OK til Altinn")
                 .register(meterRegistry);
-        altinnFailedCounter = Counter.builder("altinn-meldinger-api.melding-sendt.feilet.count")
+        altinnFailedCounter = Counter.builder("altinn-meldinger-api.melding-sendt.feilet")
                 .description("Antall meldinger sendt OK til Altinn")
                 .register(meterRegistry);
-        altinnIgnoredCounter = Counter.builder("altinn-meldinger-api.melding-sendt.ikke-prosessert.count")
+        altinnIgnoredCounter = Counter.builder("altinn-meldinger-api.melding-sendt.ikke-prosessert")
                 .description("Antall meldinger sendt OK til Altinn")
                 .register(meterRegistry);
         altinnTimer = Timer.builder("altinn-meldinger-api.melding-sendt.timer")

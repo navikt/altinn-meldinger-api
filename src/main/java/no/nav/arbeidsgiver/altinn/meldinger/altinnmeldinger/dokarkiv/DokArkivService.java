@@ -35,13 +35,13 @@ public class DokArkivService {
         this.meterRegistry = meterRegistry;
         this.dokArkivClient = dokArkivClient;
 
-        dokArkivOKCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.ok.count")
+        dokArkivOKCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.ok")
                 .description("Antall meldinger arkivert OK")
                 .register(meterRegistry);
-        dokArkivFailedCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.feilet.count")
+        dokArkivFailedCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.feilet")
                 .description("Antall meldinger feilet ved arkivering")
                 .register(meterRegistry);
-        dokArkivIgnoredCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.ikkeprosessert.count")
+        dokArkivIgnoredCounter = Counter.builder("altinn-meldinger-api.melding-arkivert.ikke-prosessert")
                 .description("Antall meldinger ikke prosessert ved arkivering")
                 .register(meterRegistry);
         dokArkivTimer = Timer.builder("altinn-meldinger-api.melding-arkivert.timer")
