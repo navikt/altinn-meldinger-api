@@ -1,5 +1,12 @@
 <configuration scan="true">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework.web" level="DEBUG"/>
-    <logger name="secureLog" level="INFO" additivity="false"/>
+    <appender name="secureLogAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%logger{36} %d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="secureLog" level="INFO" additivity="false">
+        <appender-ref ref="secureLogAppender" />
+    </logger>
 </configuration>
