@@ -2,6 +2,7 @@ package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnClient;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.utils.SecureLog;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,14 +24,16 @@ public class MeldingController {
     private final AltinnClient altinnClient;
     private final MeldingRepository meldingRepository;
     private final TokenValidationContextHolder contextHolder;
+    private final SecureLog secureLog;
 
     @Value("${tilgangskontroll.group}")
     private String group;
 
-    public MeldingController(AltinnClient altinnClient, MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder) {
+    public MeldingController(AltinnClient altinnClient, MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder, SecureLog secureLog) {
         this.altinnClient = altinnClient;
         this.meldingRepository = meldingRepository;
         this.contextHolder = contextHolder;
+        this.secureLog = secureLog;
     }
 
     @PostMapping("/melding")
@@ -52,7 +55,14 @@ public class MeldingController {
         }
 
         try {
-            return object.map(groups -> ((List<String>) groups).contains(group)).orElse(false);
+            Boolean harRiktigGruppe = object.map(groups -> ((List<String>) groups).contains(group)).orElse(false);
+            if (harRiktigGruppe) {
+                secureLog.log("Bruker har riktig AD-gruppe");
+            }
+            else {
+                secureLog.log("Brukeren har feil AD-gruppe");
+            }
+            return harRiktigGruppe;
         } catch (Exception a) {
             throw new RuntimeException("Kunne ikke håndtere token");
         }
