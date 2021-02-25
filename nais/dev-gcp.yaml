@@ -47,6 +47,8 @@ spec:
             enabled: true
             tenant: trygdeetaten.no
             claims:
+                extra:
+                    - "NAVident"
                 groups:
                     - id: 45ddeb07-f047-4dc0-bf49-4b1c0a60b8ed
     webproxy: false
