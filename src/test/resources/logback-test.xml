@@ -3,7 +3,7 @@
     <logger name="org.springframework.web" level="DEBUG"/>
     <appender name="secureLogAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%logger{36} %d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+            <pattern>secureLog: %logger{36} %d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
         </encoder>
     </appender>
     <logger name="secureLog" level="INFO" additivity="false">
