@@ -1,46 +1,32 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.sikkerhet.Tilgangskontroll;
 import no.nav.security.token.support.core.api.Protected;
-import no.nav.security.token.support.core.context.TokenValidationContextHolder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 @Protected
 @RestController
 public class ProtectedController {
 
-    @Autowired
-    private TokenValidationContextHolder contextHolder;
+    private final Tilgangskontroll tilgangskontroll;
 
-    @Value("${tilgangskontroll.group}")
-    private String group;
-
-    @GetMapping("/protected")
-    public ResponseEntity<String> protectedEndepunkt() {
-        if (!harRettighet()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok("Du har tilgang!");
+    public ProtectedController(Tilgangskontroll tilgangskontroll) {
+        this.tilgangskontroll = tilgangskontroll;
     }
 
-    private boolean harRettighet() {
-        Optional<Object> object = Optional.ofNullable(contextHolder.getTokenValidationContext().getClaims("aad").get("groups"));
-
-        if (object.isEmpty()) {
-            return false;
-        }
-
-        try {
-            return object.map(groups -> ((List<String>) groups).contains(group)).orElse(false);
-        } catch (Exception a) {
-            throw new RuntimeException("Kunne ikke håndtere token");
-        }
+    @GetMapping("/protected")
+    public ResponseEntity<String> protectedEndepunkt(HttpServletRequest request) {
+        tilgangskontroll.sjekkRettighetOgLoggSikkerhetshendelse(
+                request.getRequestURL().toString(),
+                request.getMethod(),
+                null
+        );
+        return ResponseEntity.ok("Du har tilgang!");
     }
 }

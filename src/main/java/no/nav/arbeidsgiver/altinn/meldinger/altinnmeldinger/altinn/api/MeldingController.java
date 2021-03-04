@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 @Profile("!prod-gcp")
 @Protected
 @RestController
@@ -30,11 +33,18 @@ public class MeldingController {
 
     @PostMapping("/melding")
     public ResponseEntity<HttpStatus> sendAltinnMelding(
-            @RequestBody AltinnMeldingDTO altinnMeldingDTO
+            @RequestBody AltinnMeldingDTO altinnMeldingDTO,
+            HttpServletRequest request
     ) {
-        if (tilgangskontroll.harRettighet()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        tilgangskontroll.sjekkRettighetOgLoggSikkerhetshendelse(
+                request.getRequestURL().toString(),
+                request.getMethod(),
+                Map.of(
+                        "organisasjonsnumre",
+                        altinnMeldingDTO.getOrganisasjonsnumre().toString()
+                )
+        );
+
         meldingRepository.opprett(altinnMeldingDTO.tilMelding());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

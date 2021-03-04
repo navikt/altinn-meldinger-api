@@ -24,17 +24,19 @@ public class Tilgangskontroll {
 
     public void sjekkRettighetOgLoggSikkerhetshendelse(String url, String metode, Map<String, String> ekstraParametere) {
         boolean harRettighet = harRettighet();
-        secureLog.info("Bruker: {}, har tilgang: {}, gruppe : {}, url : {}, ekstra parametere : {}",
+        secureLog.info("Bruker: {}, har tilgang: {}, gruppe: {}, operasjon: {} {}, ekstra parametere: {}",
                 contextHolder.getTokenValidationContext().getClaims("aad").get("NAVident"),
                 harRettighet,
                 group,
-                ekstraParametere.toString());
+                metode,
+                url,
+                Optional.ofNullable(ekstraParametere).map(Object::toString).orElse("-"));
         if (!harRettighet) {
             throw new TilgangskontrollException("ingen tilgangang");
         }
     }
 
-    public boolean harRettighet() {
+    private boolean harRettighet() {
         Optional<Object> object = Optional.ofNullable(contextHolder.getTokenValidationContext().getClaims("aad").get("groups"));
         if (object.isEmpty()) {
             return false;

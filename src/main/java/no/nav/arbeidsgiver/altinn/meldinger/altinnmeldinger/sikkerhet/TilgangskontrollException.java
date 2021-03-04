@@ -5,5 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class TilgangskontrollException extends RuntimeException {
-    public TilgangskontrollException(String message) {super( message);}
+    public TilgangskontrollException(String message) {
+        super(message);
+    }
 }
