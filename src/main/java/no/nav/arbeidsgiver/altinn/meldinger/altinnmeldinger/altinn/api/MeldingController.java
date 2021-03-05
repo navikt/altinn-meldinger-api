@@ -36,12 +36,19 @@ public class MeldingController {
             @RequestBody AltinnMeldingDTO altinnMeldingDTO,
             HttpServletRequest request
     ) {
+        String listeMedOrganisasjonsnumre;
+        if (altinnMeldingDTO.getOrganisasjonsnumre() == null) {
+            listeMedOrganisasjonsnumre = "[]";
+        }
+        else {
+            listeMedOrganisasjonsnumre = altinnMeldingDTO.getOrganisasjonsnumre().toString();
+        }
         tilgangskontroll.sjekkRettighetOgLoggSikkerhetshendelse(
                 request.getRequestURL().toString(),
                 request.getMethod(),
                 Map.of(
                         "organisasjonsnumre",
-                        altinnMeldingDTO.getOrganisasjonsnumre().toString()
+                        listeMedOrganisasjonsnumre
                 )
         );
 
