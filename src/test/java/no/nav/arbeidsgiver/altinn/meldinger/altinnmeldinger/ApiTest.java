@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
@@ -38,6 +39,7 @@ import static org.awaitility.Awaitility.await;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LokalApplikasjon.class)
 @TestPropertySource(properties = {"wiremock.port=8089"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @EnableMockOAuth2Server
 @ActiveProfiles("test")
 public class ApiTest {
@@ -73,7 +75,7 @@ public class ApiTest {
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + token("aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
+                        .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .build(),
                 ofString()
@@ -121,26 +123,12 @@ public class ApiTest {
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + token("aad", "subject", "altinn-meldinger-api", "feilgruppe"))
+                        .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "feilgruppe"))
                         .POST(HttpRequest.BodyPublishers.ofString("{}"))
                         .build(),
                 ofString()
         );
         assertThat(response.statusCode()).isEqualTo(403);
-    }
-
-    private String token(String issuerId, String subject, String audience, String... groups) {
-        return mockOAuth2Server.issueToken(
-                issuerId,
-                "theclientid",
-                new DefaultOAuth2TokenCallback(
-                        issuerId,
-                        subject,
-                        audience,
-                        Collections.singletonMap("groups", Arrays.asList(groups)),
-                        3600
-                )
-        ).serialize();
     }
 
 }

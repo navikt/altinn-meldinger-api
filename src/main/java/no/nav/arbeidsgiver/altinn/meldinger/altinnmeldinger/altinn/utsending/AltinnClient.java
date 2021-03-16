@@ -6,7 +6,9 @@ import no.altinn.schemas.services.serviceengine.correspondence._2010._10.Attachm
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.ExternalContentV2;
 import no.altinn.schemas.services.serviceengine.correspondence._2010._10.InsertCorrespondenceV2;
 import no.altinn.schemas.services.serviceengine.notification._2009._10.*;
+import no.altinn.services.common.fault._2009._10.AltinnFault;
 import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondenceAgencyExternalBasic;
+import no.altinn.services.serviceengine.correspondence._2009._10.ICorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage;
 import no.altinn.services.serviceengine.correspondence._2009._10.InsertCorrespondenceBasicV2;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentExternalBEV2List;
 import no.altinn.services.serviceengine.reporteeelementlist._2010._10.BinaryAttachmentV2;
@@ -56,19 +58,26 @@ public class AltinnClient {
     }
 
     private String sendAltinnMelding(InsertCorrespondenceBasicV2 insertCorrespondenceBasicV2) {
+
         try {
-            ReceiptExternal receiptExternal = iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
+            iCorrespondenceAgencyExternalBasic.insertCorrespondenceBasicV2(
                     insertCorrespondenceBasicV2.getSystemUserName(),
                     insertCorrespondenceBasicV2.getSystemPassword(),
                     insertCorrespondenceBasicV2.getSystemUserCode(),
                     insertCorrespondenceBasicV2.getExternalShipmentReference(),
                     insertCorrespondenceBasicV2.getCorrespondence()
             );
-            ReflectionToStringBuilder.setDefaultStyle(new MultilineRecursiveToStringStyle());
-            return insertCorrespondenceBasicV2.getExternalShipmentReference();
-        } catch (Exception fault) {
-            throw new RuntimeException(fault);
+        } catch (ICorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage) {
+            AltinnFault faultInfo = iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage.getFaultInfo();
+            if(faultInfo != null) {
+                String message = faultInfo.getErrorID() + faultInfo.getAltinnLocalizedErrorMessage();
+                throw new RuntimeException(message, iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage);
+            }
+            throw new RuntimeException(iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage);
         }
+        ReflectionToStringBuilder.setDefaultStyle(new MultilineRecursiveToStringStyle());
+        return insertCorrespondenceBasicV2.getExternalShipmentReference();
+
     }
 
     private InsertCorrespondenceBasicV2 mapTilInsertCorrespondenceBasicV2(MeldingsProsessering altinnMelding) {

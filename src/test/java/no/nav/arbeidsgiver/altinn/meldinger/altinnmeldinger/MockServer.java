@@ -15,7 +15,7 @@ import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesF
 
 @Component
 public class MockServer {
-    public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN = false;
+    public static final boolean AKTIVER_VERBOSE_LOGGING_I_KONSOLLEN = true;
 
     private final WireMockServer server;
 

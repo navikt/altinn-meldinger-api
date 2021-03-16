@@ -6,10 +6,10 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMel
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
-import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
@@ -19,9 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,10 +30,11 @@ import static org.awaitility.Awaitility.await;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LokalApplikasjon.class)
 @TestPropertySource(properties = {
-        "wiremock.port=8089",
+        "wiremock.port=8087",
         "altinn.uri=http://localhost:${wiremock.port}/altinn/errorCode"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @EnableMockOAuth2Server
 @ActiveProfiles("test")
 public class ApiAltinnErrorCodeTest {
@@ -57,7 +56,7 @@ public class ApiAltinnErrorCodeTest {
                 new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en ny fil".getBytes()), "Filnavn2.txt", "Vedleggnavn2")
         );
         AltinnMeldingDTO altinnMelding = new AltinnMeldingDTO(
-                List.of("999999999", "888888888"),
+                List.of("999999999"),
                 "Dette er en melding som skal til Altinn",
                 "Tittel!",
                 "NAV_AGP2",
@@ -71,31 +70,17 @@ public class ApiAltinnErrorCodeTest {
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
                         .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + token("aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
+                        .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .build(),
                 ofString()
         );
         assertThat(response.statusCode()).isEqualTo(201);
 
-        // Dette er ikke godt nok, da vi bør kunne skille på server-feil og feil med feilkoder.
+        // Dette er egentlig ikke godt nok assert, da vi bør kunne skille på server-feil og feil med feilkoder.
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
             assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT)).isEmpty();
-            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.FEIL).size()).isEqualTo(2);
+            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.FEIL).size()).isEqualTo(1);
         });
-    }
-
-    private String token(String issuerId, String subject, String audience, String... groups) {
-        return mockOAuth2Server.issueToken(
-                issuerId,
-                "theclientid",
-                new DefaultOAuth2TokenCallback(
-                        issuerId,
-                        subject,
-                        audience,
-                        Collections.singletonMap("groups", Arrays.asList(groups)),
-                        3600
-                )
-        ).serialize();
     }
 }

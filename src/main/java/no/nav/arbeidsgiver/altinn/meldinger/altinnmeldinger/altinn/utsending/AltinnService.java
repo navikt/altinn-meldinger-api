@@ -105,10 +105,9 @@ public class AltinnService {
         AltinnStatus altinnStatus = AltinnStatus.OK;
         String altinnReferanse = null;
         try {
-            // TODO Her må vi forbedre feilhåndtering
             altinnReferanse = altinnClient.sendAltinnMelding(meldingsProsessering);
         } catch (Exception e) {
-            log.warn("Feil mot Altinn", e);
+            log.warn("Feil mot Altinn: {}", e.getMessage());
             altinnStatus = AltinnStatus.FEIL;
         }
         meldingRepository.oppdaterAltinnStatus(id, altinnStatus, altinnReferanse);
