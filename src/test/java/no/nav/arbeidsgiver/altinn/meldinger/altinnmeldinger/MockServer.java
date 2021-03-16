@@ -37,11 +37,28 @@ public class MockServer {
         String dokarkivPath = new URL(dokArkivConfig.getUri()).getPath() + "?forsoekFerdigstill=true";
         String pdfGenPath = new URL(dokArkivConfig.getPdfGenUri()).getPath();
 
-        server.stubFor(WireMock.post(altinnPath).willReturn(
-                WireMock.ok()
-                        .withUniformRandomDelay(50, 500)
-                        .withBody(altinnResponse200))
-        );
+        if(altinnPath.endsWith("failure")) {
+            server.stubFor(WireMock.post(altinnPath).willReturn(
+                    WireMock.aResponse()
+                            .withStatus(500)
+                            .withUniformRandomDelay(50, 500))
+            );
+        } else if (altinnPath.endsWith("errorCode")) {
+            server.stubFor(WireMock.post(altinnPath).willReturn(
+                    WireMock.aResponse()
+                            .withStatus(500)
+                            .withHeader("Content-Type", "application/soap+xml")
+                            .withBody(altinnResponse500))
+            );
+        } else {
+            server.stubFor(WireMock.post(altinnPath).willReturn(
+                    WireMock.ok()
+                            .withUniformRandomDelay(50, 500)
+                            .withBody(altinnResponse200))
+            );
+        }
+
+
         server.stubFor(WireMock.post(pdfGenPath).willReturn(WireMock.okJson("{\"pdf\" : \"" + "ok".getBytes() + "\"}")));
         server.stubFor(WireMock.post(dokarkivPath).willReturn(WireMock.okJson("{\"journalpostId\" : \"493329380\", \"journalstatus\" : \"ENDELIG\", \"melding\" : \"Gikk bra\"}")));
         server.start();
