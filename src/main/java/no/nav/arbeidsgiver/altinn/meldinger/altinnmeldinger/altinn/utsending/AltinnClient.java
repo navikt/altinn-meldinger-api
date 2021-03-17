@@ -70,7 +70,7 @@ public class AltinnClient {
         } catch (ICorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage) {
             AltinnFault faultInfo = iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage.getFaultInfo();
             if(faultInfo != null) {
-                String message = faultInfo.getErrorID() + faultInfo.getAltinnLocalizedErrorMessage();
+                String message = faultInfo.getErrorID() + ", " + faultInfo.getAltinnLocalizedErrorMessage();
                 throw new RuntimeException(message, iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage);
             }
             throw new RuntimeException(iCorrespondenceAgencyExternalBasicInsertCorrespondenceBasicV2AltinnFaultFaultFaultMessage);
