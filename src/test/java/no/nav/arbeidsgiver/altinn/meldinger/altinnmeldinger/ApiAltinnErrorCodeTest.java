@@ -1,22 +1,32 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnConfig;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Base64;
@@ -25,28 +35,54 @@ import java.util.concurrent.TimeUnit;
 
 import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesFilSomString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = LokalApplikasjon.class)
-@TestPropertySource(properties = {
-        "wiremock.port=8087",
-        "altinn.uri=http://localhost:${wiremock.port}/altinn/errorCode"
-})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @EnableMockOAuth2Server
 @ActiveProfiles("test")
 public class ApiAltinnErrorCodeTest {
 
+    private WireMockServer wireMockServer;
+
+    private final String altinnResponse500 = lesFilSomString("altinn_response_500.xml");
+
+    @Autowired
+    private AltinnConfig altinnConfig;
+
     @LocalServerPort
-    private String port;
+    private String webAppPort;
 
     @Autowired
     private MeldingRepository meldingRepository;
 
     @Autowired
     private MockOAuth2Server mockOAuth2Server;
+
+    @Value("${wiremock.port}") Integer wiremockPort;
+
+    @BeforeEach
+    public void setup() throws Exception {
+        String altinnPath = new URL(altinnConfig.getUri()).getPath();
+        this.wireMockServer = new WireMockServer(
+                options()
+                        .extensions(new ResponseTemplateTransformer(false))
+                        .port(wiremockPort));
+        this.wireMockServer.stubFor(post(altinnPath).willReturn(
+                aResponse()
+                        .withStatus(500)
+                        .withHeader("Content-Type", "application/soap+xml")
+                        .withBody(altinnResponse500)));
+        this.wireMockServer.start();
+    }
+
+    @AfterEach
+    public void afterEach() {
+        this.wireMockServer.stop();
+    }
 
     @Test
     public void api__skal_sende_melding_til_altinn_og_håndtere_feilkode_i_respons() throws Exception {
@@ -68,7 +104,7 @@ public class ApiAltinnErrorCodeTest {
 
         HttpResponse<String> response = newBuilder().build().send(
                 HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:" + port + "/altinn-meldinger-api/melding"))
+                        .uri(URI.create("http://localhost:" + webAppPort + "/altinn-meldinger-api/melding"))
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
