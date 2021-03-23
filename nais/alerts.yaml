@@ -11,7 +11,7 @@ metadata:
 spec:
   receivers:
     slack:
-      channel: {{slack-channel}}
+      channel: permittering-og-nedbemanning-alerts
       prependText: '<!here> | '
   alerts:
     - alert: Applikasjon nede

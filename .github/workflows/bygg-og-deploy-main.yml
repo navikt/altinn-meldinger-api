@@ -2,6 +2,9 @@ name: Bygg og deploy main
 
 on:
   push:
+    paths-ignore:
+      - 'nais/alerts.yaml'
+      - '.github/workflows/alert-deploy.yml'
     branches:
       - 'main'
 
@@ -120,25 +123,3 @@ jobs:
           RESOURCE: nais/prod-gcp.yaml
           PRINT_PAYLOAD: true
           VAR: version=${{ env.IMAGE }}
-
-  deploy-alerts-dev:
-    name: Deploy alerts til dev gcp
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: nais/alerts.yml
-
-  deploy-alerts-prod:
-    name: Deploy alerts til prod gcp
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
-          RESOURCE: nais/alerts.yml

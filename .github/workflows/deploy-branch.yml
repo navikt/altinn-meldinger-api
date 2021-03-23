@@ -58,13 +58,6 @@ jobs:
           IMAGE: ${{ env.IMAGE }}
           VAR: version=${{ env.IMAGE }}
 
-      - name: Deploy alerts til dev-gcp
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: nais/alerts.yml
-
       - name: Oppdater kommentar med deployment status ved feil
         if: failure()
         uses: actions/github-script@0.5.0
