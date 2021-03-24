@@ -7,9 +7,7 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingReposi
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.JoarkStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnConfig;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.DokArkivConfig;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import org.junit.jupiter.api.AfterEach;
@@ -30,13 +28,11 @@ import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static java.net.http.HttpClient.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Testdata.lesFilSomString;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
@@ -45,17 +41,12 @@ import static org.awaitility.Awaitility.await;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @EnableMockOAuth2Server
 @ActiveProfiles("test")
-public class ApiTest {
+public class ApiAltinnServerErrorTest {
 
     private WireMockServer wireMockServer;
 
-    private final String altinnResponse200 = lesFilSomString("altinn_response_200.xml");
-
     @Autowired
     private AltinnConfig altinnConfig;
-
-    @Autowired
-    private DokArkivConfig dokArkivConfig;
 
     @LocalServerPort
     private String webAppPort;
@@ -71,20 +62,14 @@ public class ApiTest {
     @BeforeEach
     public void setup() throws Exception {
         String altinnPath = new URL(altinnConfig.getUri()).getPath();
-        String dokarkivPath = new URL(dokArkivConfig.getUri()).getPath() + "?forsoekFerdigstill=true";
-        String pdfGenPath = new URL(dokArkivConfig.getPdfGenUri()).getPath();
-
         this.wireMockServer = new WireMockServer(
                 options()
                         .extensions(new ResponseTemplateTransformer(false))
                         .port(wiremockPort));
         this.wireMockServer.stubFor(post(altinnPath).willReturn(
-                ok()
-                        .withUniformRandomDelay(50, 500)
-                        .withBody(altinnResponse200)));
-        this.wireMockServer.stubFor(post(pdfGenPath).willReturn(okJson("{\"pdf\" : \"" + "ok".getBytes() + "\"}")));
-        this.wireMockServer.stubFor(post(dokarkivPath).willReturn(okJson("{\"journalpostId\" : \"493329380\", \"journalstatus\" : \"ENDELIG\", \"melding\" : \"Gikk bra\"}")));
-
+                aResponse()
+                        .withStatus(500)
+                        .withUniformRandomDelay(50, 500)));
         this.wireMockServer.start();
     }
 
@@ -94,14 +79,14 @@ public class ApiTest {
     }
 
     @Test
-    public void api__skal_sende_melding_til_altinn_og_sende_til_joark_og_returnere_created() throws Exception {
+    public void api__skal_sende_melding_til_altinn_og_håndtere_500_respons() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         List<PdfVedleggDTO> vedlegg = List.of(
                 new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en test?".getBytes()), "Filnavn.txt", "Vedleggnavn"),
                 new PdfVedleggDTO(Base64.getEncoder().encodeToString("Dette er en ny fil".getBytes()), "Filnavn2.txt", "Vedleggnavn2")
         );
         AltinnMeldingDTO altinnMelding = new AltinnMeldingDTO(
-                List.of("999999999", "888888888"),
+                List.of("999999999"),
                 "Dette er en melding som skal til Altinn",
                 "Tittel!",
                 "NAV_AGP2",
@@ -120,55 +105,11 @@ public class ApiTest {
                         .build(),
                 ofString()
         );
-
         assertThat(response.statusCode()).isEqualTo(201);
-
-        assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT)
-                .stream()
-                .map(p -> p.getOrgnr())
-                .collect(Collectors.toList()))
-            .containsExactlyInAnyOrder("999999999", "888888888");
 
         await().atMost(3, TimeUnit.SECONDS).untilAsserted(() -> {
             assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.IKKE_SENDT)).isEmpty();
-            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.OK)
-                    .stream()
-                    .map(p -> p.getOrgnr())
-                    .collect(Collectors.toList()))
-                    .containsExactlyInAnyOrder("999999999", "888888888");
-            assertThat(meldingRepository.hentMedStatus(AltinnStatus.OK, JoarkStatus.OK)
-                    .stream()
-                    .map(p -> p.getOrgnr())
-                    .collect(Collectors.toList()))
-                    .containsExactlyInAnyOrder("999999999", "888888888");
+            assertThat(meldingRepository.hentMedAltinnStatus(AltinnStatus.FEIL).size()).isEqualTo(1);
         });
-
     }
-
-    @Test
-    public void api__skal_autentisere_bruker() throws Exception {
-        HttpResponse<String> response = newBuilder().build().send(
-                HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:" + webAppPort + "/altinn-meldinger-api/melding"))
-                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
-                        .build(),
-                ofString()
-        );
-        assertThat(response.statusCode()).isEqualTo(401);
-    }
-
-    @Test
-    public void api__skal_autorisere_bruker() throws Exception {
-        HttpResponse<String> response = newBuilder().build().send(
-                HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:" + webAppPort + "/altinn-meldinger-api/melding"))
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "feilgruppe"))
-                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
-                        .build(),
-                ofString()
-        );
-        assertThat(response.statusCode()).isEqualTo(403);
-    }
-
 }

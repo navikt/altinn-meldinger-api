@@ -2,14 +2,16 @@
 <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
     <s:Body>
         <s:Fault>
+            <faultcode>s:Client</faultcode>
+            <faultstring>An error occurred oh noes</faultstring>
             <detail>
-                <AltinnFault>
+                <AltinnFault xmlns="http://www.altinn.no/services/common/fault/2009/10">
                     <AltinnExtendedErrorMessage>No information available</AltinnExtendedErrorMessage>
                     <AltinnLocalizedErrorMessage>Incorrect username/password/pin given for user</AltinnLocalizedErrorMessage>
                     <ErrorGuid>ed4c23c0-7de6-4343-a442-89bd3a6f38d8</ErrorGuid>
                     <ErrorID>989</ErrorID>
                     <UserGuid>-no value-</UserGuid>
-                    <UserId/>
+                    <UserId>0</UserId>
                 </AltinnFault>
             </detail>
         </s:Fault>
