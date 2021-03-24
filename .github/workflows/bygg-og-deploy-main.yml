@@ -2,6 +2,9 @@ name: Bygg og deploy main
 
 on:
   push:
+    paths-ignore:
+      - 'nais/alerts.yaml'
+      - '.github/workflows/alert-deploy.yml'
     branches:
       - 'main'
 
