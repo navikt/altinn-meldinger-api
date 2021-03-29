@@ -94,19 +94,16 @@ public class MeldingRepository {
     @Transactional
     public void opprett(Melding melding, String idempotencyKey) {
         opprettMelding(melding);
-        opprettIdempotencyKey(idempotencyKey, melding);
+        opprettIdempotencyKey(idempotencyKey);
         melding.getVedlegg().forEach(v -> opprettVedlegg(v, melding.getId()));
         melding.getOrganisasjoner().forEach(o -> opprettProsesseringsStatus(o, melding));
     }
 
-    private void opprettIdempotencyKey(String idempotencyKey, Melding melding) {
+    private void opprettIdempotencyKey(String idempotencyKey) {
         MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource()
-                .addValue("melding_id", melding.getId())
                 .addValue("idempotency_key", idempotencyKey);
         jdbcTemplate.update("insert into idempotency_melding (" +
-                "melding_id, " +
                 "idempotency_key) values (" +
-                ":melding_id, " +
                 ":idempotency_key)", mapSqlParameterSource
                 );
     }
