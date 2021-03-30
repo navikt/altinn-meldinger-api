@@ -100,6 +100,7 @@ public class ApiAltinnServerErrorTest {
                 HttpRequest.newBuilder()
                         .uri(URI.create("http://localhost:" + webAppPort + "/altinn-meldinger-api/melding"))
                         .header("Content-Type", "application/json")
+                        .header("idempotency-key", Ulider.nextULID())
                         .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
                         .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(altinnMelding)))
                         .build(),
