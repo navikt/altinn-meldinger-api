@@ -27,6 +27,7 @@ public class JournalpostMapperTest {
         Journalpost journalpost = journalpostMapper.meldingTilJournalpost(melding);
 
         assertEquals(3, journalpost.getDokumenter().size());
+        assertEquals("PER", journalpost.getTema());
         assertEquals(melding.getTittel(), journalpost.getDokumenter().get(0).getTittel());
     }
 

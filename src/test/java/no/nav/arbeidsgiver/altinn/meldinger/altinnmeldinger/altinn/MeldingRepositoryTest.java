@@ -1,6 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.Ulider;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.JoarkTema;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -31,11 +33,13 @@ class MeldingRepositoryTest {
             "serviceEdition",
             LocalDateTime.now().plusYears(2),
             0,
+            JoarkTema.PER,
             List.of(
                     new Vedlegg("A1", "filinnhold1", "filnavn1", "vedleggnavn1"),
                     new Vedlegg("A2", "filinnhold2", "filnavn2", "vedleggnavn2"),
                     new Vedlegg("A3", "filinnhold3", "filnavn3", "vedleggnavn3")
             ));
+
     public static final Melding TEST_MELDING_2 = new Melding(
             "A2",
             List.of("111111111", "222222222"),
@@ -46,6 +50,7 @@ class MeldingRepositoryTest {
             "serviceEdition",
             LocalDateTime.now().plusYears(2),
             0,
+            JoarkTema.PER,
             List.of(
                     new Vedlegg("A4", "filinnhold1", "filnavn1", "vedleggnavn1"),
                     new Vedlegg("A5", "filinnhold2", "filnavn2", "vedleggnavn2"),
@@ -113,5 +118,13 @@ class MeldingRepositoryTest {
         assertThat(meldingRepository.hentMeldingerSomSkalSendesTilAltinn().size()).isEqualTo(2);
         meldingRepository.opprett(TEST_MELDING_2, Ulider.nextULID());
         assertThat(meldingRepository.hentMeldingerSomSkalSendesTilAltinn().size()).isEqualTo(4);
+    }
+
+    @Test
+    public void prosessering_og_parsing_av_domeneobjeckter() {
+        meldingRepository.opprett(TEST_MELDING, Ulider.nextULID());
+        List<MeldingsProsessering> prosesseringList = meldingRepository.hentMedStatus(AltinnStatus.IKKE_SENDT, JoarkStatus.IKKE_SENDT);
+        List<JoarkTema> temas = prosesseringList.stream().map(p -> p.getTema()).collect(Collectors.toList());
+        
     }
 }

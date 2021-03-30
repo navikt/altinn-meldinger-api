@@ -36,6 +36,7 @@ public class MeldingRepository {
             "melding.service_edition, " +
             "melding.tillat_automatisk_sletting_fra_dato, " +
             "melding.tillat_automatisk_sletting_etter_antall_år, " +
+            "melding.tema, " +
             "prosesserings_status.altinn_status, " +
             "prosesserings_status.altinn_referanse, " +
             "prosesserings_status.altinn_sendt_tidspunkt, " +
@@ -172,7 +173,8 @@ public class MeldingRepository {
                 "service_code, " +
                 "service_edition, " +
                 "tillat_automatisk_sletting_fra_dato, " +
-                "tillat_automatisk_sletting_etter_antall_år) values (" +
+                "tillat_automatisk_sletting_etter_antall_år, " +
+                "tema ) values (" +
                 ":id, " +
                 ":opprettet, " +
                 ":orgnr, " +
@@ -182,7 +184,8 @@ public class MeldingRepository {
                 ":service_code, " +
                 ":service_edition, " +
                 ":tillat_automatisk_sletting_fra_dato, " +
-                ":tillat_automatisk_sletting_etter_antall_år)", lagParameterMapForMelding(melding));
+                ":tillat_automatisk_sletting_etter_antall_år, " +
+                ":tema)", lagParameterMapForMelding(melding));
     }
 
     private SqlParameterSource lagParameterMapForMelding(Melding melding) {
@@ -196,7 +199,8 @@ public class MeldingRepository {
                 .addValue("service_code", melding.getServiceCode())
                 .addValue("service_edition", melding.getServiceEdition())
                 .addValue("tillat_automatisk_sletting_fra_dato", melding.getTillatAutomatiskSlettingFraDato())
-                .addValue("tillat_automatisk_sletting_etter_antall_år", melding.getTillatAutomatiskSlettingEtterAntallÅr());
+                .addValue("tillat_automatisk_sletting_etter_antall_år", melding.getTillatAutomatiskSlettingEtterAntallÅr())
+                .addValue("tema", melding.getTema().name());
     }
 
     public void oppdaterAltinnStatus(String id, AltinnStatus altinnStatus, String altinnReferanse) {

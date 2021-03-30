@@ -1,5 +1,6 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.JoarkTema;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.Vedlegg;
 
@@ -32,7 +33,7 @@ public class Testdata {
 
         return new MeldingsProsessering(null, null, null, lesFilSomString("melding.txt"),
                 "Tittelen", null, null, null, null,
-                null, null, vedleggList, null, null, null, null, null);
+                null, null, vedleggList, null, null, null, null, null, JoarkTema.PER);
 
     }
 }

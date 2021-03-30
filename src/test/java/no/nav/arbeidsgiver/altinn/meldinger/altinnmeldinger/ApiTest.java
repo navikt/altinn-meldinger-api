@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.AltinnMeldingDTO;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.JoarkTema;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.PdfVedleggDTO;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.AltinnStatus;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.JoarkStatus;
@@ -27,6 +28,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -109,6 +111,7 @@ public class ApiTest {
                 "1",
                 null,
                 10,
+                JoarkTema.PER,
                 vedlegg);
 
         HttpResponse<String> response = newBuilder().build().send(
@@ -142,6 +145,11 @@ public class ApiTest {
                     .map(p -> p.getOrgnr())
                     .collect(Collectors.toList()))
                     .containsExactlyInAnyOrder("999999999", "888888888");
+            assertThat(meldingRepository.hentMedStatus(AltinnStatus.OK, JoarkStatus.OK)
+                    .stream()
+                    .map(p -> p.getTema())
+                    .collect(Collectors.toList()))
+                    .containsExactlyInAnyOrder(JoarkTema.PER, JoarkTema.PER);
         });
 
     }
