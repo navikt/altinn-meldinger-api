@@ -24,6 +24,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
@@ -152,6 +153,33 @@ public class ApiTest {
                     .containsExactlyInAnyOrder(JoarkTema.PER, JoarkTema.PER);
         });
 
+    }
+
+    @Test
+    public void api__skal_kun_akseptere_et_set_av_temaer() throws Exception {
+        String melding = "{\n" +
+                "\"organisasjonsnumre\": [ \"12345\" ],\n" +
+                "\"melding\": \"string\",\n" +
+                "\"tittel\": \"string\",\n" +
+                "\"systemUsercode\": \"string\",\n" +
+                "\"serviceCode\": \"string\",\n" +
+                "\"serviceEdition\": \"string\",\n" +
+                "\"tillatAutomatiskSlettingFraDato\": \"2021-02-17T13:52:22.206Z\",\n" +
+                "\"tillatAutomatiskSlettingEtterAntallÅr\": 0,\n" +
+                "\"tema\": \"WOOP\",\n" +
+                "\"vedlegg\": [ ]\n" +
+                "}";
+
+        HttpResponse<String> response = newBuilder().build().send(
+                HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:" + webAppPort + "/altinn-meldinger-api/melding"))
+                        .header("Content-Type", "application/json")
+                        .header("idempotency-key", Ulider.nextULID())
+                        .header("Authorization", "Bearer " + TestUtils.token(mockOAuth2Server, "aad", "subject", "altinn-meldinger-api", "rettighet-for-å-bruke-apiet-lokalt"))
+                        .POST(HttpRequest.BodyPublishers.ofString(melding))
+                        .build(),
+                ofString()
+        );
     }
 
     @Test

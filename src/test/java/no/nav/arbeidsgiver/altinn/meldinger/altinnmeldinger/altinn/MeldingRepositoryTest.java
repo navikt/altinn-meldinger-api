@@ -125,6 +125,6 @@ class MeldingRepositoryTest {
         meldingRepository.opprett(TEST_MELDING, Ulider.nextULID());
         List<MeldingsProsessering> prosesseringList = meldingRepository.hentMedStatus(AltinnStatus.IKKE_SENDT, JoarkStatus.IKKE_SENDT);
         List<JoarkTema> temas = prosesseringList.stream().map(p -> p.getTema()).collect(Collectors.toList());
-        
+
     }
 }
