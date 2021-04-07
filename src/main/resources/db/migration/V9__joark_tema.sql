@@ -1,0 +1,1 @@
+ALTER TABLE melding ADD COLUMN tema varchar;

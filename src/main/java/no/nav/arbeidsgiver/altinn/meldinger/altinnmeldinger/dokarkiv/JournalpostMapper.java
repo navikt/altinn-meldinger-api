@@ -1,6 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv;
 
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.PdfGenClient;
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.JoarkTema;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene.MeldingsProsessering;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.dokarkiv.dto.*;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class JournalpostMapper {
     private Journalpost opprettJournalpost(byte[] meldingPdf, MeldingsProsessering melding) {
         Bruker bruker = new Bruker(melding.getOrgnr());
         Mottaker mottaker = new Mottaker(melding.getOrgnr());
+        String tema = melding.getTema().name();
 
         List<Dokument> dokumenter = melding.getVedlegg()
                 .stream()
@@ -48,6 +50,6 @@ public class JournalpostMapper {
                 .collect(Collectors.toList());
 
         dokumenter.add(0, new Dokument(melding.getTittel(), Arrays.asList(new DokumentVariant(Base64.getEncoder().encodeToString(meldingPdf)))));
-        return new Journalpost(melding.getTittel(), bruker, mottaker, dokumenter);
+        return new Journalpost(melding.getTittel(), bruker, mottaker, tema, dokumenter);
     }
 }

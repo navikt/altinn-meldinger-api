@@ -18,9 +18,10 @@ public class AltinnMeldingDTO {
 
     private final LocalDateTime tillatAutomatiskSlettingFraDato;
     private final Integer tillatAutomatiskSlettingEtterAntallÅr;
+    private final JoarkTema tema;
     private final List<PdfVedleggDTO> vedlegg;
 
-    public AltinnMeldingDTO(List<String> orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, List<PdfVedleggDTO> vedlegg) {
+    public AltinnMeldingDTO(List<String> orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, int tillatAutomatiskSlettingEtterAntallÅr, JoarkTema tema, List<PdfVedleggDTO> vedlegg) {
         this.organisasjonsnumre = orgnr;
         this.melding = melding;
         this.tittel = tittel;
@@ -29,6 +30,7 @@ public class AltinnMeldingDTO {
         this.serviceEdition = serviceEdition;
         this.tillatAutomatiskSlettingFraDato = tillatAutomatiskSlettingFraDato;
         this.tillatAutomatiskSlettingEtterAntallÅr = tillatAutomatiskSlettingEtterAntallÅr;
+        this.tema = tema;
         this.vedlegg = vedlegg;
     }
 
@@ -64,9 +66,11 @@ public class AltinnMeldingDTO {
         return tillatAutomatiskSlettingEtterAntallÅr;
     }
 
+    public JoarkTema getTema() { return tema; }
+
     public List<PdfVedleggDTO> getVedlegg() { return vedlegg; }
 
     public Melding tilMelding() {
-        return new Melding(organisasjonsnumre, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, PdfVedleggDTO.tilVedleggListe(vedlegg));
+        return new Melding(organisasjonsnumre, melding, tittel, systemUsercode, serviceCode, serviceEdition, tillatAutomatiskSlettingFraDato, tillatAutomatiskSlettingEtterAntallÅr, tema, PdfVedleggDTO.tilVedleggListe(vedlegg));
     }
 }

@@ -1,5 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.domene;
 
+import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api.JoarkTema;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,8 +24,9 @@ public class MeldingsProsessering {
     private JoarkStatus joarkStatus;
     private String journalpostId;
     private LocalDateTime joarkSendtTidspunkt;
+    private JoarkTema tema;
 
-    public MeldingsProsessering(String id, String meldingId, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg, String altinnReferanse, LocalDateTime altinnSendtTidspunkt, JoarkStatus joarkStatus, String journalpostId, LocalDateTime joarkSendtTidspunkt) {
+    public MeldingsProsessering(String id, String meldingId, String orgnr, String melding, String tittel, String systemUsercode, String serviceCode, String serviceEdition, LocalDateTime tillatAutomatiskSlettingFraDato, Integer tillatAutomatiskSlettingEtterAntallÅr, AltinnStatus altinnStatus, List<Vedlegg> vedlegg, String altinnReferanse, LocalDateTime altinnSendtTidspunkt, JoarkStatus joarkStatus, String journalpostId, LocalDateTime joarkSendtTidspunkt, JoarkTema tema) {
         this.id = id;
         this.meldingId = meldingId;
         this.orgnr = orgnr;
@@ -41,6 +44,7 @@ public class MeldingsProsessering {
         this.joarkStatus = joarkStatus;
         this.journalpostId = journalpostId;
         this.joarkSendtTidspunkt = joarkSendtTidspunkt;
+        this.tema = tema;
     }
 
     public String getId() {
@@ -99,10 +103,19 @@ public class MeldingsProsessering {
         return altinnSendtTidspunkt;
     }
 
-    public JoarkStatus getJoarkStatus() { return joarkStatus; }
+    public JoarkStatus getJoarkStatus() {
+        return joarkStatus;
+    }
 
-    public String getJournalpostId() { return journalpostId; }
+    public String getJournalpostId() {
+        return journalpostId;
+    }
 
-    public LocalDateTime getJoarkSendtTidspunkt() { return joarkSendtTidspunkt; }
+    public LocalDateTime getJoarkSendtTidspunkt() {
+        return joarkSendtTidspunkt;
+    }
 
+    public JoarkTema getTema() {
+        return tema;
+    }
 }
