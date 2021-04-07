@@ -107,7 +107,7 @@ public class AltinnService {
         try {
             altinnReferanse = altinnClient.sendAltinnMelding(meldingsProsessering);
         } catch (Exception e) {
-            log.error("Feil mot Altinn for melding {}", id, e);
+            log.error("Feil mot Altinn for melding med prosesserings-id {}", id, e);
             altinnStatus = AltinnStatus.FEIL;
         }
         meldingRepository.oppdaterAltinnStatus(id, altinnStatus, altinnReferanse);

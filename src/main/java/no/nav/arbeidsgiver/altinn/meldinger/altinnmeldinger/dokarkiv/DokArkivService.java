@@ -106,7 +106,7 @@ public class DokArkivService {
         try {
             journalpostId = dokArkivClient.journalførMelding(meldingsProsessering);
         } catch (Exception e) {
-            log.warn("Feil mot Dokarkiv for melding {}", id, e);
+            log.warn("Feil mot Dokarkiv for melding med prosesserings-id {}", id, e);
             joarkStatus = JoarkStatus.FEIL;
         }
         meldingRepository.oppdaterDokarkivStatus(id, joarkStatus, journalpostId);
