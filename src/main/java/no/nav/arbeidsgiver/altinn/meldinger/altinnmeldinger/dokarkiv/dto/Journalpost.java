@@ -7,7 +7,6 @@ public class Journalpost {
     static final String ID_TYPE_ORGNR = "ORGNR";
     private final static String JOURNALPOST_TYPE = "UTGAAENDE";
     private final static String KANAL = "NAV_NO";
-    // private final static String TEMA = "GEN";
     private final static String JOURNALFOERENDE_ENHET = "9999";
 
     private final String journalposttype = JOURNALPOST_TYPE;
