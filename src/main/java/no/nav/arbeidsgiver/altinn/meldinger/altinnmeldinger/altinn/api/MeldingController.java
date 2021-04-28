@@ -5,7 +5,6 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.Alt
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-@Profile("!prod-gcp")
 @Protected
 @RestController
 public class MeldingController {
