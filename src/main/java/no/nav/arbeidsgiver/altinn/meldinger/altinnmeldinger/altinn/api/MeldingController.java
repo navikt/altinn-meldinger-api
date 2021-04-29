@@ -6,7 +6,6 @@ import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.featuretoggles.Unlea
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,12 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-@Profile("!prod-gcp")
 @Protected
 @RestController
 public class MeldingController {
 
-    private final AltinnClient altinnClient;
     private final MeldingRepository meldingRepository;
     private final TokenValidationContextHolder contextHolder;
     private final UnleashService unleashService;
@@ -30,8 +27,9 @@ public class MeldingController {
     @Value("${tilgangskontroll.group}")
     private String group;
 
-    public MeldingController(AltinnClient altinnClient, MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder, UnleashService unleashService) {
-        this.altinnClient = altinnClient;
+    public MeldingController(
+            MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder, UnleashService unleashService
+    ) {
         this.meldingRepository = meldingRepository;
         this.contextHolder = contextHolder;
         this.unleashService = unleashService;
