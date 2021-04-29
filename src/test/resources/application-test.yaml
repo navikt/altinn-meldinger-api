@@ -40,3 +40,7 @@ utsending:
   dokarkiv.scheduler:
     lockAtMostFor: 2000
     lockAtLeastFor: 101
+
+unleash.url: http://unleash.herokuapp.com/api/
+
+nais.cluster.name: local
