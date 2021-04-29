@@ -106,7 +106,7 @@ public class AltinnClient {
 
     private Notification notification(String orgNummer) {
         final String VARSLING_TEKST = String.format(
-                "<p>Logg inn i Altinn for å se melding til organisasjon %s.<br/></p><p>Vennlig hilsen NAV<p/>",
+                "<p>Logg inn i Altinn for å se melding til organisasjon %s.</p><p>Vennlig hilsen NAV<p/>",
                 orgNummer
         );
         final String VARSLING_TITTEL = "Ny melding fra NAV til organisasjon " + orgNummer;
