@@ -56,9 +56,9 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           VAR: version=${{ env.IMAGE }}
-          RESOURCE: nais/dev.yaml
+          RESOURCE: nais/dev-gcp.yaml
 
   deploy-to-prod:
     name: Deploy to prod
@@ -70,6 +70,6 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
+          CLUSTER: prod-gcp
           VAR: version=${{ env.IMAGE }}
-          RESOURCE: nais/prod.yaml
+          RESOURCE: nais/prod-gcp.yaml
