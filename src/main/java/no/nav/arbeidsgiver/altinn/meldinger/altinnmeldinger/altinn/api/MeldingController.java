@@ -1,8 +1,7 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
+import no.finn.unleash.Unleash;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnClient;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.featuretoggles.UnleashService;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,17 +21,17 @@ public class MeldingController {
 
     private final MeldingRepository meldingRepository;
     private final TokenValidationContextHolder contextHolder;
-    private final UnleashService unleashService;
+    private final Unleash unleash;
 
     @Value("${tilgangskontroll.group}")
     private String group;
 
     public MeldingController(
-            MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder, UnleashService unleashService
+            MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder, Unleash unleash
     ) {
         this.meldingRepository = meldingRepository;
         this.contextHolder = contextHolder;
-        this.unleashService = unleashService;
+        this.unleash = unleash;
     }
 
     @PostMapping("/melding")
@@ -40,7 +39,7 @@ public class MeldingController {
             @RequestBody AltinnMeldingDTO altinnMeldingDTO,
             @RequestHeader("idempotency-key") String idempotencyKey
     ) {
-        if (!unleashService.erEnabled("altinn-meldinger-api.innsending")) {
+        if (!unleash.isEnabled("altinn-meldinger-api.innsending")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         if (!harRettighet()) {
