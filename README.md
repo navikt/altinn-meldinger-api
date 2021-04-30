@@ -31,6 +31,8 @@ Appen kjører i Google Cloud Platform (GCP). GCP-prosjekter administreres her: h
 
 Grafana-dashboard for overvåkning: https://grafana.adeo.no/d/RbFj0LEGk/altinn-meldinger-api
 
+Styring av feature toggles: https://unleash.nais.io
+
 # Henvendelser
 
 Spørsmål knyttet til koden eller prosjektet kan rettes mot:

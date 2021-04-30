@@ -1,11 +1,10 @@
 package no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.api;
 
+import no.finn.unleash.Unleash;
 import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.MeldingRepository;
-import no.nav.arbeidsgiver.altinn.meldinger.altinnmeldinger.altinn.utsending.AltinnClient;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,22 +15,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-@Profile("!prod-gcp")
 @Protected
 @RestController
 public class MeldingController {
 
-    private final AltinnClient altinnClient;
     private final MeldingRepository meldingRepository;
     private final TokenValidationContextHolder contextHolder;
+    private final Unleash unleash;
 
     @Value("${tilgangskontroll.group}")
     private String group;
 
-    public MeldingController(AltinnClient altinnClient, MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder) {
-        this.altinnClient = altinnClient;
+    public MeldingController(
+            MeldingRepository meldingRepository, TokenValidationContextHolder contextHolder, Unleash unleash
+    ) {
         this.meldingRepository = meldingRepository;
         this.contextHolder = contextHolder;
+        this.unleash = unleash;
     }
 
     @PostMapping("/melding")
@@ -39,6 +39,9 @@ public class MeldingController {
             @RequestBody AltinnMeldingDTO altinnMeldingDTO,
             @RequestHeader("idempotency-key") String idempotencyKey
     ) {
+        if (!unleash.isEnabled("altinn-meldinger-api.innsending")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         if (!harRettighet()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

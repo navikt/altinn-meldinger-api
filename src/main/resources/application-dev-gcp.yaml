@@ -32,3 +32,5 @@ no.nav.security.jwt:
       client-id: ${AZURE_APP_CLIENT_ID}
       client-auth-method: client_secret_basic
       client-secret: ${AZURE_APP_CLIENT_SECRET}
+
+unleash.url: https://unleash.nais.io/api/
