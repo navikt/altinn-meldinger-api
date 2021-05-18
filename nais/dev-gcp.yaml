@@ -42,6 +42,7 @@ spec:
         inbound:
             rules:
                 - application: altinn-meldinger-web
+                - application: dev-gcp:permittering-og-nedbemanning:altinn-meldinger-web
     azure:
         application:
             enabled: true
