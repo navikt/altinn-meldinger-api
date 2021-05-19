@@ -42,6 +42,7 @@ spec:
         inbound:
             rules:
                 - application: altinn-meldinger-web
+                  namespace: permittering-og-nedbemanning
     azure:
         application:
             enabled: true
