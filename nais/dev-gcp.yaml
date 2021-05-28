@@ -2,12 +2,12 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
     name: altinn-meldinger-api
-    namespace: arbeidsgiver
+    namespace: permittering-og-nedbemmaning
     labels:
-        team: arbeidsgiver
+        team: permittering-og-nedbemmaning
 spec:
     image: {{ version }}
-    team: arbeidsgiver
+    team: permittering-og-nedbemmaning
     port: 8080
     ingresses:
         - https://arbeidsgiver.dev.intern.nav.no/altinn-meldinger-api
