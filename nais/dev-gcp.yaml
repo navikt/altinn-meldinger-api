@@ -23,6 +23,7 @@ spec:
     gcp:
         sqlInstances:
             - name: altinn-meldinger-api
+              cascadingDelete: true
               type: POSTGRES_12
               databases:
                   - name: altinn-meldinger-db
