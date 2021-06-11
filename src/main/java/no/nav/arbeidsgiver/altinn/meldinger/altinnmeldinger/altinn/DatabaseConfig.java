@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 @Profile({"dev-gcp", "prod-gcp"})
 @Configuration
 public class DatabaseConfig {
-    private final static Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
 
     private final String url;
     private final String username;
