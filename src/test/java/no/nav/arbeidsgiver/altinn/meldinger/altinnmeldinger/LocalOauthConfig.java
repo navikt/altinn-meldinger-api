@@ -34,7 +34,7 @@ public class LocalOauthConfig {
         DefaultOAuth2TokenCallback callback = new DefaultOAuth2TokenCallback(
                 "aad",
                 UUID.randomUUID().toString(),
-                "altinn-meldinger-api",
+                List.of("altinn-meldinger-api"),
                 Map.of("groups", List.of(group)),
                 3600L
         );
