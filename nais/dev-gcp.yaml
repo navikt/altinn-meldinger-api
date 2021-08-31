@@ -9,8 +9,8 @@ spec:
     image: {{ version }}
     team: permittering-og-nedbemanning
     port: 8080
-    # ingresses:
-    #     - https://arbeidsgiver.dev.intern.nav.no/altinn-meldinger-api
+    ingresses:
+        - https://arbeidsgiver.dev.intern.nav.no/altinn-meldinger-api
     liveness:
         path: /altinn-meldinger-api/internal/healthcheck
         initialDelay: 60
