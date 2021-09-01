@@ -3,9 +3,9 @@ apiVersion: "nais.io/v1"
 kind: "Alert"
 metadata:
   name: altinn-meldinger-api-alerts
-  namespace: arbeidsgiver
+  namespace: permittering-og-nedbemanning
   labels:
-    team: arbeidsgiver
+    team: permittering-og-nedbemanning
 spec:
   receivers:
     slack:
